@@ -1,0 +1,20 @@
+@import "../../styles/variables";
+
+.modal-header {
+  display: block;
+  border-width: 0;
+  padding: 1rem 1rem 0 1rem;
+  text-align: center;
+}
+
+.modal-body {
+  text-align: center;
+}
+
+.modal-content {
+  border-radius: 1.2rem;
+}
+
+.modal-footer {
+  padding: 0.8rem 1rem 0.8rem 1rem;
+}

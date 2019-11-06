@@ -1,0 +1,55 @@
+@import "../../styles/variables";
+
+.main-header-bar {
+  position: relative;
+  z-index: 100;
+  color: white;
+
+  .logo {
+    background-color: $primaryColorHover;
+    float: left;
+    height: 50px;
+    font-size: 23px;
+    line-height: 50px;
+    font-weight: 400;
+    text-align: center;
+    width: 230px;
+  }
+
+  .nav-bar {
+    background-color: $primaryColor;
+    height: 50px;
+    width: calc(100% - 230px);
+    float: left;
+    border-radius: 0;
+
+    .toggle-sidebar {
+      display: none;
+      height: 50px;
+      width: 50px;
+      text-align: center;
+      padding-top: 14px;
+      cursor: pointer;
+    }
+
+    .toggle-sidebar:hover {
+      background-color: rgba(0, 0, 0, 0.1);
+    }
+
+    @media (max-width: 991px) {
+      .toggle-sidebar {
+        display: block;
+      }
+    }
+  }
+
+  @media (max-width: 991px) {
+    .logo {
+      width: 100%;
+    }
+
+    .nav-bar {
+      width: 100%;
+    }
+  }
+}

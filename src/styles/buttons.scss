@@ -1,0 +1,45 @@
+@import "variables";
+
+button.primary-fill {
+  font-size: 16px;
+  width: auto;
+  border-radius: 8px;
+  padding: 8px;
+  border-width: 0;
+  color: $primaryTextButton;
+  background-color: $primaryColor;
+}
+
+button.primary-fill:hover {
+  background-color: $primaryColorHover;
+}
+
+button.primary-green {
+  font-size: 18px;
+  width: 100px;
+  border-radius: 8px;
+  padding: 8px;
+  border-width: 0;
+  font-weight: 500;
+  color: $primaryGreenColor;
+  background-color: transparent;
+}
+
+button.primary-red {
+  font-size: 18px;
+  width: 100px;
+  border-radius: 8px;
+  padding: 8px;
+  border-width: 0;
+  font-weight: 500;
+  color: $primaryRedColor;
+  background-color: transparent;
+}
+
+button.outline:hover {
+  background-color: $primaryHover;
+}
+
+button:focus {
+  outline: none;
+}
