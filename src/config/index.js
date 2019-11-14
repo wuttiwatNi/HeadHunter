@@ -1,7 +1,7 @@
 export const config = {
     // API
-    // API_RESOURCE_URL: 'http://localhost:8000',
-    API_RESOURCE_URL: 'http://armsis.arms-asia.com:8080/api',
+    // API_RESOURCE_URL: "http://localhost:8000",
+    API_RESOURCE_URL: "http://armsis.arms-asia.com:8080/api",
   
     // APP SETTINGS
     NETWORK_TIMEOUT: 10000, // milliseconds

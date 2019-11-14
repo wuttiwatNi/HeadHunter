@@ -1,1 +1,36 @@
 @import "../../styles/variables";
+
+th {
+  font-weight: 400;
+}
+
+td {
+  //font-weight: 300;
+}
+
+.top-filter {
+  padding-top: 10px;
+  padding-bottom: 10px;
+
+  div {
+    align-self: center;
+  }
+
+  .col {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+
+  input {
+    justify-content: left;
+    padding: 8px;
+    border-radius: 10px;
+    border-color: $primaryBorderColor;
+    border-style: double;
+    border-width: 1px;
+  }
+
+  input:focus {
+    outline: none;
+  }
+}

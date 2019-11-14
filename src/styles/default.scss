@@ -1,10 +1,60 @@
 @import "variables";
 
 body {
-  font-family: 'Mitr', sans-serif;
+  font-family: "Mitr", sans-serif;
+  font-weight: 300;
   margin: 0;
 }
 
-.row{
+body::-webkit-scrollbar {
+  display: none;
+}
+
+input{
+  font-weight: 300;
+}
+
+.text-primary {
+  color: $primaryColor !important;
+}
+
+.spinner{
+  height: calc(100vh - 50px);
+  position: relative;
+
+  .spinner-grow{
+    width: 10rem;
+    height: 10rem;
+    overflow: auto;
+    margin: auto;
+    position: absolute;
+    top: 0; left: 0; bottom: 0; right: 0;
+  }
+}
+
+.row {
   margin: 0;
+}
+
+.content {
+  z-index: 98;
+  background-color: $primaryBgContent;
+  position: absolute;
+  margin-top: 50px;
+  margin-left: 230px;
+  width: calc(100% - 230px);
+  min-height: calc(100% - 50px);
+}
+
+@media (max-width: 991px) {
+  .content {
+    width: 100%;
+    margin-top: 100px;
+    margin-left: 0;
+    min-height: calc(100% - 100px);
+  }
+
+  .spinner {
+    height: calc(100vh - 100px);
+  }
 }

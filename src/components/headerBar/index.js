@@ -1,13 +1,13 @@
-import React from 'react';
+import React from "react";
 import {useDispatch} from "react-redux";
 import {sideBarAction} from "../../actions";
-import './index.scss'
+import "./index.scss";
 
 function HeaderBar() {
     const dispatch = useDispatch();
 
     return (
-        <div className={'main-header-bar'}>
+        <div className={"main-header-bar"}>
             <div className="logo">
                 HEAD.HUNTER
             </div>

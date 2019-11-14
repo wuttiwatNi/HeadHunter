@@ -1,6 +1,6 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import './index.scss'
+import React from "react";
+import * as PropTypes from "prop-types";
+import "./index.scss";
 
 function Topic({title, subTitle}) {
     return (

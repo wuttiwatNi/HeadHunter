@@ -43,3 +43,24 @@ button.outline:hover {
 button:focus {
   outline: none;
 }
+
+button.outline-primary {
+  width: 40px;
+  height: 40px;
+  padding: 8px;
+  color: $primaryColor;
+  background-color: transparent;
+  border-color: $primaryColor;
+  border-style: double;
+  border-width: 2px;
+  border-radius: 8px;
+
+  .fa {
+    font-size: 22px;
+  }
+}
+
+button.outline-primary:hover {
+  color: white;
+  background-color: $primaryColor;
+}

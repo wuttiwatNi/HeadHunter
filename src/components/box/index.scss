@@ -1,10 +1,35 @@
 @import "../../styles/variables";
 
-h4{
-  font-weight: 400;
-}
+.box {
+  position: relative;
+  border-radius: 3px;
+  background: #ffffff;
+  border-top: 3px solid $primaryColor;
+  margin-bottom: 20px;
+  width: 100%;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
 
-small{
-  font-size: 60%;
-  font-weight: 300;
+  .box-header {
+    color: #444;
+    display: block;
+    padding: 10px;
+    position: relative;
+    border-bottom: 1px solid #f4f4f4;
+
+    h3 {
+      display: inline-block;
+      font-size: 18px;
+      font-weight: 300;
+      margin: 0;
+      line-height: 1;
+    }
+  }
+
+  .box-body {
+    padding: 10px;
+  }
+
+  .box-footer{
+    padding: 10px;
+  }
 }
