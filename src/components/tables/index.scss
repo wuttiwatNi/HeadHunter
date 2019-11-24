@@ -2,35 +2,63 @@
 
 th {
   font-weight: 400;
+  font-size: 14px;
 }
 
 td {
   //font-weight: 300;
+  cursor: pointer;
+  font-size: 14px;
+
+  span {
+    cursor: initial;
+  }
 }
 
 .top-filter {
-  padding-top: 10px;
   padding-bottom: 10px;
 
   div {
     align-self: center;
   }
 
-  .col {
-    padding-left: 10px;
-    padding-right: 10px;
-  }
-
   input {
-    justify-content: left;
-    padding: 8px;
-    border-radius: 10px;
-    border-color: $primaryBorderColor;
-    border-style: double;
-    border-width: 1px;
+    width: 200px;
   }
 
-  input:focus {
-    outline: none;
+  button {
+    width: 40px;
+    height: 40px;
+  }
+}
+
+.table-responsive {
+  padding-left: 15px;
+  padding-right: 15px;
+}
+
+.table td {
+  // background-color: #f0f0f0;
+  border-top: 0px;
+}
+
+// .table-hover tbody tr:hover {
+//   background-color: rgba(0, 165, 146, 0.2) !important;
+// }
+
+.no-data-table {
+  font-size: 28px;
+  height: 400px;
+  margin-top: -16px;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+
+  span {
+    display: block;
+    border-radius: 10px;
+    color: #bbbbbb;
   }
 }

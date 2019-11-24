@@ -1,32 +1,33 @@
-import React, {useEffect} from "react";
-import {Route, Switch} from "react-router-dom";
-import {clientUtil} from "../utils/client.util";
+import React from "react";
+import { Route, Switch } from "react-router-dom";
+import { clientUtil } from "../utils/client.util";
 // components
-import {SideBar, HeaderBar} from "../components"
+import { SideBar, HeaderBar, ModalError, ModalLoading } from "../components"
 // pages
 import Login from "./login"
 import CustomerAll from "./customer/all"
 import CustomerCreate from "./customer/create"
+import CustomerDetail from "./customer/detail"
 
 function Index() {
     let isLogin = true;
-    useEffect(() => {
-        clientUtil.setErrorHandler();
-        clientUtil.setDefaultInterceptors();
-    });
+
+    clientUtil.setErrorHandler();
+    clientUtil.setDefaultInterceptors();
+
     return (
         <>
             {
                 !isLogin &&
                 <Switch>
-                    <Route exact path="/" component={Login}/>
+                    <Route exact path="/" component={Login} />
                 </Switch>
             }
             {
                 isLogin &&
                 <>
-                    <SideBar/>
-                    <HeaderBar/>
+                    <SideBar />
+                    <HeaderBar />
                     <div className={"content"}>
                         <Switch>
                             {/* Customer*/}
@@ -37,13 +38,19 @@ function Index() {
                             <Route
                                 exact path="/customer/create"
                                 render={() => (
-                                    <CustomerCreate mode={"create"}/>
+                                    <CustomerCreate mode={"create"} />
                                 )}
+                            />
+                            <Route
+                                exact path={["/customer/:id"]}
+                                component={CustomerDetail}
                             />
                         </Switch>
                     </div>
                 </>
             }
+            <ModalLoading />
+            <ModalError />
         </>
     );
 }

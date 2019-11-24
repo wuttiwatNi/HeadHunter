@@ -1,0 +1,28 @@
+@import "variables";
+
+.text-primary {
+  color: $primaryColor !important;
+}
+
+.spinner {
+  height: calc(100vh - 50px);
+  position: relative;
+
+  .spinner-grow {
+    width: 10rem;
+    height: 10rem;
+    overflow: auto;
+    margin: auto;
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+  }
+}
+
+@media (max-width: 991px) {
+  .spinner {
+    height: calc(100vh - 100px);
+  }
+}

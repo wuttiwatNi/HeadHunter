@@ -3,18 +3,49 @@
 .modal-header {
   display: block;
   border-width: 0;
-  padding: 1rem 1rem 0 1rem;
+  padding: 1.2rem 1.2rem 0rem 1.2rem;
   text-align: center;
+
+  .modal-title {
+    margin: 0;
+  }
 }
 
 .modal-body {
   text-align: center;
+  padding: 1 1rem 1rem 1rem;
 }
 
 .modal-content {
-  border-radius: 1.2rem;
+  border-radius: 15px;
 }
 
 .modal-footer {
-  padding: 0.8rem 1rem 0.8rem 1rem;
+  padding: 0.5rem 1rem 0.5rem 1rem;
+
+  button.primary-green {
+    font-size: 16px;
+    min-width: 100px;
+    border-radius: 8px;
+    padding: 8px;
+    border-width: 0;
+    font-weight: 500;
+    color: $primaryColor;
+    background-color: transparent;
+  }
+
+  button.primary-gray {
+    font-size: 16px;
+    min-width: 100px;
+    border-radius: 8px;
+    padding: 8px;
+    border-width: 0;
+    font-weight: 500;
+    color: #a7a7a7;
+    background-color: transparent;
+  }
+
+  button.outline:hover {
+    background-color: $primaryHover;
+  }
 }

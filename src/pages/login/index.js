@@ -1,7 +1,7 @@
-import React, {useState} from "react";
-import {ModalNormal} from "../../components"
-import {objectUtil} from "../../utils/object.util";
-import {Col, Row} from "react-bootstrap";
+import React, { useState } from "react";
+import { ModalNormal } from "../../components";
+import { objectUtil } from "../../utils/object.util";
+import { Col, Row } from "react-bootstrap";
 import "./index.scss";
 
 function Login() {
@@ -11,14 +11,14 @@ function Login() {
         password: ""
     });
 
-    let handleChangeInput = ({target}) => {
+    let handleChangeInput = ({ target }) => {
         formDataLogin[target.id] = target.value
     };
 
     let handleLogin = () => {
         let validate = objectUtil.formValidate(formDataLogin);
         if (!validate) {
-
+            console.log("field is required")
         } else {
             console.log(formDataLogin)
         }
@@ -29,7 +29,7 @@ function Login() {
             <div className={"login"}>
                 <div className={"block-row"}>
                     <Row>
-                        <Col xs={12} sm={{span: 8, offset: 2}} lg={{span: 4, offset: 4}}>
+                        <Col xs={12} sm={{ span: 8, offset: 2 }} lg={{ span: 4, offset: 4 }}>
                             <div className={"block"}>
                                 <img
                                     src={`${window.location.origin}/logo-square.png`}
@@ -37,8 +37,8 @@ function Login() {
                                     alt="notFound"
                                 />
                                 <span className={"title"}>Welcome</span>
-                                <input id={"username"} onChange={handleChangeInput} placeholder={"Username"}/>
-                                <input id={"password"} onChange={handleChangeInput} placeholder={"Password"}/>
+                                <input id={"username"} onChange={handleChangeInput} placeholder={"Username"} />
+                                <input id={"password"} onChange={handleChangeInput} placeholder={"Password"} />
                                 <div className={"forgot"}>Forgot password?</div>
                                 <button className={"primary-fill"} onClick={() => handleLogin()}>Login</button>
                             </div>
@@ -47,7 +47,7 @@ function Login() {
                 </div>
             </div>
             <ModalNormal title={"Oop!"} description={"Something went wrong."} show={showMessage}
-                         handleOk={() => setShowMessage(false)}/>
+                handleOk={() => setShowMessage(false)} />
         </>
     );
 }

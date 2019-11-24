@@ -53,7 +53,7 @@ function setDefaultInterceptors(instance = axios) {
     instance.interceptors.response.use(
         response => {
             if (config.RESPONSE_LOG_ENABLED) {
-                console.log(`Response from [${response.config.url}]:`, response);
+                console.log(`Response from [${response.config.url}]:`, response.data);
             }
             return response;
         },

@@ -14,39 +14,11 @@ button.primary-fill:hover {
   background-color: $primaryColorHover;
 }
 
-button.primary-green {
-  font-size: 18px;
-  width: 100px;
-  border-radius: 8px;
-  padding: 8px;
-  border-width: 0;
-  font-weight: 500;
-  color: $primaryGreenColor;
-  background-color: transparent;
-}
-
-button.primary-red {
-  font-size: 18px;
-  width: 100px;
-  border-radius: 8px;
-  padding: 8px;
-  border-width: 0;
-  font-weight: 500;
-  color: $primaryRedColor;
-  background-color: transparent;
-}
-
-button.outline:hover {
-  background-color: $primaryHover;
-}
-
 button:focus {
   outline: none;
 }
 
 button.outline-primary {
-  width: 40px;
-  height: 40px;
   padding: 8px;
   color: $primaryColor;
   background-color: transparent;
@@ -63,4 +35,23 @@ button.outline-primary {
 button.outline-primary:hover {
   color: white;
   background-color: $primaryColor;
+}
+
+button.outline-primary-red {
+  padding: 8px;
+  color: $primaryRedColor;
+  background-color: transparent;
+  border-color: $primaryRedColor;
+  border-style: double;
+  border-width: 2px;
+  border-radius: 8px;
+
+  .fa {
+    font-size: 22px;
+  }
+}
+
+button.outline-primary-red:hover {
+  color: white;
+  background-color: $primaryRedColor;
 }

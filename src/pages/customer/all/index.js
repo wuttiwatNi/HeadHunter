@@ -1,60 +1,54 @@
-import React, {useState} from "react";
-import {Topic, Box, Tables} from "../../../components"
-import {Row, Spinner} from "react-bootstrap";
+import React, { useState, useEffect } from "react";
+import { useHistory } from "react-router-dom";
+import { useDispatch } from "react-redux";
+// api
+import { customerApi } from "../../../api";
+// action
+import { modalErrorAction } from "../../../actions";
+// components
+import { Topic, Box, Tables } from "../../../components";
+import { Row, Spinner } from "react-bootstrap";
 
 function CustomerAll() {
-    const [customerList, setCustomerList] = useState(
-        [{
-            id: 1,
-            username: "abcd",
-            password: "samsung",
-            age: 20
-        }, {
-            id: 2,
-            username: "xyz",
-            password: "apple",
-            age: 25
-        }, {
-            id: 3,
-            username: "xyz",
-            password: "acer",
-            age: 25
-        }, {
-            id: 4,
-            username: "lmn",
-            password: "asus",
-            age: 30
-        }, {
-            id: 5,
-            username: "lmn",
-            password: "lenovo",
-            age: 32
-        }, {
-            id: 6,
-            username: "lmn",
-            password: "google",
-            age: 35
-        }]
-    );
+    let history = useHistory();
+    const dispatch = useDispatch();
+    const { getCustomerList } = customerApi;
+    const [customerList, setCustomerList] = useState([]);
+
+    useEffect(() => {
+        getCustomerList().then(({ data }) => {
+            let { success, result } = data
+            if (success) {
+                setCustomerList(result)
+            } else {
+                dispatch(modalErrorAction.show())
+            }
+        }).catch(error => { console.log(error) })
+    }, [getCustomerList, dispatch]);
+
+    let handleClickRow = (data) => {
+        history.push(`/customer/${data.id}`)
+    }
 
     return (
         <>
             {!customerList ? (
-                    <div className={"spinner"}>
-                        <Spinner animation="grow" variant="primary"/>
-                    </div>) :
+                <div className={"spinner"}>
+                    <Spinner animation="grow" variant="primary" />
+                </div>) :
                 (<>
-                    <Topic title={"Customer"} subTitle={"list"}/>
-                    < Row>
-                        < Box body={() => (
+                    <Topic title={"Customer"} subTitle={"list"} />
+                    <Row>
+                        <Box body={() => (
                             <>
                                 <Tables
-                                    columnLabel={["Username", "Password", "Age"]}
-                                    column={["username", "password", "age"]}
+                                    columnLabel={["Company", "Tax.", "Phone"]}
+                                    column={["companyName", "taxNumber", "phoneNumber"]}
                                     row={customerList}
-                                    pathCreate={"customer/create"}/>
+                                    onClickRow={handleClickRow}
+                                    pathCreate={"/customer/create"} />
                             </>
-                        )}/>
+                        )} />
                     </Row>
                 </>)}
 

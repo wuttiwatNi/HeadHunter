@@ -7,6 +7,7 @@ import {Provider} from "react-redux";
 import Route from "./pages/route";
 import "./styles/default.scss"
 import "./styles/buttons.scss"
+import "./styles/spinner.scss"
 
 render(
     <Provider store={store}>

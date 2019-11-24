@@ -1,0 +1,47 @@
+@import "../../styles/variables";
+
+.css-yk16xz-control {
+  cursor: pointer !important;
+  border-radius: 8px !important;
+  border-color: $primaryBorderColor !important;
+}
+
+.css-2b097c-container.invalid {
+  .css-yk16xz-control {
+    border-width: 1px !important;
+    border-color: $primaryRedColor !important;
+  }
+}
+
+.css-2b097c-container:focus {
+  outline: none !important;
+}
+
+.css-1laao21-a11yText {
+  display: none !important;
+}
+
+.css-1pahdxg-control {
+  border-width: 1px !important;
+  border-radius: 8px !important;
+  border-color: $primaryColor !important;
+  box-shadow: 0px 0px 0px 0px !important;
+}
+
+.css-1hwfws3 {
+  padding-top: 2.5px !important;
+  padding-bottom: 2.5px !important;
+}
+
+// Loading
+.css-1yvy2vo-LoadingDot {
+  margin-bottom: 0px !important;
+}
+
+.css-zoievk-LoadingDot {
+  margin-bottom: 0px !important;
+}
+
+.css-x748d8-LoadingDot {
+  margin-bottom: 0px !important;
+}

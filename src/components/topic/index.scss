@@ -1,14 +1,28 @@
 @import "../../styles/variables";
 
-h4{
+h4 {
   font-weight: 400;
   margin-top: 15px;
   margin-left: 15px;
   margin-right: 15px;
 }
 
-small{
+small {
   font-size: 60%;
   font-weight: 300;
   color: #777777;
+}
+
+.bar-delete {
+  cursor: pointer;
+  right: 18px;
+  top: 27.4px;
+  position: absolute;
+  font-size: 12px;
+  font-weight: 300;
+  color: #777777;
+}
+
+.bar-delete:hover {
+  color: #474747;
 }

@@ -1,0 +1,59 @@
+@import "../../styles/variables";
+
+input,
+textarea {
+  font-size: 14px;
+  width: 100%;
+  padding: 8px;
+  border-radius: 8px;
+  border-color: $primaryBorderColor;
+  border-style: double;
+  border-width: 1px;
+}
+
+input.invalid,
+textarea.invalid {
+  border-color: $primaryRedColor;
+}
+
+input:focus,
+textarea.focus {
+  outline: none;
+  border-color: $primaryColor;
+}
+
+.input {
+  margin-bottom: 15px;
+
+  span {
+    display: block;
+    font-size: 14px;
+    font-weight: 400;
+    margin-bottom: 5px;
+  }
+}
+
+.input.hidden {
+  display: none;
+}
+
+//Type date
+input[type="date"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  display: none;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+  border-radius: 8px;
+  background: transparent;
+  bottom: 0;
+  color: transparent;
+  cursor: pointer;
+  height: 34px;
+  left: 15px;
+  position: absolute;
+  right: 15px;
+  top: 30px;
+  padding-left: 15px;
+  width: auto;
+}
