@@ -42,6 +42,12 @@ function Index() {
                                 )}
                             />
                             <Route
+                                exact path="/customer/edit/:id"
+                                render={() => (
+                                    <CustomerCreate mode={"edit"} />
+                                )}
+                            />
+                            <Route
                                 exact path={["/customer/:id"]}
                                 component={CustomerDetail}
                             />

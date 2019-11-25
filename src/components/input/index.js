@@ -1,11 +1,24 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import * as PropTypes from "prop-types";
 import { Col } from "react-bootstrap";
 import "./index.scss";
 
-function Input({ xs, sm, lg, label, id, onChange, type, isHidden, defaultValue }) {
+function Input({ xs, sm, lg, label, id, onChange, type, isHidden, defaultValue, resest }) {
+    const [value, setValue] = useState("");
+    const [checkSetDefault, setCheckSetDefault] = useState(false);
+
+    useEffect(() => {
+        if (defaultValue !== undefined && !checkSetDefault) {
+            setCheckSetDefault(true)
+            setValue(defaultValue)
+        } else if (resest) {
+            setValue(defaultValue)
+        }
+    }, [checkSetDefault, setCheckSetDefault, setValue, defaultValue, resest]);
+
     let onChanges = (data) => {
         document.getElementById(data.target.id).classList.remove("invalid")
+        setValue(data.target.value)
         onChange(data)
     }
 
@@ -13,8 +26,8 @@ function Input({ xs, sm, lg, label, id, onChange, type, isHidden, defaultValue }
         <Col xs={xs} sm={sm} lg={lg} className={`input ${isHidden ? "hidden" : ""}`}>
             <span>{label}</span>
             {type !== "textarea" ?
-                <input id={id} onChange={onChanges} type={type} defaultValue={defaultValue} required /> :
-                <textarea id={id} onChange={onChanges} style={{ height: 112 }} />
+                <input id={id} onChange={onChanges} type={type} value={value} required /> :
+                <textarea id={id} onChange={onChanges} value={value} style={{ height: 112 }} />
             }
         </Col>
     );

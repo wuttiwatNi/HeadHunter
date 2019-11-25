@@ -12,9 +12,9 @@ import { Topic, Box, Tables, ModalForm, ModalNormal, Input, Information, RowCont
 import { Row, Col, Spinner } from "react-bootstrap";
 
 function CustomerDetail() {
-    let history = useHistory();
-    let { id } = useParams();
-
+    const history = useHistory();
+    const { id } = useParams();
+    
     const dispatch = useDispatch();
 
     const { getCustomer, deleteCustomer } = customerApi;

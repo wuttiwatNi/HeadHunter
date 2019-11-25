@@ -17,7 +17,7 @@ textarea.invalid {
 }
 
 input:focus,
-textarea.focus {
+textarea:focus {
   outline: none;
   border-color: $primaryColor;
 }

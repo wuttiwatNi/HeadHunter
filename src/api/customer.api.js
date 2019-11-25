@@ -6,6 +6,7 @@ export const customerApi = {
   getCustomerList,
   getCustomer,
   createCustomer,
+  editCustomer,
   deleteCustomer
 };
 
@@ -26,6 +27,14 @@ function getCustomer(id) {
 function createCustomer(data) {
   return client({
     method: "POST",
+    data: data,
+    url: `${config.API_RESOURCE_URL}${apiConstant.customer.CUSTOMERS}`
+  });
+}
+
+function editCustomer(data) {
+  return client({
+    method: "PUT",
     data: data,
     url: `${config.API_RESOURCE_URL}${apiConstant.customer.CUSTOMERS}`
   });

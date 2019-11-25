@@ -1,11 +1,32 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import * as PropTypes from "prop-types";
 import Select from "react-select";
 import { Col } from "react-bootstrap";
 import "./index.scss";
 
-function InputSelect({ xs, sm, lg, label, id, optionsList, onChange, isSearchable, isDisabled, isLoading }) {
-    const [value, setValue] = useState(false);
+function InputSelect({ xs, sm, lg, label, id, optionsList, onChange, isSearchable, isDisabled, isLoading, defaultValue, resest }) {
+    const [value, setValue] = useState(null);
+    const [checkSetDefault, setCheckSetDefault] = useState(false);
+
+    useEffect(() => {
+        if (defaultValue !== undefined && !checkSetDefault) {
+            let _defaultSelect = optionsList.find((element) => {
+                return element.value.toString() === defaultValue.toString()
+            })
+            if (_defaultSelect !== undefined) {
+                setCheckSetDefault(true)
+                setValue(_defaultSelect)
+            }
+        } else if (resest) {
+            let _defaultSelect = optionsList.find((element) => {
+                return element.value.toString() === defaultValue.toString()
+            })
+            if (_defaultSelect !== undefined) {
+                setCheckSetDefault(true)
+                setValue(_defaultSelect)
+            }
+        }
+    }, [checkSetDefault, setCheckSetDefault, setValue, defaultValue, optionsList, resest]);
 
     let onChanges = (data) => {
         setValue(data)
@@ -18,7 +39,7 @@ function InputSelect({ xs, sm, lg, label, id, optionsList, onChange, isSearchabl
         onChange(result)
     }
 
-    let clear = (data) => {
+    let clear = () => {
         setValue(null)
     }
 
@@ -26,6 +47,7 @@ function InputSelect({ xs, sm, lg, label, id, optionsList, onChange, isSearchabl
         <Col xs={xs} sm={sm} lg={lg} className={"input"}>
             <span>{label}</span>
             <Select
+                // defaultValue={defaultSelect}
                 value={value}
                 isSearchable={isSearchable}
                 isDisabled={isDisabled}
