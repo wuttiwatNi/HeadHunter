@@ -3,51 +3,51 @@ import { useHistory } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { objectUtil } from "../../../utils/object.util";
 // api
-import { customerApi } from "../../../api";
+import { orderApi } from "../../../api";
 // action
 import { modalErrorAction } from "../../../actions";
 // components
 import { Topic, Box, Tables } from "../../../components";
 import { Row, Spinner } from "react-bootstrap";
 
-function CustomerAll() {
+function OrderAll() {
     let history = useHistory();
     const dispatch = useDispatch();
-    const { getCustomerList } = customerApi;
-    const [customerList, setCustomerList] = useState();
+    const { getOrderList } = orderApi;
+    const [orderList, setOrderList] = useState();
 
     useEffect(() => {
-        getCustomerList().then(({ data }) => {
+        getOrderList().then(({ data }) => {
             let { success, result } = data
             if (success) {
-                setCustomerList(objectUtil.sortArray(result, "companyName"))
+                setOrderList(objectUtil.sortArray(objectUtil.mapDataOrder(result), "positionName"))
             } else {
                 dispatch(modalErrorAction.show())
             }
         }).catch(error => { console.log(error) })
-    }, [getCustomerList, dispatch]);
+    }, [getOrderList, dispatch]);
 
     let handleClickRow = (data) => {
-        history.push(`/customer/${data.id}`)
+        history.push(`/order/${data.id}`)
     }
 
     return (
         <>
-            {!customerList ? (
+            {!orderList ? (
                 <div className={"spinner"}>
                     <Spinner animation="grow" variant="primary" />
                 </div>) :
                 (<>
-                    <Topic title={"Customer"} subTitle={"list"} />
+                    <Topic title={"Order"} subTitle={"list"} />
                     <Row>
                         <Box body={() => (
                             <>
                                 <Tables
-                                    columnLabel={["Company", "Tax.", "Phone"]}
-                                    column={["companyName", "taxNumber", "phoneNumber"]}
-                                    row={customerList}
+                                    columnLabel={["Order", "Budget", "Priority"]}
+                                    column={["positionName", "budget", "priorityName"]}
+                                    row={orderList}
                                     onClickRow={handleClickRow}
-                                    pathCreate={"/customer/create"} />
+                                    pathCreate={"/order/create"} />
                             </>
                         )} />
                     </Row>
@@ -56,4 +56,4 @@ function CustomerAll() {
     );
 }
 
-export default CustomerAll;
+export default OrderAll;

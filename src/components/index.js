@@ -11,6 +11,8 @@ import Input from "./input"
 import InputSelect from "./inputSelect"
 import Information from "./information"
 import RowContact from "./rowContact"
+import CreateSkill from "./createSkill"
+import CreateLanguageSkill from "./createLanguageSkill"
 
 export {
     SideBar,
@@ -25,5 +27,7 @@ export {
     Input,
     InputSelect,
     Information,
-    RowContact
+    RowContact,
+    CreateSkill,
+    CreateLanguageSkill
 };

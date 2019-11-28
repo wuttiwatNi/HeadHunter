@@ -3,10 +3,18 @@ import { config } from "../config";
 import { apiConstant } from "../constants";
 
 export const contactApi = {
+  getContactListByCustomerId,
   createContact,
   editContact,
   deleteContact
 };
+
+function getContactListByCustomerId(customerId) {
+  return client({
+    method: "GET",
+    url: `${config.API_RESOURCE_URL}${apiConstant.contact.CONTACTS}/customerId/${customerId}`
+  });
+}
 
 function createContact(data) {
   return client({

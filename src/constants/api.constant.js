@@ -1,7 +1,7 @@
 const master = {
-  GET_PROVINCE_LIST: "/address/provinces",
-  GET_AMPHURE_LIST: "/address/amphures",
-  GET_DISTRICT_LIST: "/address/districts"
+  PROVINCES: "/address/provinces",
+  AMPHURES: "/address/amphures",
+  DISTRICTS: "/address/districts"
 };
 
 const customer = {
@@ -12,8 +12,28 @@ const contact = {
   CONTACTS: "/contacts"
 };
 
+const order = {
+  ORDERS: "/orders"
+};
+
+const position = {
+  POSITION: "/positions"
+};
+
+const skill = {
+  SKILLS: "/skills"
+};
+
+const languageSkill ={
+  LANGUAGE_SKILLS: "/languageSkills"
+}
+
 export const apiConstant = {
   master,
   customer,
-  contact
+  contact,
+  order,
+  position,
+  skill,
+  languageSkill
 };

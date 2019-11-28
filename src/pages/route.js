@@ -8,6 +8,8 @@ import Login from "./login"
 import CustomerAll from "./customer/all"
 import CustomerCreate from "./customer/create"
 import CustomerDetail from "./customer/detail"
+import OrderAll from "./order/all"
+import OrderCreate from "./order/create"
 
 function Index() {
     let isLogin = true;
@@ -50,6 +52,17 @@ function Index() {
                             <Route
                                 exact path={["/customer/:id"]}
                                 component={CustomerDetail}
+                            />
+                            {/* Order*/}
+                            <Route
+                                exact path={"/order"}
+                                component={OrderAll}
+                            />
+                            <Route
+                                exact path="/order/create"
+                                render={() => (
+                                    <OrderCreate mode={"create"} />
+                                )}
                             />
                         </Switch>
                     </div>

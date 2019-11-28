@@ -11,20 +11,20 @@ export const masterApi = {
 function getProvinceList() {
   return client({
     method: "GET",
-    url: `${config.API_RESOURCE_URL}${apiConstant.master.GET_PROVINCE_LIST}`
+    url: `${config.API_RESOURCE_URL}${apiConstant.master.PROVINCES}`
   });
 }
 
 function getAmphureListByProvinceId(provinceId) {
   return client({
     method: "GET",
-    url: `${config.API_RESOURCE_URL}${apiConstant.master.GET_AMPHURE_LIST}/${provinceId}`
+    url: `${config.API_RESOURCE_URL}${apiConstant.master.AMPHURES}/${provinceId}`
   });
 }
 
 function getDistrictListByAmphureId(amphureId) {
   return client({
     method: "GET",
-    url: `${config.API_RESOURCE_URL}${apiConstant.master.GET_DISTRICT_LIST}/${amphureId}`
+    url: `${config.API_RESOURCE_URL}${apiConstant.master.DISTRICTS}/${amphureId}`
   });
 }

@@ -1,7 +1,12 @@
 export const objectUtil = {
     formValidate,
+    formValidateSkills,
+    formValidateLanguageSkills,
     clearData,
-    formForInputSelect
+    formForInputSelect,
+    formForInputSelect2,
+    sortArray,
+    mapDataOrder
 };
 
 function formValidate(formData) {
@@ -22,6 +27,46 @@ function formValidate(formData) {
     return isValid
 }
 
+function formValidateSkills(_formData) {
+    let isValid = true;
+    let i = 0;
+    _formData.forEach((formData) => {
+        for (let property in formData) {
+            if (formData.hasOwnProperty(property)) {
+                if (!formData[property]) {
+                    if (i === 0) {
+                        document.getElementById(`${property}-${formData["skillId"]}`).scrollIntoView({ behavior: "smooth", block: "center" });
+                    }
+                    i = 1;
+                    document.getElementById(`${property}-${formData["skillId"]}`).classList.add("invalid")
+                    isValid = false;
+                }
+            }
+        }
+    })
+    return isValid
+}
+
+function formValidateLanguageSkills(_formData) {
+    let isValid = true;
+    let i = 0;
+    _formData.forEach((formData) => {
+        for (let property in formData) {
+            if (formData.hasOwnProperty(property)) {
+                if (!formData[property]) {
+                    if (i === 0) {
+                        document.getElementById(`${property}-${formData["languageSkillId"]}`).scrollIntoView({ behavior: "smooth", block: "center" });
+                    }
+                    i = 1;
+                    document.getElementById(`${property}-${formData["languageSkillId"]}`).classList.add("invalid")
+                    isValid = false;
+                }
+            }
+        }
+    })
+    return isValid
+}
+
 function clearData(_formData) {
     let formData = { ..._formData }
     for (let property in formData) {
@@ -32,19 +77,65 @@ function clearData(_formData) {
     return formData
 }
 
+function sortArray(_array, key) {
+    let data = [..._array]
+    data.sort((a, b) => {
+        return a[key].toLowerCase() < b[key].toLowerCase() ? -1 : 1
+    })
+    return data
+}
+
 function formForInputSelect(data, keyValue, keyLabel) {
     let result = [];
     data.forEach(element => {
         let object = {};
         for (let property in element) {
             if (property === keyValue) {
-                object["value"] = element[property]
+                object["value"] = element[keyValue]
             }
             if (property === keyLabel) {
-                object["label"] = element[property]
+                object["label"] = element[keyLabel]
             }
         }
         result.push(object)
     });
     return result;
+}
+
+function formForInputSelect2(data, keyValue, keyLabel1, keyLabel2) {
+    let result = [];
+    data.forEach(element => {
+        let object = {};
+        for (let property in element) {
+            if (property === keyValue) {
+                object["value"] = element[keyValue]
+            }
+            if (property === keyLabel1) {
+                object["label"] = element[keyLabel1] + " " + element[keyLabel2]
+            }
+        }
+        result.push(object)
+    });
+    return result;
+}
+
+function mapDataOrder(_array) {
+    let data = [..._array]
+    data.map(element => {
+        switch (element.priority) {
+            case 1:
+                element.priorityName = "Low"
+                break
+            case 2:
+                element.priorityName = "Normal"
+                break
+            case 3:
+                element.priorityName = "Hight"
+                break
+            default:
+                break
+        }
+        return element
+    })
+    return data
 }

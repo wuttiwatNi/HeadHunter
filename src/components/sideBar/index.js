@@ -33,22 +33,22 @@ function SideBar() {
                     <span>{"Customer"}</span>
                 </NavLink>
 
-                <NavLink to={"/Order"} onClick={sideBarHide} replace>
+                <NavLink to={"/order"} onClick={sideBarHide} replace>
                     <i className={"fa fa-briefcase"}/>
                     <span>{"Order"}</span>
                 </NavLink>
 
-                <NavLink to={"/Candidate"} onClick={sideBarHide} replace>
+                <NavLink to={"/candidate"} onClick={sideBarHide} replace>
                     <i className={"fa fa-id-card-o"}/>
                     <span>{"Candidate"}</span>
                 </NavLink>
 
-                <NavLink to={"/Member"} onClick={sideBarHide} replace>
+                <NavLink to={"/member"} onClick={sideBarHide} replace>
                     <i className={"fa fa-user-plus"}/>
                     <span>{"Member"}</span>
                 </NavLink>
 
-                <NavLink to={"/Option"} onClick={sideBarHide} replace>
+                <NavLink to={"/option"} onClick={sideBarHide} replace>
                     <i className={"fa fa-cogs"}/>
                     <span>{"Option"}</span>
                 </NavLink>

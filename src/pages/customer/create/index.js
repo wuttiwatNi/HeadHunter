@@ -9,8 +9,7 @@ import { modalErrorAction } from "../../../actions";
 import { modalLoadingAction } from "../../../actions";
 // components
 import { Topic, Box, Input, InputSelect, ModalNormal } from "../../../components";
-import { Row, Col } from "react-bootstrap";
-import { setTimeout } from "timers";
+import { Row, Col, Spinner } from "react-bootstrap";
 
 function CustomerCreate({ mode }) {
     const history = useHistory();
@@ -89,9 +88,12 @@ function CustomerCreate({ mode }) {
                     formDataCustomer.taxNumber = taxNumber
                     formDataCustomer.phoneNumber = phoneNumber
 
-                    setCurrentCustomer(result[0])
-                    _getAmphureListByProvinceId(proviceId)
-                    _getDistrictListByAmphureId(amphureId)
+                    var promise1 = _getAmphureListByProvinceId(proviceId)
+                    var promise2 = _getDistrictListByAmphureId(amphureId)
+
+                    Promise.all([promise1, promise2]).then(() => {
+                        setCurrentCustomer(result[0])
+                    });
                 } else {
                     dispatch(modalErrorAction.show())
                 }
@@ -155,11 +157,11 @@ function CustomerCreate({ mode }) {
         var promise1 = _getAmphureListByProvinceId(currentCustomer.proviceId)
         var promise2 = _getDistrictListByAmphureId(currentCustomer.amphureId)
 
-        Promise.all([promise1, promise2]).then(function (values) {
+        Promise.all([promise1, promise2]).then(() => {
             setIsReset(true)
             setTimeout(() => {
                 setIsReset(false)
-            }, 10)
+            }, 1)
         });
     }
 
@@ -213,40 +215,46 @@ function CustomerCreate({ mode }) {
 
     return (
         <>
-            <Topic title={"Customer"} subTitle={mode} />
-            <Row>
-                <Box
-                    body={() => (
-                        <Row>
-                            <Input xs={12} sm={6} lg={4} label={"Company"} id={"companyName"} onChange={handleChangeInput} defaultValue={currentCustomer.companyName} resest={isReset} />
-                            <Input xs={12} sm={6} lg={4} label={"Tax."} id={"taxNumber"} onChange={handleChangeInput} defaultValue={currentCustomer.taxNumber} resest={isReset} />
-                            <Input xs={12} sm={6} lg={4} label={"Phone"} id={"phoneNumber"} onChange={handleChangeInput} defaultValue={currentCustomer.phoneNumber} resest={isReset} />
-                            <Input xs={12} sm={6} lg={4} label={"Address"} id={"address"} onChange={handleChangeInput} type={"textarea"} defaultValue={currentCustomer.address} resest={isReset} />
-                            <Input id={"id"} isHidden={true} defaultValue={currentCustomer.id} resest={isReset} />
-                            <Col xs={12} sm={12} lg={8} className={"no-padding"}>
+            {(currentCustomer["companyName"] === undefined && mode === "edit") ? (
+                <div className={"spinner"}>
+                    <Spinner animation="grow" variant="primary" />
+                </div>) :
+                (<>
+                    <Topic title={"Customer"} subTitle={mode} />
+                    <Row>
+                        <Box
+                            body={() => (
                                 <Row>
-                                    <InputSelect xs={12} sm={6} lg={6} label={"Provice"} id={"proviceId"} optionsList={proviceList} onChange={handleChangeInput} isSearchable={true} defaultValue={currentCustomer.proviceId} resest={isReset} />
-                                    <InputSelect xs={12} sm={6} lg={6} label={"Amphure"} id={"amphureId"} optionsList={amphurList} onChange={handleChangeInput} isSearchable={true} defaultValue={currentCustomer.amphureId} resest={isReset} />
-                                    <InputSelect xs={12} sm={6} lg={6} label={"District"} id={"districtId"} optionsList={districtList} onChange={handleChangeInput} isSearchable={true} defaultValue={currentCustomer.districtId} resest={isReset} />
+                                    <Input xs={12} sm={6} lg={4} label={"Company"} id={"companyName"} onChange={handleChangeInput} defaultValue={currentCustomer.companyName} resest={isReset} />
+                                    <Input xs={12} sm={6} lg={4} label={"Tax."} id={"taxNumber"} onChange={handleChangeInput} defaultValue={currentCustomer.taxNumber} resest={isReset} />
+                                    <Input xs={12} sm={6} lg={4} label={"Phone"} id={"phoneNumber"} onChange={handleChangeInput} defaultValue={currentCustomer.phoneNumber} resest={isReset} />
+                                    <Input xs={12} sm={6} lg={4} label={"Address"} id={"address"} onChange={handleChangeInput} type={"textarea"} defaultValue={currentCustomer.address} resest={isReset} />
+                                    <Input id={"id"} isHidden={true} defaultValue={currentCustomer.id} resest={isReset} />
+                                    <Col xs={12} sm={12} lg={8} className={"no-padding"}>
+                                        <Row>
+                                            <InputSelect xs={12} sm={6} lg={6} label={"Provice"} id={"proviceId"} optionsList={proviceList} onChange={handleChangeInput} isSearchable={true} defaultValue={currentCustomer.proviceId} resest={isReset} />
+                                            <InputSelect xs={12} sm={6} lg={6} label={"Amphure"} id={"amphureId"} optionsList={amphurList} onChange={handleChangeInput} isSearchable={true} defaultValue={currentCustomer.amphureId} resest={isReset} />
+                                            <InputSelect xs={12} sm={6} lg={6} label={"District"} id={"districtId"} optionsList={districtList} onChange={handleChangeInput} isSearchable={true} defaultValue={currentCustomer.districtId} resest={isReset} />
+                                        </Row>
+                                    </Col>
                                 </Row>
-                            </Col>
-                        </Row>
-                    )}
-                    footer={() => (
-                        <Row>
-                            <Col xs={6}>
-                                <button onClick={handleDiscard} className="outline-primary-red">Discard</button>
-                            </Col>
-                            <Col xs={6} className={"text-right"}>
-                                {mode === "edit" && <button onClick={handleReset} className="outline-primary-blue">Reset</button>}
-                                <button onClick={handleCreate} className="outline-primary">{mode === "create" ? "Create" : "Edit"}</button>
-                            </Col>
-                        </Row>
-                    )}
-                />
-            </Row>
-            <ModalNormal title={titleModalNormal} description={desModalNormal} show={showModalNormal} swapColor={swapColorModalNormal}
-                handleClose={() => setShowModalNormal(false)} handleOk={handleOkModals} />
+                            )}
+                            footer={() => (
+                                <Row>
+                                    <Col xs={6}>
+                                        <button onClick={handleDiscard} className="outline-primary-red">Discard</button>
+                                    </Col>
+                                    <Col xs={6} className={"text-right"}>
+                                        {mode === "edit" && <button onClick={handleReset} className="outline-primary-blue">Reset</button>}
+                                        <button onClick={handleCreate} className="outline-primary">{mode === "create" ? "Create" : "Edit"}</button>
+                                    </Col>
+                                </Row>
+                            )}
+                        />
+                    </Row>
+                    <ModalNormal title={titleModalNormal} description={desModalNormal} show={showModalNormal} swapColor={swapColorModalNormal}
+                        handleClose={() => setShowModalNormal(false)} handleOk={handleOkModals} />
+                </>)}
         </>
     );
 }

@@ -4,7 +4,7 @@ import Select from "react-select";
 import { Col } from "react-bootstrap";
 import "./index.scss";
 
-function InputSelect({ xs, sm, lg, label, id, optionsList, onChange, isSearchable, isDisabled, isLoading, defaultValue, resest }) {
+function InputSelect({ xs, sm, lg, label, id, optionsList, onChange, isSearchable, isDisabled, isLoading, defaultValue, resest, isSetValue, placeholder, isMargin }) {
     const [value, setValue] = useState(null);
     const [checkSetDefault, setCheckSetDefault] = useState(false);
 
@@ -29,12 +29,15 @@ function InputSelect({ xs, sm, lg, label, id, optionsList, onChange, isSearchabl
     }, [checkSetDefault, setCheckSetDefault, setValue, defaultValue, optionsList, resest]);
 
     let onChanges = (data) => {
-        setValue(data)
+        if (isSetValue) {
+            setValue(data)
+        }
         let result = {
             target: {}
         };
         result.target["id"] = id
         result.target["value"] = data != null ? data["value"] : ""
+        result.target["label"] = data != null ? data["label"] : ""
         document.getElementById(id).classList.remove("invalid")
         onChange(result)
     }
@@ -44,16 +47,15 @@ function InputSelect({ xs, sm, lg, label, id, optionsList, onChange, isSearchabl
     }
 
     return (
-        <Col xs={xs} sm={sm} lg={lg} className={"input"}>
-            <span>{label}</span>
+        <Col xs={xs} sm={sm} lg={lg} className={"input"} style={{ paddingTop: isMargin ? 26 : 0 }}>
+            {label && <span>{label}</span>}
             <Select
-                // defaultValue={defaultSelect}
                 value={value}
                 isSearchable={isSearchable}
                 isDisabled={isDisabled}
                 isLoading={isLoading}
                 id={id}
-                placeholder={`Choose ${label.toLowerCase()}`}
+                placeholder={`Choose ${placeholder.length > 0 ? placeholder : label.toLowerCase()}`}
                 isClearable={true}
                 options={optionsList}
                 onChange={onChanges}
@@ -73,7 +75,10 @@ InputSelect.propTypes = {
     onChange: PropTypes.func,
     isSearchable: PropTypes.bool,
     isDisabled: PropTypes.bool,
-    isLoading: PropTypes.bool
+    isLoading: PropTypes.bool,
+    isSetValue: PropTypes.bool,
+    placeholder: PropTypes.string,
+    isMargin: PropTypes.bool
 };
 
 InputSelect.defaultProps = {
@@ -87,7 +92,10 @@ InputSelect.defaultProps = {
     },
     isSearchable: false,
     isDisabled: false,
-    isLoading: false
+    isLoading: false,
+    isSetValue: true,
+    placeholder: "",
+    isMargin: false
 };
 
 export default InputSelect;
