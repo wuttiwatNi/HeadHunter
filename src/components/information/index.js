@@ -9,7 +9,7 @@ function Informaiton({ data, keyValue }) {
             {keyValue.map((i, index) => (
                 <Col key={index} xs={6} sm={6} lg={6} className={"information"}>
                     <span>{i.label}</span>
-                    <div>{data[i.key]}</div>
+                    <div style={{ whiteSpace: "pre" }}>{data[i.key]}</div>
                 </Col>
             ))}
         </Row>

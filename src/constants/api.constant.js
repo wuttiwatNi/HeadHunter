@@ -13,7 +13,8 @@ const contact = {
 };
 
 const order = {
-  ORDERS: "/orders"
+  ORDERS: "/orders",
+  ORDERS_CONTACT: "/orders/contact"
 };
 
 const position = {
@@ -24,8 +25,16 @@ const skill = {
   SKILLS: "/skills"
 };
 
-const languageSkill ={
+const languageSkill = {
   LANGUAGE_SKILLS: "/languageSkills"
+}
+
+const orderSkill = {
+  ORDER_SKILLS: "/orderSkills"
+}
+
+const orderLanguageSkill = {
+  ORDER_LANGUAGE_SKILLS: "/orderLanguageSkills"
 }
 
 export const apiConstant = {
@@ -35,5 +44,7 @@ export const apiConstant = {
   order,
   position,
   skill,
-  languageSkill
+  languageSkill,
+  orderSkill,
+  orderLanguageSkill
 };

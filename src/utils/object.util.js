@@ -6,7 +6,9 @@ export const objectUtil = {
     formForInputSelect,
     formForInputSelect2,
     sortArray,
-    mapDataOrder
+    mapDataOrder,
+    mapDataLanguage,
+    mapPriority
 };
 
 function formValidate(formData) {
@@ -78,7 +80,7 @@ function clearData(_formData) {
 }
 
 function sortArray(_array, key) {
-    let data = [..._array]
+    let data = JSON.parse(JSON.stringify(_array))
     data.sort((a, b) => {
         return a[key].toLowerCase() < b[key].toLowerCase() ? -1 : 1
     })
@@ -120,7 +122,7 @@ function formForInputSelect2(data, keyValue, keyLabel1, keyLabel2) {
 }
 
 function mapDataOrder(_array) {
-    let data = [..._array]
+    let data = JSON.parse(JSON.stringify(_array))
     data.map(element => {
         switch (element.priority) {
             case 1:
@@ -131,6 +133,79 @@ function mapDataOrder(_array) {
                 break
             case 3:
                 element.priorityName = "Hight"
+                break
+            default:
+                break
+        }
+        return element
+    })
+    return data
+}
+
+function mapPriority(data) {
+    switch (data) {
+        case 1:
+            return "Low"
+        case 2:
+            return "Normal"
+        case 3:
+            return "Hight"
+        default:
+            return ""
+    }
+}
+
+function mapDataLanguage(_array) {
+    let data = JSON.parse(JSON.stringify(_array))
+    data.map(element => {
+        switch (element.listening) {
+            case 1:
+                element.listeningName = "Good"
+                break
+            case 2:
+                element.listeningName = "Excellent"
+                break
+            case 3:
+                element.listeningName = "Expert"
+                break
+            default:
+                break
+        }
+        switch (element.speaking) {
+            case 1:
+                element.speakingName = "Good"
+                break
+            case 2:
+                element.speakingName = "Excellent"
+                break
+            case 3:
+                element.speakingName = "Expert"
+                break
+            default:
+                break
+        }
+        switch (element.reading) {
+            case 1:
+                element.readingName = "Good"
+                break
+            case 2:
+                element.readingName = "Excellent"
+                break
+            case 3:
+                element.readingName = "Expert"
+                break
+            default:
+                break
+        }
+        switch (element.writing) {
+            case 1:
+                element.writingName = "Good"
+                break
+            case 2:
+                element.writingName = "Excellent"
+                break
+            case 3:
+                element.writingName = "Expert"
                 break
             default:
                 break

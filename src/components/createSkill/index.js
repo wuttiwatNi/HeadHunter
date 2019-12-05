@@ -6,11 +6,11 @@ import { objectUtil } from "../../utils/object.util";
 import { Input, InputSelect } from "../../components";
 import "./index.scss";
 
-function CreateSkill({ formDataSkill, setFormDataSkill, skillList, setSkillList }) {
+function CreateSkill({ formDataSkill, setFormDataSkill, skillList, setSkillList, isReset }) {
 
     let handleAddSelect = ({ target }) => {
         let { value, label } = target
-        let data = { skillId: value, experience: "", label: label }
+        let data = { skillId: value, experience: "", skillName: label }
         let datas = [...formDataSkill]
         datas.push(data)
         setFormDataSkill(datas)
@@ -23,7 +23,7 @@ function CreateSkill({ formDataSkill, setFormDataSkill, skillList, setSkillList 
     };
 
     let handleDeleteSelect = (data) => {
-        let { skillId, label } = data
+        let { skillId, skillName } = data
 
         for (var i = 0; i < formDataSkill.length; i++) {
             if (formDataSkill[i].skillId === skillId) {
@@ -32,7 +32,7 @@ function CreateSkill({ formDataSkill, setFormDataSkill, skillList, setSkillList 
         }
         setFormDataSkill([...formDataSkill])
 
-        let dataSelect = { value: skillId, label: label }
+        let dataSelect = { value: skillId, label: skillName }
         let datas = [...skillList]
         datas.push(dataSelect)
         setSkillList(objectUtil.sortArray(datas, "label"))
@@ -41,9 +41,10 @@ function CreateSkill({ formDataSkill, setFormDataSkill, skillList, setSkillList 
     let handleChangeInput = ({ target }) => {
         let { id, value } = target
         let _id = id.split("-")
-        let datas = [...formDataSkill]
+        let datas = JSON.parse(JSON.stringify(formDataSkill))
         let index = datas.findIndex(element => element.skillId.toString() === _id[_id.length - 1].toString())
         datas[index].experience = value
+        setFormDataSkill(datas)
     };
 
     return (
@@ -62,7 +63,7 @@ function CreateSkill({ formDataSkill, setFormDataSkill, skillList, setSkillList 
                     </Col>
                     {formDataSkill.map((i) => (
                         <Col key={i.skillId} xs={12} sm={6} lg={3} className={"box-selected no-padding"}>
-                            <Input xs={12} sm={12} lg={12} label={i.label} id={`experience-${i.skillId}`} onChange={handleChangeInput} type={"number"} />
+                            <Input xs={12} sm={12} lg={12} label={i.skillName} id={`experience-${i.skillId}`} onChange={handleChangeInput} type={"number"} unit={"Year"} defaultValue={i.experience} resest={isReset} />
                             <i className="fa fa-close" onClick={() => handleDeleteSelect(i)} />
                         </Col>
                     ))}

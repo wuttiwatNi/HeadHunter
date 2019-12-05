@@ -5,3 +5,5 @@ export * from "./order.api";
 export * from "./position.api";
 export * from "./skill.api";
 export * from "./languageSkill.api";
+export * from "./orderSkill.api";
+export * from "./orderLanguageSkill.api";

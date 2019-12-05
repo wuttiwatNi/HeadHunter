@@ -91,12 +91,7 @@ function CustomerDetail() {
     }
 
     let handleClickEditContact = (data) => {
-        formDataContact.id = data["id"]
-        formDataContact.customerId = data["customerId"]
-        formDataContact.email = data["email"]
-        formDataContact.firstName = data["firstName"]
-        formDataContact.lastName = data["lastName"]
-        formDataContact.phoneNumber = data["phoneNumber"]
+        setFormDataContact(data)
 
         setTitleModalForm("Contact")
         setSubTitleModalForm("edit")
@@ -107,7 +102,7 @@ function CustomerDetail() {
     let handleClickDeleteContact = (data) => {
         setDataFromRowContact(data)
         setTitleModalNormal("Delete Contact!")
-        setDesModalNormal(`Are you sure to delete (${data.firstName} ${data.lastName})?`)
+        setDesModalNormal(`Are you sure to delete (${data["firstName"]} ${data["lastName"]})?`)
         setSwapColorModalNormal(true)
         setModeModalNormal("deleteContact")
         setShowModalNormal(true)
@@ -218,7 +213,7 @@ function CustomerDetail() {
                                                 { label: "Tax", key: "taxNumber" },
                                                 { label: "Phone", key: "phoneNumber" },
                                                 { label: "Address", key: "address" },
-                                                { label: "Provice", key: "proviceName" },
+                                                { label: "Provice", key: "provinceName" },
                                                 { label: "Amphure", key: "amphureName" },
                                                 { label: "District", key: "districtName" },
                                                 { label: "Zip code", key: "zipCode" }]} />

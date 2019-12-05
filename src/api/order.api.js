@@ -7,6 +7,7 @@ export const orderApi = {
   getOrder,
   createOrder,
   editOrder,
+  editOrderContact,
   deleteOrder
 };
 
@@ -37,6 +38,13 @@ function editOrder(data) {
     method: "PUT",
     data: data,
     url: `${config.API_RESOURCE_URL}${apiConstant.order.ORDERS}`
+  });
+}
+
+function editOrderContact(orderId, contactId) {
+  return client({
+    method: "PUT",
+    url: `${config.API_RESOURCE_URL}${apiConstant.order.ORDERS_CONTACT}/${orderId}/${contactId}`
   });
 }
 

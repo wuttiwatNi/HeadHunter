@@ -17,6 +17,7 @@ function CustomerCreate({ mode }) {
     const { id } = useParams();
 
     const [isReset, setIsReset] = useState(false);
+    const [isLoadData, setIsLoadData] = useState(true)
 
     const [showModalNormal, setShowModalNormal] = useState(false);
     const [titleModalNormal, setTitleModalNormal] = useState("");
@@ -32,7 +33,7 @@ function CustomerCreate({ mode }) {
         id: "",
         companyName: "",
         address: "",
-        proviceId: "",
+        provinceId: "",
         amphureId: "",
         districtId: "",
         taxNumber: "",
@@ -44,9 +45,9 @@ function CustomerCreate({ mode }) {
     const [amphurList, setAmphureList] = useState([]);
     const [districtList, setDistrictList] = useState([]);
 
-    let _getAmphureListByProvinceId = useCallback((proviceId) => {
+    let _getAmphureListByProvinceId = useCallback((provinceId) => {
         return new Promise(function (resolve, reject) {
-            getAmphureListByProvinceId(proviceId).then(({ data }) => {
+            getAmphureListByProvinceId(provinceId).then(({ data }) => {
                 let { success, result } = data
                 if (success) {
                     setAmphureList(objectUtil.formForInputSelect(result, "id", "nameTH"))
@@ -77,22 +78,23 @@ function CustomerCreate({ mode }) {
             getCustomer(id).then(({ data }) => {
                 let { success, result } = data
                 if (success && result.length !== 0) {
-                    let { id, companyName, address, proviceId, amphureId, districtId, taxNumber, phoneNumber } = result[0]
+                    let { id, companyName, address, provinceId, amphureId, districtId, taxNumber, phoneNumber } = result[0]
 
                     formDataCustomer.id = id
                     formDataCustomer.companyName = companyName
                     formDataCustomer.address = address
-                    formDataCustomer.proviceId = proviceId
+                    formDataCustomer.provinceId = provinceId
                     formDataCustomer.amphureId = amphureId
                     formDataCustomer.districtId = districtId
                     formDataCustomer.taxNumber = taxNumber
                     formDataCustomer.phoneNumber = phoneNumber
 
-                    var promise1 = _getAmphureListByProvinceId(proviceId)
+                    var promise1 = _getAmphureListByProvinceId(provinceId)
                     var promise2 = _getDistrictListByAmphureId(amphureId)
 
                     Promise.all([promise1, promise2]).then(() => {
                         setCurrentCustomer(result[0])
+                        setIsLoadData(false)
                     });
                 } else {
                     dispatch(modalErrorAction.show())
@@ -104,6 +106,9 @@ function CustomerCreate({ mode }) {
             let { success, result } = data
             if (success) {
                 setProviceList(objectUtil.formForInputSelect(result, "id", "nameTH"))
+                if (mode === "create") {
+                    setIsLoadData(false)
+                }
             } else {
                 dispatch(modalErrorAction.show())
             }
@@ -115,7 +120,7 @@ function CustomerCreate({ mode }) {
         formDataCustomer[id] = value
 
         switch (id) {
-            case "proviceId":
+            case "provinceId":
                 if (value) {
                     clearSelect(["amphureId", "districtId"])
                     _getAmphureListByProvinceId(value)
@@ -154,10 +159,18 @@ function CustomerCreate({ mode }) {
     };
 
     let handleReset = () => {
-        var promise1 = _getAmphureListByProvinceId(currentCustomer.proviceId)
+        var promise1 = _getAmphureListByProvinceId(currentCustomer.provinceId)
         var promise2 = _getDistrictListByAmphureId(currentCustomer.amphureId)
 
         Promise.all([promise1, promise2]).then(() => {
+            formDataCustomer.companyName = currentCustomer.companyName
+            formDataCustomer.address = currentCustomer.address
+            formDataCustomer.provinceId = currentCustomer.provinceId
+            formDataCustomer.amphureId = currentCustomer.amphureId
+            formDataCustomer.districtId = currentCustomer.districtId
+            formDataCustomer.taxNumber = currentCustomer.taxNumber
+            formDataCustomer.phoneNumber = currentCustomer.phoneNumber
+
             setIsReset(true)
             setTimeout(() => {
                 setIsReset(false)
@@ -215,7 +228,7 @@ function CustomerCreate({ mode }) {
 
     return (
         <>
-            {(currentCustomer["companyName"] === undefined && mode === "edit") ? (
+            {isLoadData ? (
                 <div className={"spinner"}>
                     <Spinner animation="grow" variant="primary" />
                 </div>) :
@@ -232,7 +245,7 @@ function CustomerCreate({ mode }) {
                                     <Input id={"id"} isHidden={true} defaultValue={currentCustomer.id} resest={isReset} />
                                     <Col xs={12} sm={12} lg={8} className={"no-padding"}>
                                         <Row>
-                                            <InputSelect xs={12} sm={6} lg={6} label={"Provice"} id={"proviceId"} optionsList={proviceList} onChange={handleChangeInput} isSearchable={true} defaultValue={currentCustomer.proviceId} resest={isReset} />
+                                            <InputSelect xs={12} sm={6} lg={6} label={"Provice"} id={"provinceId"} optionsList={proviceList} onChange={handleChangeInput} isSearchable={true} defaultValue={currentCustomer.provinceId} resest={isReset} />
                                             <InputSelect xs={12} sm={6} lg={6} label={"Amphure"} id={"amphureId"} optionsList={amphurList} onChange={handleChangeInput} isSearchable={true} defaultValue={currentCustomer.amphureId} resest={isReset} />
                                             <InputSelect xs={12} sm={6} lg={6} label={"District"} id={"districtId"} optionsList={districtList} onChange={handleChangeInput} isSearchable={true} defaultValue={currentCustomer.districtId} resest={isReset} />
                                         </Row>

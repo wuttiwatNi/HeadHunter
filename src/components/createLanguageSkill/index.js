@@ -6,7 +6,7 @@ import { objectUtil } from "../../utils/object.util";
 import { InputSelect } from "../../components";
 import "./index.scss";
 
-function CreateLanguageSkill({ formDataLanguageSkill, setFormDataLanguageSkill, languageSkillList, setLanguageSkillList }) {
+function CreateLanguageSkill({ formDataLanguageSkill, setFormDataLanguageSkill, languageSkillList, setLanguageSkillList, isReset }) {
     const priorityList = [
         {
             value: 3, label: "Expert"
@@ -21,7 +21,7 @@ function CreateLanguageSkill({ formDataLanguageSkill, setFormDataLanguageSkill, 
 
     let handleAddSelect = ({ target }) => {
         let { value, label } = target
-        let data = { languageSkillId: value, listening: "", speaking: "", reading: "", writing: "", label: label }
+        let data = { languageSkillId: value, listening: "", speaking: "", reading: "", writing: "", languageSkillName: label }
         let datas = [...formDataLanguageSkill]
         datas.push(data)
         setFormDataLanguageSkill(datas)
@@ -34,16 +34,16 @@ function CreateLanguageSkill({ formDataLanguageSkill, setFormDataLanguageSkill, 
     };
 
     let handleDeleteSelect = (data) => {
-        let { languageSkillId, label } = data
+        let { languageSkillId, languageSkillName } = data
 
         for (var i = 0; i < formDataLanguageSkill.length; i++) {
             if (formDataLanguageSkill[i].languageSkillId === languageSkillId) {
                 formDataLanguageSkill.splice(i, 1);
             }
         }
-        setFormDataLanguageSkill([...formDataLanguageSkill])
+        setFormDataLanguageSkill(formDataLanguageSkill)
 
-        let dataSelect = { value: languageSkillId, label: label }
+        let dataSelect = { value: languageSkillId, label: languageSkillName }
         let datas = [...languageSkillList]
         datas.push(dataSelect)
         setLanguageSkillList(objectUtil.sortArray(datas, "label"))
@@ -52,7 +52,7 @@ function CreateLanguageSkill({ formDataLanguageSkill, setFormDataLanguageSkill, 
     let handleChangeInput = ({ target }) => {
         let { id, value } = target
         let _id = id.split("-")
-        let datas = [...formDataLanguageSkill]
+        let datas = JSON.parse(JSON.stringify(formDataLanguageSkill))
         let index = datas.findIndex(element => element.languageSkillId.toString() === _id[_id.length - 1].toString())
         if (_id[0] === "listening") {
             datas[index].listening = value
@@ -66,6 +66,7 @@ function CreateLanguageSkill({ formDataLanguageSkill, setFormDataLanguageSkill, 
         if (_id[0] === "writing") {
             datas[index].writing = value
         }
+        setFormDataLanguageSkill(datas)
     };
 
     return (
@@ -85,10 +86,10 @@ function CreateLanguageSkill({ formDataLanguageSkill, setFormDataLanguageSkill, 
                     {formDataLanguageSkill.map((i) => (
                         <Col key={i.languageSkillId} xs={12} sm={12} lg={6} className={"box-selected no-padding"}>
                             <Row>
-                                <InputSelect xs={6} sm={6} lg={6} label={i.label} id={`listening-${i.languageSkillId}`} placeholder={"listening"} optionsList={priorityList} onChange={handleChangeInput} />
-                                <InputSelect xs={6} sm={6} lg={6} id={`speaking-${i.languageSkillId}`} placeholder={"speaking"} optionsList={priorityList} onChange={handleChangeInput} isMargin={true} />
-                                <InputSelect xs={6} sm={6} lg={6} id={`reading-${i.languageSkillId}`} placeholder={"reading"} optionsList={priorityList} onChange={handleChangeInput} />
-                                <InputSelect xs={6} sm={6} lg={6} id={`writing-${i.languageSkillId}`} placeholder={"writing"} optionsList={priorityList} onChange={handleChangeInput} />
+                                <InputSelect xs={6} sm={6} lg={6} label={i.languageSkillName} id={`listening-${i.languageSkillId}`} placeholder={"listening"} optionsList={priorityList} onChange={handleChangeInput} defaultValue={i.listening} resest={isReset} />
+                                <InputSelect xs={6} sm={6} lg={6} id={`speaking-${i.languageSkillId}`} placeholder={"speaking"} optionsList={priorityList} onChange={handleChangeInput} isMargin={true} defaultValue={i.speaking} resest={isReset} />
+                                <InputSelect xs={6} sm={6} lg={6} id={`reading-${i.languageSkillId}`} placeholder={"reading"} optionsList={priorityList} onChange={handleChangeInput} defaultValue={i.reading} resest={isReset} />
+                                <InputSelect xs={6} sm={6} lg={6} id={`writing-${i.languageSkillId}`} placeholder={"writing"} optionsList={priorityList} onChange={handleChangeInput} defaultValue={i.writing} resest={isReset} />
                             </Row>
                             <i className="fa fa-close" onClick={() => handleDeleteSelect(i)} />
                         </Col>

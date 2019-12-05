@@ -1,7 +1,7 @@
 import { actionConstant } from "../constants/index";
 
 const initialState = {
-  isShow: true
+  isShow: false
 };
 
 const sideBarReducer = (state = initialState, action) => {

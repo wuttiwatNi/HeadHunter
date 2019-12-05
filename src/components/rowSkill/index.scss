@@ -1,9 +1,9 @@
 @import "../../styles/variables";
 
-.main-row-contact {
+.main-row-skill {
   margin: -15px 0px !important;
 
-  .row-contact {
+  .row-skill {
     font-size: 14px;
     padding-top: 10px;
     padding-bottom: 15px;
@@ -15,11 +15,15 @@
       font-weight: 400;
     }
 
+    .title-language {
+      margin-top: 5px;
+    }
+
     .fa-envelope-square,
     .fa-phone-square {
       font-size: 16px;
     }
-
+    
     .dropdown {
       position: absolute;
       top: 10px;

@@ -37,8 +37,39 @@ textarea:focus {
   display: none;
 }
 
+.main-input {
+  display: flex;
+
+  input[type="number"] {
+    width: calc(100% - 60px);
+    border-top-right-radius: 0px;
+    border-bottom-right-radius: 0px;
+  }
+
+  input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    display: none;
+  }
+
+  .unit {
+    width: 60px;
+    height: 39px;
+    display: inline-block;
+    padding: 8px;
+    border-radius: 0px 8px 8px 0px;
+    background-color: rgb(240, 240, 240);
+    border: 1px solid $primaryBorderColor;
+    border-left: 0px;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
 //Type date
 input[type="date"] {
+  height: 39px;
   -webkit-appearance: none;
   background-color: white;
 }

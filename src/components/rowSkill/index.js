@@ -3,14 +3,17 @@ import * as PropTypes from "prop-types";
 import { Row, Col, Dropdown } from "react-bootstrap";
 import "./index.scss";
 
-function RowContact({ data, onClickEdit, onClickDelete, mode }) {
+function RowSkill({ data, onClickDelete }) {
     return (
-        <Row className={"main-row-contact"}>
+        <Row className={"main-row-skill"}>
             {data.map((i, index) => (
-                <Col key={index} xs={12} sm={12} lg={12} className={`row-contact ${(index === data.length - 1) ? "not-border" : ""}`}>
-                    <span>{i.firstName} {i.lastName}</span>
-                    <div><i className="fa fa-envelope-square" /> {i.email}</div>
-                    <div><i className="fa fa-phone-square" /> {i.phoneNumber}</div>
+                <Col key={index} xs={12} sm={12} lg={12} className={`row-skill ${(index === data.length - 1) ? "not-border" : ""}`}>
+                    <span>{i.skillName}</span>
+                    <Row>
+                        <Col className={"title-language"} xs={12} sm={12} lg={12}>
+                            <div><i className="fa fa-calendar-check-o" /> {i.experience} Year</div>
+                        </Col>
+                    </Row>
 
                     <Dropdown>
                         <Dropdown.Toggle bsPrefix=" ">
@@ -18,32 +21,31 @@ function RowContact({ data, onClickEdit, onClickDelete, mode }) {
                         </Dropdown.Toggle>
 
                         <Dropdown.Menu alignRight>
-                            <Dropdown.Item onClick={() => onClickEdit(i)}><i className="fa fa-pencil" /> Edit</Dropdown.Item>
-                            {mode === "customerDetail" && <Dropdown.Item onClick={() => onClickDelete(i)}><i className="fa fa-trash" /> Delete</Dropdown.Item>}
+                            <Dropdown.Item onClick={() => onClickDelete(i)}><i className="fa fa-trash" /> Delete</Dropdown.Item>
                         </Dropdown.Menu>
                     </Dropdown>
                 </Col>
             ))}
             {data.length === 0 &&
                 <Col xs={12} sm={12} lg={12} className={`no-data`}>
-                    <span>No data contact.</span>
+                    <span>No skill require.</span>
                 </Col>
             }
         </Row>
     );
 }
 
-RowContact.propTypes = {
+RowSkill.propTypes = {
     data: PropTypes.array,
     mode: PropTypes.string,
     onClickDelete: PropTypes.func
 };
 
-RowContact.defaultProps = {
+RowSkill.defaultProps = {
     data: [],
     mode: "customerDetail",
     onClickDelete: () => {
     }
 };
 
-export default RowContact;
+export default RowSkill;

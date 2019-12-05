@@ -3,7 +3,7 @@ import * as PropTypes from "prop-types";
 import { Col } from "react-bootstrap";
 import "./index.scss";
 
-function Input({ xs, sm, lg, label, id, onChange, type, isHidden, defaultValue, resest }) {
+function Input({ xs, sm, lg, label, id, onChange, type, isHidden, defaultValue, resest, unit }) {
     const [value, setValue] = useState("");
     const [checkSetDefault, setCheckSetDefault] = useState(false);
 
@@ -25,10 +25,13 @@ function Input({ xs, sm, lg, label, id, onChange, type, isHidden, defaultValue, 
     return (
         <Col xs={xs} sm={sm} lg={lg} className={`input ${isHidden ? "hidden" : ""}`}>
             <span>{label}</span>
-            {type !== "textarea" ?
-                <input id={id} onChange={onChanges} type={type} value={value} required /> :
-                <textarea id={id} onChange={onChanges} value={value} style={{ height: 112 }} />
-            }
+            <div className="main-input">
+                {type !== "textarea" ?
+                    <input id={id} onChange={onChanges} type={type} value={value} required /> :
+                    <textarea id={id} onChange={onChanges} value={value} style={{ height: 112 }} />
+                }
+                {unit && <div className="unit" title={unit}>{unit}</div>}
+            </div>
         </Col>
     );
 }

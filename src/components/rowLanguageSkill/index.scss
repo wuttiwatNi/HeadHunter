@@ -1,9 +1,9 @@
 @import "../../styles/variables";
 
-.main-row-contact {
+.main-row-skill {
   margin: -15px 0px !important;
 
-  .row-contact {
+  .row-skill {
     font-size: 14px;
     padding-top: 10px;
     padding-bottom: 15px;
@@ -13,6 +13,15 @@
       display: block;
       font-size: 16px;
       font-weight: 400;
+    }
+
+    .title-level {
+      margin-top: 5px;
+      font-weight: 400;
+    }
+
+    .des-level{
+      margin-left: 20px;
     }
 
     .fa-envelope-square,
