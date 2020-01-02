@@ -3,6 +3,8 @@ import { useHistory, useParams } from "react-router-dom"
 import { useDispatch } from "react-redux"
 import { objectUtil } from "../../../utils/object.util"
 import { format } from "date-fns"
+// constants
+import { generalConstant } from "../../../constants/index"
 // api
 import { positionApi, customerApi, contactApi, skillApi, languageSkillApi, orderApi } from "../../../api"
 // action
@@ -17,7 +19,7 @@ function OrderCreate({ mode }) {
     const dispatch = useDispatch()
     const { id } = useParams()
 
-    const [isReset, setIsReset] = useState(false);
+    const [isReset, setIsReset] = useState(false)
     const [isLoadData, setIsLoadData] = useState(true)
 
     const [showModalNormal, setShowModalNormal] = useState(false)
@@ -56,18 +58,6 @@ function OrderCreate({ mode }) {
     const [contactList, setContactList] = useState([])
     const [skillList, setSkillList] = useState([])
     const [languageSkillList, setLanguageSkillList] = useState([])
-
-    const [priorityList] = useState([
-        {
-            value: 3, label: "Hight"
-        },
-        {
-            value: 2, label: "Normal"
-        },
-        {
-            value: 1, label: "Low"
-        }
-    ])
 
     let _getPositionListByCategoryId = useCallback((categoryId) => {
         return new Promise(function (resolve, reject) {
@@ -169,10 +159,7 @@ function OrderCreate({ mode }) {
                     setFormDataSkill(JSON.parse(JSON.stringify(skill)))
                     setFormDataLanguageSkill(JSON.parse(JSON.stringify(languageSkill)))
 
-                    var promiseSet1 = _getPositionListByCategoryId(categoryId)
-                    var promiseSet2 = _getContactListByCustomerId(customerId)
-
-                    Promise.all([promiseSet1, promiseSet2, promise1, promise2, promise3, promise4]).then((result) => {
+                    Promise.all([_getPositionListByCategoryId(categoryId), _getContactListByCustomerId(customerId), promise1, promise2, promise3, promise4]).then((result) => {
                         // Filter skill list
                         let _skillList = result[4].filter(element => {
                             let result = true;
@@ -241,8 +228,8 @@ function OrderCreate({ mode }) {
     }
 
     let handleCreate = () => {
-        let validate3 = objectUtil.formValidateLanguageSkills(formDataLanguageSkill)
-        let validate2 = objectUtil.formValidateSkills(formDataSkill)
+        let validate3 = objectUtil.formValidateItem(formDataLanguageSkill, "languageSkillId")
+        let validate2 = objectUtil.formValidateItem(formDataSkill, "skillId")
         let validate1 = objectUtil.formValidate(formDataOrder)
         if (validate1 && validate2 && validate3) {
             setTitleModalNormal(`${mode === "create" ? "Create" : "Edit"}!`)
@@ -491,7 +478,7 @@ function OrderCreate({ mode }) {
                                     <Input xs={12} sm={6} lg={3} label={"Experience"} id={"experience"} onChange={handleChangeInput} defaultValue={currentOrder.experience} type={"number"} unit={"Year"} resest={isReset} />
                                     <Input xs={12} sm={6} lg={3} label={"Budget"} id={"budget"} onChange={handleChangeInput} defaultValue={currentOrder.budget} type={"number"} unit={"Baht"} resest={isReset} />
                                     <Input xs={12} sm={6} lg={3} label={"Quantity"} id={"quantity"} onChange={handleChangeInput} defaultValue={currentOrder.quantity} type={"number"} unit={"Person"} resest={isReset} />
-                                    <InputSelect xs={12} sm={6} lg={3} label={"Priority"} id={"priority"} optionsList={priorityList} onChange={handleChangeInput} defaultValue={currentOrder.priority} resest={isReset} />
+                                    <InputSelect xs={12} sm={6} lg={3} label={"Priority"} id={"priority"} optionsList={generalConstant.priorityList} onChange={handleChangeInput} defaultValue={currentOrder.priority} resest={isReset} />
                                     <Input xs={12} sm={6} lg={3} label={"Obsoleted"} id={"obsoleted"} onChange={handleChangeInput} defaultValue={currentOrder.obsoleted} type={"date"} resest={isReset} />
                                     <CreateSkill formDataSkill={formDataSkill} setFormDataSkill={setFormDataSkill} skillList={skillList} setSkillList={setSkillList} isReset={isReset} />
                                     <CreateLanguageSkill formDataLanguageSkill={formDataLanguageSkill} setFormDataLanguageSkill={setFormDataLanguageSkill} languageSkillList={languageSkillList} setLanguageSkillList={setLanguageSkillList} isReset={isReset} />

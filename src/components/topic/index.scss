@@ -5,6 +5,7 @@ h4 {
   margin-top: 15px;
   margin-left: 15px;
   margin-right: 15px;
+  position: relative;
 }
 
 small {
@@ -15,8 +16,8 @@ small {
 
 .bar-delete {
   cursor: pointer;
-  right: 18px;
-  top: 27.4px;
+  right: 0px;
+  bottom: 0px;
   position: absolute;
   font-size: 12px;
   font-weight: 300;
@@ -25,4 +26,10 @@ small {
 
 .bar-delete:hover {
   color: #474747;
+}
+
+@media (max-width: 575px) {
+  .responsive {
+    display: block;
+  }
 }

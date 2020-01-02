@@ -5,7 +5,7 @@ import "./index.scss";
 function Topic({ title, subTitle, onClickDelete }) {
     return (
         <>
-            <h4>{title} <small>{subTitle}</small>
+            <h4>{title} <small className={title.length > 10 ? "responsive" : ""}>{subTitle}</small>
                 {onClickDelete && <span className={"bar-delete"} onClick={onClickDelete}><i className="fa fa-trash" /> Delete</span>}
             </h4>
         </>

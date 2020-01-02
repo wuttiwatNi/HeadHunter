@@ -22,14 +22,27 @@ textarea:focus {
   border-color: $primaryColor;
 }
 
+@media (min-width: 576px) {
+  .input.paddingTop {
+    margin-top: 24px;
+  }
+}
+
 .input {
   margin-bottom: 15px;
 
-  span {
-    display: block;
-    font-size: 14px;
-    font-weight: 400;
+  .label {
+    cursor: default;
     margin-bottom: 5px;
+
+    span {
+      font-size: 14px;
+      font-weight: 400;
+    }
+
+    span.warning {
+      color: red;
+    }
   }
 }
 
@@ -40,13 +53,28 @@ textarea:focus {
 .main-input {
   display: flex;
 
-  input[type="number"] {
+  input[type="checkbox"] {
+    width: 21px;
+    height: 21px;
+    margin-top: 26px;
+    margin-right: 10px;
+    margin-left: 10px;
+    cursor: pointer;
+  }
+
+  .span-checkbox {
+    margin-top: 26px;
+    font-weight: 400;
+    cursor: default;
+  }
+
+  input[type="number"].not-full {
     width: calc(100% - 60px);
     border-top-right-radius: 0px;
     border-bottom-right-radius: 0px;
   }
 
-  input[type="number"]::-webkit-inner-spin-button {
+  input[type="number"].not-full::-webkit-inner-spin-button {
     -webkit-appearance: none;
     display: none;
   }

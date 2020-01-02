@@ -1,9 +1,9 @@
 import React from "react"
 import * as PropTypes from "prop-types"
-import { Row, Col, Dropdown } from "react-bootstrap"
+import { Row, Col } from "react-bootstrap"
 import "./index.scss"
 
-function RowLanguageSkill({ data, onClickDelete }) {
+function RowLanguageSkill({ data }) {
     return (
         <Row className={"main-row-skill"}>
             {data.map((i, index) => (
@@ -28,7 +28,7 @@ function RowLanguageSkill({ data, onClickDelete }) {
                         </Col>
                     </Row>
 
-                    <Dropdown>
+                    {/* <Dropdown>
                         <Dropdown.Toggle bsPrefix=" ">
                             <i className="fa fa-ellipsis-h" />
                         </Dropdown.Toggle>
@@ -36,7 +36,7 @@ function RowLanguageSkill({ data, onClickDelete }) {
                         <Dropdown.Menu alignRight>
                             <Dropdown.Item onClick={() => onClickDelete(i)}><i className="fa fa-trash" /> Delete</Dropdown.Item>
                         </Dropdown.Menu>
-                    </Dropdown>
+                    </Dropdown> */}
                 </Col>
             ))}
             {data.length === 0 &&
@@ -50,15 +50,13 @@ function RowLanguageSkill({ data, onClickDelete }) {
 
 RowLanguageSkill.propTypes = {
     data: PropTypes.array,
-    mode: PropTypes.string,
-    onClickDelete: PropTypes.func
+    // onClickDelete: PropTypes.func
 }
 
 RowLanguageSkill.defaultProps = {
     data: [],
-    mode: "customerDetail",
-    onClickDelete: () => {
-    }
+    // onClickDelete: () => {
+    // }
 }
 
 export default RowLanguageSkill

@@ -47,8 +47,10 @@ function InputSelect({ xs, sm, lg, label, id, optionsList, onChange, isSearchabl
     }
 
     return (
-        <Col xs={xs} sm={sm} lg={lg} className={"input"} style={{ paddingTop: isMargin ? 26 : 0 }}>
-            {label && <span>{label}</span>}
+        <Col xs={xs} sm={sm} lg={lg} className={`input ${isMargin ? "paddingTop" : ""}`}>
+            <div className="label">
+                {label && <span>{label}</span>}
+            </div>
             <Select
                 value={value}
                 isSearchable={isSearchable}

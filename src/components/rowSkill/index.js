@@ -1,21 +1,21 @@
 import React from "react";
 import * as PropTypes from "prop-types";
-import { Row, Col, Dropdown } from "react-bootstrap";
+import { Row, Col } from "react-bootstrap";
 import "./index.scss";
 
-function RowSkill({ data, onClickDelete }) {
+function RowSkill({ data }) {
     return (
         <Row className={"main-row-skill"}>
             {data.map((i, index) => (
-                <Col key={index} xs={12} sm={12} lg={12} className={`row-skill ${(index === data.length - 1) ? "not-border" : ""}`}>
+                <Col key={index} xs={6} sm={6} lg={6} className={`row-skill ${(index === data.length - 1) ? "not-border" : ""}`}>
                     <span>{i.skillName}</span>
                     <Row>
-                        <Col className={"title-language"} xs={12} sm={12} lg={12}>
-                            <div><i className="fa fa-calendar-check-o" /> {i.experience} Year</div>
+                        <Col className={"title-skill"} xs={12} sm={12} lg={12}>
+                            <div><i className="fa fa-calendar" /> {i.experience} Year</div>
                         </Col>
                     </Row>
 
-                    <Dropdown>
+                    {/* <Dropdown>
                         <Dropdown.Toggle bsPrefix=" ">
                             <i className="fa fa-ellipsis-h" />
                         </Dropdown.Toggle>
@@ -23,7 +23,7 @@ function RowSkill({ data, onClickDelete }) {
                         <Dropdown.Menu alignRight>
                             <Dropdown.Item onClick={() => onClickDelete(i)}><i className="fa fa-trash" /> Delete</Dropdown.Item>
                         </Dropdown.Menu>
-                    </Dropdown>
+                    </Dropdown> */}
                 </Col>
             ))}
             {data.length === 0 &&
@@ -37,15 +37,13 @@ function RowSkill({ data, onClickDelete }) {
 
 RowSkill.propTypes = {
     data: PropTypes.array,
-    mode: PropTypes.string,
-    onClickDelete: PropTypes.func
+    // onClickDelete: PropTypes.func
 };
 
 RowSkill.defaultProps = {
     data: [],
-    mode: "customerDetail",
-    onClickDelete: () => {
-    }
+    // onClickDelete: () => {
+    // }
 };
 
 export default RowSkill;

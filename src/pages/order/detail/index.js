@@ -3,15 +3,13 @@ import { useHistory, useParams } from "react-router-dom"
 import { objectUtil } from "../../../utils/object.util"
 import { useDispatch } from "react-redux"
 import { format, formatDistanceToNow } from "date-fns"
-// constants
-import { generalConstant } from "../../../constants/index"
 // api
-import { orderApi, contactApi, skillApi, languageSkillApi, orderSkillApi, orderLanguageSkillApi } from "../../../api"
+import { orderApi, candidateApi, contactApi } from "../../../api"
 // action
 import { modalErrorAction } from "../../../actions"
 import { modalLoadingAction } from "../../../actions"
 // components
-import { Topic, Box, Tables, ModalForm, ModalNormal, Input, InputSelect, Information, RowContact, RowSkill, RowLanguageSkill, TableSelect } from "../../../components"
+import { Topic, Box, Tables, ModalForm, ModalNormal, Input, Information, RowContact, RowSkill, RowLanguageSkill, TableSelect } from "../../../components"
 import { Row, Col, Spinner } from "react-bootstrap"
 
 function OrderDetail() {
@@ -19,13 +17,11 @@ function OrderDetail() {
     const { id } = useParams()
 
     const dispatch = useDispatch()
+    const [isLoadData, setIsLoadData] = useState(true)
 
     const { getOrder, deleteOrder, editOrderContact } = orderApi
+    const { getCandidateList } = candidateApi
     const { getContactListByCustomerId, editContact } = contactApi
-    const { getSkillList } = skillApi;
-    const { getLanguageSkillList } = languageSkillApi;
-    const { createOrderSkill, deleteOrderSkill } = orderSkillApi
-    const { createOrderLanguageSkill, deleteOrderLanguageSkill } = orderLanguageSkillApi
 
     const [showModalForm, setShowModalForm] = useState(false)
     const [titleModalForm, setTitleModalForm] = useState("")
@@ -42,13 +38,9 @@ function OrderDetail() {
     const [contact, setContact] = useState([])
     const [skill, setSkill] = useState([])
     const [languageSkill, setLanguageSkill] = useState([])
-    const [candidateList] = useState([])//setCandidateList
-    const [skillList, setSkillList] = useState([]);
-    const [languageSkillList, setLanguageSkillList] = useState([])
+    const [candidateList, setCandidateList] = useState([])
     const [contactList, setContactList] = useState([])
-    const [dataFromTableSelect, setDataFromTableSelect] = useState({});
-    const [dataFromRowSkill, setDataFromRowSkill] = useState({});
-    const [dataFromRowLanguageSkill, setDataFromRowLanguageSkill] = useState({});
+    const [dataFromTableSelect, setDataFromTableSelect] = useState({})
 
     const [formDataContact, setFormDataContact] = useState({
         id: "",
@@ -57,57 +49,70 @@ function OrderDetail() {
         phoneNumber: "",
         email: ""
     })
-    const [formDataSkill, setFormDataSkill] = useState({
-        skillId: "",
-        experience: ""
-    })
-    const [formDataLanguageSkill, setFormDataLanguageSkill] = useState({
-        languageSkillId: "",
-        listening: "",
-        speaking: "",
-        reading: "",
-        writing: ""
-    })
 
-    let _getOrder = useCallback((isRefresh) => {
-        getOrder(id).then(({ data }) => {
-            let { success, result } = data
-            if (success && result.length !== 0) {
-                setOrder({
-                    ...result[0],
-                    _budget: `${result[0].budget.toLocaleString()} ฿`,
-                    _experience: `${result[0].experience} Year`,
-                    _obsoleted: `${format(new Date(result[0].obsoleted), "dd-MM-yyyy")} (${formatDistanceToNow(new Date(result[0].obsoleted), { addSuffix: true })})`,
-                    _priority: `${objectUtil.mapPriority(result[0].priority)}`,
-                    _quantity: `${result[0].success}/${result[0].quantity}`,
-                })
-                setContact(result[0].contact)
-                setSkill(result[0].skill)
-                setLanguageSkill(objectUtil.mapDataLanguage(result[0].languageSkill))
-                // setCandidateList(result[0].order)
-            } else {
-                dispatch(modalErrorAction.show())
-            }
-        }).catch(error => { console.log(error) }).finally(() => {
+    let _getOrder = useCallback(() => {
+        return new Promise(function (resolve, reject) {
+            getOrder(id).then(({ data }) => {
+                let { success, result } = data
+                if (success && result.length !== 0) {
+                    setOrder({
+                        ...result[0],
+                        _budget: `${result[0].budget.toLocaleString()} ฿`,
+                        _experience: `${result[0].experience} Year`,
+                        _obsoleted: `${format(new Date(result[0].obsoleted), "dd-MM-yyyy")} (${formatDistanceToNow(new Date(result[0].obsoleted), { addSuffix: true })})`,
+                        _priority: `${objectUtil.mapPriority(result[0].priority)}`,
+                        _quantity: `${result[0].success}/${result[0].quantity}`,
+                    })
+                    setContact(result[0].contact)
+                    setSkill(result[0].skill)
+                    setLanguageSkill(objectUtil.mapDataLanguage(result[0].languageSkill))
+                    resolve()
+                } else {
+                    reject()
+                }
+            }).catch(error => { console.log(error) })
+        })
+    }, [getOrder, id])
+
+    let _getCandidateList = useCallback(() => {
+        return new Promise(function (resolve, reject) {
+            getCandidateList().then(({ data }) => {
+                let { success, result } = data
+                if (success) {
+                    setCandidateList(objectUtil.sortArray(objectUtil.mapDataCandidate(result), "fullName"))
+                    resolve()
+                } else {
+                    reject()
+                }
+            }).catch(error => { console.log(error) })
+        })
+    }, [getCandidateList])
+
+    let getDetail = useCallback((isRefresh) => {
+        Promise.all([_getOrder(), _getCandidateList()]).then((result) => {
+            setIsLoadData(false)
+        }).catch(() => {
+            dispatch(modalErrorAction.show())
+        }).finally(() => {
             if (isRefresh) {
                 dispatch(modalLoadingAction.close())
             }
         })
-    }, [getOrder, dispatch, id])
+    }, [_getOrder, _getCandidateList, dispatch])
 
     useEffect(() => {
-        _getOrder(false)
-    }, [_getOrder])
+        getDetail(false)
+    }, [getDetail])
 
     let handleClickRow = (data) => {
-        history.push(`/order/${data.id}`)
+        history.push(`/candidate/${data.id}`)
     }
 
     let handleClickRowSelectContact = (data) => {
         setDataFromTableSelect(data)
     }
 
-    let handleClickEditCustomer = () => {
+    let handleClickEditOrder = () => {
         history.push(`/order/edit/${id}`)
     }
 
@@ -116,82 +121,6 @@ function OrderDetail() {
         setDesModalNormal(`Are you sure to delete (${order["positionName"]})?`)
         setSwapColorModalNormal(true)
         setModeModalNormal("deleteOrder")
-        setShowModalNormal(true)
-    }
-
-    let handleClickAddSkill = () => {
-        setFormDataSkill(objectUtil.clearData(formDataSkill))
-        dispatch(modalLoadingAction.show())
-
-        getSkillList().then(({ data }) => {
-            let { success, result } = data
-            if (success) {
-                let _result = result.filter((element) => {
-                    let result = true;
-                    skill.forEach((elementSkill) => {
-                        if (element["id"] === elementSkill["skillId"]) {
-                            result = false
-                        }
-                    })
-                    return result
-                })
-                setSkillList(objectUtil.sortArray(objectUtil.formForInputSelect(_result, "id", "name"), "label"))
-                setTitleModalForm("Skill")
-                setSubTitleModalForm("add")
-                setModeModalForm("addSkill")
-                setShowModalForm(true)
-            } else {
-                dispatch(modalErrorAction.show())
-            }
-        }).catch(error => { console.log(error) }).finally(() => {
-            dispatch(modalLoadingAction.close())
-        })
-    }
-
-    let handleClickDeleteSkill = (data) => {
-        setDataFromRowSkill(data)
-        setTitleModalNormal("Delete Skill!")
-        setDesModalNormal(`Are you sure to delete (${data["skillName"]})?`)
-        setSwapColorModalNormal(true)
-        setModeModalNormal("deleteSkill")
-        setShowModalNormal(true)
-    }
-
-    let handleClickAddLanguageSkill = () => {
-        setFormDataLanguageSkill(objectUtil.clearData(formDataLanguageSkill))
-        dispatch(modalLoadingAction.show())
-
-        getLanguageSkillList().then(({ data }) => {
-            let { success, result } = data
-            if (success) {
-                let _result = result.filter((element) => {
-                    let result = true;
-                    languageSkill.forEach((elementSkill) => {
-                        if (element["id"] === elementSkill["languageSkillId"]) {
-                            result = false
-                        }
-                    })
-                    return result
-                })
-                setLanguageSkillList(objectUtil.sortArray(objectUtil.formForInputSelect(_result, "id", "name"), "label"))
-                setTitleModalForm("Language Skill")
-                setSubTitleModalForm("add")
-                setModeModalForm("addLanguageSkill")
-                setShowModalForm(true)
-            } else {
-                dispatch(modalErrorAction.show())
-            }
-        }).catch(error => { console.log(error) }).finally(() => {
-            dispatch(modalLoadingAction.close())
-        })
-    }
-
-    let handleClickDeleteLanguageSkill = (data) => {
-        setDataFromRowLanguageSkill(data)
-        setTitleModalNormal("Delete Language Skill!")
-        setDesModalNormal(`Are you sure to delete (${data["languageSkillName"]})?`)
-        setSwapColorModalNormal(true)
-        setModeModalNormal("deleteLanguageSkill")
         setShowModalNormal(true)
     }
 
@@ -242,34 +171,6 @@ function OrderDetail() {
                     dispatch(modalLoadingAction.close())
                 })
                 break
-            case "deleteSkill":
-                setShowModalNormal(false)
-                dispatch(modalLoadingAction.show())
-
-                deleteOrderSkill(dataFromRowSkill["id"]).then(({ data }) => {
-                    let { success } = data
-                    if (success) {
-                        _getOrder(true)
-                    } else {
-                        dispatch(modalLoadingAction.close())
-                        dispatch(modalErrorAction.show())
-                    }
-                }).catch(error => { console.log(error) })
-                break
-            case "deleteLanguageSkill":
-                setShowModalNormal(false)
-                dispatch(modalLoadingAction.show())
-
-                deleteOrderLanguageSkill(dataFromRowLanguageSkill["id"]).then(({ data }) => {
-                    let { success } = data
-                    if (success) {
-                        _getOrder(true)
-                    } else {
-                        dispatch(modalLoadingAction.close())
-                        dispatch(modalErrorAction.show())
-                    }
-                }).catch(error => { console.log(error) })
-                break
             default:
                 break
         }
@@ -277,54 +178,6 @@ function OrderDetail() {
 
     let handleOkModalsForm = () => {
         switch (modeModalForm) {
-            case "addSkill":
-                let validateAddSkill = objectUtil.formValidate(formDataSkill)
-                if (validateAddSkill) {
-                    let data = {
-                        orderId: id,
-                        orderSkill: [formDataSkill]
-                    }
-
-                    setShowModalForm(false)
-                    dispatch(modalLoadingAction.show())
-
-                    createOrderSkill(data).then(({ data }) => {
-                        let { success } = data
-                        if (success) {
-                            _getOrder(true)
-                        } else {
-                            dispatch(modalLoadingAction.close())
-                            dispatch(modalErrorAction.show())
-                        }
-                    }).catch(error => { console.log(error) })
-
-                    setFormDataSkill(objectUtil.clearData(formDataSkill))
-                }
-                break
-            case "addLanguageSkill":
-                let validateAddLanguageSkill = objectUtil.formValidate(formDataLanguageSkill)
-                if (validateAddLanguageSkill) {
-                    let data = {
-                        orderId: id,
-                        orderLanguageSkill: [formDataLanguageSkill]
-                    }
-
-                    setShowModalForm(false)
-                    dispatch(modalLoadingAction.show())
-
-                    createOrderLanguageSkill(data).then(({ data }) => {
-                        let { success } = data
-                        if (success) {
-                            _getOrder(true)
-                        } else {
-                            dispatch(modalLoadingAction.close())
-                            dispatch(modalErrorAction.show())
-                        }
-                    }).catch(error => { console.log(error) })
-
-                    setFormDataLanguageSkill(objectUtil.clearData(formDataSkill))
-                }
-                break
             case "changeContact":
                 if (dataFromTableSelect["id"] !== undefined) {
                     setShowModalForm(false)
@@ -333,7 +186,7 @@ function OrderDetail() {
                     editOrderContact(id, dataFromTableSelect["id"]).then(({ data }) => {
                         let { success } = data
                         if (success) {
-                            _getOrder(true)
+                            getDetail(true)
                         } else {
                             dispatch(modalLoadingAction.close())
                             dispatch(modalErrorAction.show())
@@ -352,7 +205,7 @@ function OrderDetail() {
                     editContact(formDataContact).then(({ data }) => {
                         let { success } = data
                         if (success) {
-                            _getOrder(true)
+                            getDetail(true)
                         } else {
                             dispatch(modalLoadingAction.close())
                             dispatch(modalErrorAction.show())
@@ -367,12 +220,6 @@ function OrderDetail() {
 
     let handleChangeInput = ({ target }) => {
         switch (modeModalForm) {
-            case "addSkill":
-                formDataSkill[target.id] = target.value
-                break
-            case "addLanguageSkill":
-                formDataLanguageSkill[target.id] = target.value
-                break
             case "editContact":
                 formDataContact[target.id] = target.value
                 break
@@ -383,7 +230,7 @@ function OrderDetail() {
 
     return (
         <>
-            {!order ? (
+            {isLoadData ? (
                 <div className={"spinner"}>
                     <Spinner animation="grow" variant="primary" />
                 </div>) :
@@ -392,7 +239,7 @@ function OrderDetail() {
                     <Row>
                         <Col xs={12} sm={12} lg={4} className={"no-padding"}>
                             <Row>
-                                <Box title={"Information"} icon={"fa-pencil"} onClickIcon={handleClickEditCustomer} xs={12} sm={12} lg={12}
+                                <Box title={"Information"} icon={"fa-pencil"} onClickIcon={handleClickEditOrder} xs={12} sm={12} lg={12}
                                     body={() => (
                                         <Information data={order}
                                             keyValue={[
@@ -402,15 +249,15 @@ function OrderDetail() {
                                                 { label: "Experience", key: "_experience" },
                                                 { label: "Priority", key: "_priority" },
                                                 { label: "Quantity", key: "_quantity" },
-                                                { label: "Obsoleted", key: "_obsoleted" }]} />
+                                                { label: "Obsoleted", key: "_obsoleted", full: true }]} />
                                     )} />
-                                <Box title={"Skill"} icon={"fa-plus"} onClickIcon={handleClickAddSkill} xs={12} sm={12} lg={12}
+                                <Box title={"Skill"} xs={12} sm={12} lg={12}
                                     body={() => (
-                                        <RowSkill data={skill} onClickDelete={handleClickDeleteSkill} />
+                                        <RowSkill data={skill} />
                                     )} />
-                                <Box title={"Language"} icon={"fa-plus"} onClickIcon={handleClickAddLanguageSkill} xs={12} sm={12} lg={12}
+                                <Box title={"Language"} xs={12} sm={12} lg={12}
                                     body={() => (
-                                        <RowLanguageSkill data={languageSkill} onClickDelete={handleClickDeleteLanguageSkill} />
+                                        <RowLanguageSkill data={languageSkill} />
                                     )} />
                                 <Box title={"Contact"} icon={"fa-exchange"} onClickIcon={handleClickChangeContact} xs={12} sm={12} lg={12}
                                     body={() => (
@@ -421,11 +268,11 @@ function OrderDetail() {
                         <Box xs={12} sm={12} lg={8} body={() => (
                             <>
                                 <Tables
-                                    columnLabel={["Order", "Budget", "Priority"]}
-                                    column={["positionName", "budget", "priority"]}
+                                    columnLabel={["Full Name", "Email", "Phone"]}
+                                    column={["fullName", "email", "phoneNumber"]}
                                     row={candidateList}
                                     onClickRow={handleClickRow}
-                                    pathCreate={"/order/create"} />
+                                    pathCreate={"/candidate/create"} />
                             </>
                         )} />
                     </Row>
@@ -436,21 +283,6 @@ function OrderDetail() {
                 handleClose={() => setShowModalForm(false)} handleOk={handleOkModalsForm}
                 form={() =>
                     <>
-                        {modeModalForm === "addSkill" &&
-                            <Row>
-                                <InputSelect xs={12} sm={12} lg={12} label={"Skill"} id={"skillId"} optionsList={skillList} onChange={handleChangeInput} isSearchable={true} />
-                                <Input xs={12} sm={12} lg={12} label={"Experience"} id={"experience"} onChange={handleChangeInput} type={"number"} unit={"Year"} />
-                            </Row>
-                        }
-                        {modeModalForm === "addLanguageSkill" &&
-                            <Row>
-                                <InputSelect xs={12} sm={12} lg={12} label={"Language Skill"} id={"languageSkillId"} optionsList={languageSkillList} onChange={handleChangeInput} isSearchable={true} />
-                                <InputSelect xs={6} sm={6} lg={6} label={"Listening"} id={"listening"} placeholder={"listening"} optionsList={generalConstant.priorityList} onChange={handleChangeInput} />
-                                <InputSelect xs={6} sm={6} lg={6} label={"Speaking"} id={"speaking"} placeholder={"speaking"} optionsList={generalConstant.priorityList} onChange={handleChangeInput} />
-                                <InputSelect xs={6} sm={6} lg={6} label={"Reading"} id={"reading"} placeholder={"reading"} optionsList={generalConstant.priorityList} onChange={handleChangeInput} />
-                                <InputSelect xs={6} sm={6} lg={6} label={"Writing"} id={"writing"} placeholder={"writing"} optionsList={generalConstant.priorityList} onChange={handleChangeInput} />
-                            </Row>
-                        }
                         {modeModalForm === "changeContact" &&
                             <Row>
                                 <TableSelect
@@ -479,3 +311,161 @@ function OrderDetail() {
 }
 
 export default OrderDetail
+
+/*
+let handleClickAddSkill = () => {
+        setFormDataSkill(objectUtil.clearData(formDataSkill))
+        dispatch(modalLoadingAction.show())
+
+        getSkillList().then(({ data }) => {
+            let { success, result } = data
+            if (success) {
+                let _result = result.filter((element) => {
+                    let result = true;
+                    skill.forEach((elementSkill) => {
+                        if (element["id"] === elementSkill["skillId"]) {
+                            result = false
+                        }
+                    })
+                    return result
+                })
+                setSkillList(objectUtil.sortArray(objectUtil.formForInputSelect(_result, "id", "name"), "label"))
+                setTitleModalForm("Skill")
+                setSubTitleModalForm("add")
+                setModeModalForm("addSkill")
+                setShowModalForm(true)
+            } else {
+                dispatch(modalErrorAction.show())
+            }
+        }).catch(error => { console.log(error) }).finally(() => {
+            dispatch(modalLoadingAction.close())
+        })
+    }
+
+    let handleClickAddLanguageSkill = () => {
+        setFormDataLanguageSkill(objectUtil.clearData(formDataLanguageSkill))
+        dispatch(modalLoadingAction.show())
+
+        getLanguageSkillList().then(({ data }) => {
+            let { success, result } = data
+            if (success) {
+                let _result = result.filter((element) => {
+                    let result = true;
+                    languageSkill.forEach((elementSkill) => {
+                        if (element["id"] === elementSkill["languageSkillId"]) {
+                            result = false
+                        }
+                    })
+                    return result
+                })
+                setLanguageSkillList(objectUtil.sortArray(objectUtil.formForInputSelect(_result, "id", "name"), "label"))
+                setTitleModalForm("Language Skill")
+                setSubTitleModalForm("add")
+                setModeModalForm("addLanguageSkill")
+                setShowModalForm(true)
+            } else {
+                dispatch(modalErrorAction.show())
+            }
+        }).catch(error => { console.log(error) }).finally(() => {
+            dispatch(modalLoadingAction.close())
+        })
+    }
+
+    handleOk **
+    case "deleteSkill":
+                setShowModalNormal(false)
+                dispatch(modalLoadingAction.show())
+
+                deleteOrderSkill(dataFromRowSkill["id"]).then(({ data }) => {
+                    let { success } = data
+                    if (success) {
+                        getDetail(true)
+                    } else {
+                        dispatch(modalLoadingAction.close())
+                        dispatch(modalErrorAction.show())
+                    }
+                }).catch(error => { console.log(error) })
+                break
+            case "deleteLanguageSkill":
+                setShowModalNormal(false)
+                dispatch(modalLoadingAction.show())
+
+                deleteOrderLanguageSkill(dataFromRowLanguageSkill["id"]).then(({ data }) => {
+                    let { success } = data
+                    if (success) {
+                        getDetail(true)
+                    } else {
+                        dispatch(modalLoadingAction.close())
+                        dispatch(modalErrorAction.show())
+                    }
+                }).catch(error => { console.log(error) })
+                break
+        handleOkForm **
+    case "addSkill":
+                let validateAddSkill = objectUtil.formValidate(formDataSkill)
+                if (validateAddSkill) {
+                    let data = {
+                        orderId: id,
+                        orderSkill: [formDataSkill]
+                    }
+
+                    setShowModalForm(false)
+                    dispatch(modalLoadingAction.show())
+
+                    createOrderSkill(data).then(({ data }) => {
+                        let { success } = data
+                        if (success) {
+                            getDetail(true)
+                        } else {
+                            dispatch(modalLoadingAction.close())
+                            dispatch(modalErrorAction.show())
+                        }
+                    }).catch(error => { console.log(error) })
+
+                    setFormDataSkill(objectUtil.clearData(formDataSkill))
+                }
+                break
+            case "addLanguageSkill":
+                let validateAddLanguageSkill = objectUtil.formValidate(formDataLanguageSkill)
+                if (validateAddLanguageSkill) {
+                    let data = {
+                        orderId: id,
+                        orderLanguageSkill: [formDataLanguageSkill]
+                    }
+
+                    setShowModalForm(false)
+                    dispatch(modalLoadingAction.show())
+
+                    createOrderLanguageSkill(data).then(({ data }) => {
+                        let { success } = data
+                        if (success) {
+                            getDetail(true)
+                        } else {
+                            dispatch(modalLoadingAction.close())
+                            dispatch(modalErrorAction.show())
+                        }
+                    }).catch(error => { console.log(error) })
+
+                    setFormDataLanguageSkill(objectUtil.clearData(formDataSkill))
+                }
+                break
+
+        function **
+    let handleClickDeleteSkill = (data) => {
+        setDataFromRowSkill(data)
+        setTitleModalNormal("Delete Skill!")
+        setDesModalNormal(`Are you sure to delete (${data["skillName"]})?`)
+        setSwapColorModalNormal(true)
+        setModeModalNormal("deleteSkill")
+        setShowModalNormal(true)
+    }
+
+    let handleClickDeleteLanguageSkill = (data) => {
+        setDataFromRowLanguageSkill(data)
+        setTitleModalNormal("Delete Language Skill!")
+        setDesModalNormal(`Are you sure to delete (${data["languageSkillName"]})?`)
+        setSwapColorModalNormal(true)
+        setModeModalNormal("deleteLanguageSkill")
+        setShowModalNormal(true)
+    }
+*/

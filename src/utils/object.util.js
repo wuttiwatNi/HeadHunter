@@ -1,22 +1,51 @@
+// constants
+import { generalConstant } from "../constants/index"
+
 export const objectUtil = {
     formValidate,
-    formValidateSkills,
-    formValidateLanguageSkills,
+    formValidateItem,
     clearData,
     formForInputSelect,
     formForInputSelect2,
     sortArray,
     mapDataOrder,
+    mapDataCandidate,
     mapDataLanguage,
-    mapPriority
+    mapPriority,
+    mapNidTypeList,
+    mapGendarList,
+    mapMaritalList,
+    mapLevelEducationList
 };
+
+function mapNidTypeList(data) {
+    return data === 1 ? "ID Card" : "Passport"
+}
+
+function mapGendarList(data) {
+    return data === "M" ? "Male" : "Fenale"
+}
+
+function mapMaritalList(data) {
+    return data === 1 ? "Single" : "Married"
+}
+
+function mapLevelEducationList(data) {
+    let result = ""
+    generalConstant.levelEducationList.forEach((element) => {
+        if (element.value === data) {
+            result = element.label
+        }
+    })
+    return result
+}
 
 function formValidate(formData) {
     let isValid = true;
     let i = 0;
     for (let property in formData) {
         if (formData.hasOwnProperty(property)) {
-            if (!formData[property]) {
+            if (!formData[property] && typeof formData[property] !== "boolean") {
                 if (i === 0) {
                     document.getElementById(property).scrollIntoView({ behavior: "smooth", block: "center" });
                 }
@@ -29,7 +58,7 @@ function formValidate(formData) {
     return isValid
 }
 
-function formValidateSkills(_formData) {
+function formValidateItem(_formData, id) {
     let isValid = true;
     let i = 0;
     _formData.forEach((formData) => {
@@ -37,30 +66,10 @@ function formValidateSkills(_formData) {
             if (formData.hasOwnProperty(property)) {
                 if (!formData[property]) {
                     if (i === 0) {
-                        document.getElementById(`${property}-${formData["skillId"]}`).scrollIntoView({ behavior: "smooth", block: "center" });
+                        document.getElementById(`${property}-${formData[id]}`).scrollIntoView({ behavior: "smooth", block: "center" });
                     }
                     i = 1;
-                    document.getElementById(`${property}-${formData["skillId"]}`).classList.add("invalid")
-                    isValid = false;
-                }
-            }
-        }
-    })
-    return isValid
-}
-
-function formValidateLanguageSkills(_formData) {
-    let isValid = true;
-    let i = 0;
-    _formData.forEach((formData) => {
-        for (let property in formData) {
-            if (formData.hasOwnProperty(property)) {
-                if (!formData[property]) {
-                    if (i === 0) {
-                        document.getElementById(`${property}-${formData["languageSkillId"]}`).scrollIntoView({ behavior: "smooth", block: "center" });
-                    }
-                    i = 1;
-                    document.getElementById(`${property}-${formData["languageSkillId"]}`).classList.add("invalid")
+                    document.getElementById(`${property}-${formData[id]}`).classList.add("invalid")
                     isValid = false;
                 }
             }
@@ -82,7 +91,7 @@ function clearData(_formData) {
 function sortArray(_array, key) {
     let data = JSON.parse(JSON.stringify(_array))
     data.sort((a, b) => {
-        return a[key].toLowerCase() < b[key].toLowerCase() ? -1 : 1
+        return a[key].toString().toLowerCase() < b[key].toString().toLowerCase() ? -1 : 1
     })
     return data
 }
@@ -139,6 +148,15 @@ function mapDataOrder(_array) {
         }
         return element
     })
+    return data
+}
+
+function mapDataCandidate(_array) {
+    let data = JSON.parse(JSON.stringify(_array))
+    data = data.map(element => ({
+        ...element,
+        fullName: `${element["firstName"]} ${element["lastName"]}`
+    }))
     return data
 }
 

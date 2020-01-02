@@ -17,6 +17,10 @@ const order = {
   ORDERS_CONTACT: "/orders/contact"
 };
 
+const candidate = {
+  CANDIDATE: "/candidates"
+};
+
 const position = {
   POSITION: "/positions"
 };
@@ -42,6 +46,7 @@ export const apiConstant = {
   customer,
   contact,
   order,
+  candidate,
   position,
   skill,
   languageSkill,

@@ -30,7 +30,7 @@ function Tables({ columnLabel, column, row, pathCreate, onClickRow, onClickCreat
     };
 
     let handleChildClick = (e) => {
-        e.stopPropagation();
+        // e.stopPropagation();
     }
 
     return (
@@ -59,12 +59,9 @@ function Tables({ columnLabel, column, row, pathCreate, onClickRow, onClickCreat
                 <tbody>
                     {/* Row */}
                     {dataList.map(data => (
-                        <tr key={data.id} onClick={() => onClickRow(data)} title={"click"}>
-                            {Object.keys(data).map((key, index) => {
-                                if (column.indexOf(key) > -1) {
-                                    return (<td key={index}><span onClick={handleChildClick}>{data[key]}</span></td>);
-                                } else
-                                    return null;
+                        <tr key={data.id} onClick={() => onClickRow(data)} /*title={"click"}*/>
+                            {column.map((key, index) => {
+                                return (<td key={index}><span onClick={handleChildClick}>{data[key]}</span></td>);
                             })}
                         </tr>
                     ))}

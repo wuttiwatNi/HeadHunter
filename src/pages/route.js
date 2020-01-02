@@ -11,6 +11,9 @@ import CustomerDetail from "./customer/detail"
 import OrderAll from "./order/all"
 import OrderCreate from "./order/create"
 import OrderDetail from "./order/detail"
+import CandidateAll from "./candidate/all"
+import CandidateCreate from "./candidate/create"
+import CandidateDetail from "./candidate/detail"
 
 function Index() {
     let isLogin = true;
@@ -74,6 +77,21 @@ function Index() {
                             <Route
                                 exact path={["/order/:id"]}
                                 component={OrderDetail}
+                            />
+                            {/* Candidate*/}
+                            <Route
+                                exact path={"/candidate"}
+                                component={CandidateAll}
+                            />
+                            <Route
+                                exact path="/candidate/create"
+                                render={() => (
+                                    <CandidateCreate mode={"create"} />
+                                )}
+                            />
+                            <Route
+                                exact path={["/candidate/:id"]}
+                                component={CandidateDetail}
                             />
                         </Switch>
                     </div>

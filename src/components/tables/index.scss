@@ -7,13 +7,21 @@ th {
 
 td {
   //font-weight: 300;
-  cursor: pointer;
+  cursor: default;
   font-size: 14px;
 
   span {
-    cursor: initial;
+    cursor: pointer;
   }
 }
+
+// .table-responsive {
+//   max-height: 497px;
+// }
+
+// .table-responsive::-webkit-scrollbar {
+//   display: none;
+// }
 
 // thead {
 //   th {

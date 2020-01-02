@@ -12,10 +12,14 @@ import Input from "./input"
 import InputSelect from "./inputSelect"
 import Information from "./information"
 import RowContact from "./rowContact"
+import RowEducation from "./rowEducation"
 import RowSkill from "./rowSkill"
 import RowLanguageSkill from "./rowLanguageSkill"
+import RowWorking from "./rowWorking"
 import CreateSkill from "./createSkill"
 import CreateLanguageSkill from "./createLanguageSkill"
+import CreateEducation from "./createEducation"
+import CreateWorking from "./createWorking"
 
 export {
     SideBar,
@@ -32,8 +36,12 @@ export {
     InputSelect,
     Information,
     RowContact,
+    RowEducation,
     RowSkill,
     RowLanguageSkill,
+    RowWorking,
     CreateSkill,
-    CreateLanguageSkill
+    CreateLanguageSkill,
+    CreateEducation,
+    CreateWorking
 };
