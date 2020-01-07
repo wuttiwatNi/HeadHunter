@@ -39,6 +39,9 @@ function editCandidate(data) {
   return client({
     method: "PUT",
     data: data,
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
     url: `${config.API_RESOURCE_URL}${apiConstant.candidate.CANDIDATE}`
   });
 }

@@ -41,6 +41,14 @@ const orderLanguageSkill = {
   ORDER_LANGUAGE_SKILLS: "/orderLanguageSkills"
 }
 
+const nationality = {
+  NATIONALITY: "/nationalitys"
+}
+
+const activity = {
+  ACTIVITYS: "/activitys"
+}
+
 export const apiConstant = {
   master,
   customer,
@@ -51,5 +59,7 @@ export const apiConstant = {
   skill,
   languageSkill,
   orderSkill,
-  orderLanguageSkill
+  orderLanguageSkill,
+  nationality,
+  activity
 };

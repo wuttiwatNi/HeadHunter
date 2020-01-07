@@ -4,7 +4,7 @@ import { objectUtil } from "../../../utils/object.util"
 import { useDispatch } from "react-redux"
 import { format, differenceInYears, differenceInMonths } from "date-fns"
 // api
-import { candidateApi } from "../../../api"
+import { candidateApi, activityApi } from "../../../api"
 // action
 import { modalErrorAction } from "../../../actions"
 import { modalLoadingAction } from "../../../actions"
@@ -20,6 +20,7 @@ function CandidateDetail() {
     const [isLoadData, setIsLoadData] = useState(true)
 
     const { getCandidate, deleteCandidate } = candidateApi
+    const { getActivityByCandidateId } = activityApi
 
     // const [showModalForm, setShowModalForm] = useState(false)
     // const [titleModalForm, setTitleModalForm] = useState("")
@@ -87,8 +88,22 @@ function CandidateDetail() {
         })
     }, [getCandidate, id])
 
+    let _getActivityByCandidateId = useCallback(() => {
+        return new Promise(function (resolve, reject) {
+            getActivityByCandidateId(id).then(({ data }) => {
+                let { success, result } = data
+                if (success) {
+                    console.log(result)
+                    resolve()
+                } else {
+                    reject()
+                }
+            }).catch(error => { console.log(error) })
+        })
+    }, [getActivityByCandidateId, id])
+
     let getDetail = useCallback((isRefresh) => {
-        Promise.all([_getCandidate()]).then((result) => {
+        Promise.all([_getCandidate(), _getActivityByCandidateId()]).then((result) => {
             setIsLoadData(false)
         }).catch(() => {
             dispatch(modalErrorAction.show())
@@ -97,7 +112,7 @@ function CandidateDetail() {
                 dispatch(modalLoadingAction.close())
             }
         })
-    }, [_getCandidate, dispatch])
+    }, [_getCandidate, _getActivityByCandidateId, dispatch])
 
     useEffect(() => {
         getDetail(false)

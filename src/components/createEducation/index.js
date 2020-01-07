@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useEffect } from "react"
 import * as PropTypes from "prop-types"
 import { Row, Col } from "react-bootstrap"
 // constants
@@ -6,9 +6,25 @@ import { generalConstant } from "../../constants/index"
 // components
 import { InputSelect, Input } from "../../components"
 import "./index.scss"
-let id = 0
+let id = -1
 
 function CreateEducation({ formDataEdcution, setFormDataEdcution, isReset }) {
+    useEffect(() => {
+        if (id === -1) {
+            if (formDataEdcution.length >= 1) {
+                id = formDataEdcution[0].id
+                for (var i = 0; i < formDataEdcution.length; i++) {
+                    if (id < formDataEdcution[i].id) {
+                        id = formDataEdcution[i].id
+                    }
+                }
+                id += 1
+            } else {
+                id = 0
+            }
+        }
+    }, [formDataEdcution])
+
     let handleAddSelect = () => {
         let data = {
             id: id.toString(),
@@ -36,8 +52,8 @@ function CreateEducation({ formDataEdcution, setFormDataEdcution, isReset }) {
     let handleChangeInput = ({ target }) => {
         let { id, value } = target
         let _id = id.split("-")
-        let datas = JSON.parse(JSON.stringify(formDataEdcution))
-        let index = datas.findIndex((element) => element.id === _id[_id.length - 1].toString())
+        let datas = formDataEdcution//JSON.parse(JSON.stringify(formDataEdcution))
+        let index = datas.findIndex((element) => element.id.toString() === _id[_id.length - 1].toString())
         datas[index][_id[0]] = value
         setFormDataEdcution(datas)
     }
@@ -61,7 +77,7 @@ function CreateEducation({ formDataEdcution, setFormDataEdcution, isReset }) {
                     {formDataEdcution.map((i, index) => (
                         <Col key={i.id} xs={12} sm={12} lg={6} className={"box-selected no-padding"}>
                             <Row>
-                                <Input xs={12} sm={6} lg={6} label={`Institute (${index + 1})`} id={`instituteName-${i.id}`} onChange={handleChangeInput} defaultValue={i.instituteName} resest={isReset} />
+                                <Input xs={12} sm={6} lg={6} label={`Institute (${index + 1})`} id={`instituteName-${i.id}`} onChange={handleChangeInput} defaultValue={i.instituteName} resest={isReset} topic={true}/>
                                 <InputSelect xs={12} sm={6} lg={6} label={"Level"} id={`levelType-${i.id}`} placeholder={"level"} optionsList={generalConstant.levelEducationList} onChange={handleChangeInput} defaultValue={i.levelType} resest={isReset} />
                                 <Input xs={12} sm={4} lg={4} label={"Major"} id={`major-${i.id}`} onChange={handleChangeInput} defaultValue={i.major} resest={isReset} />
                                 <Input xs={12} sm={4} lg={4} label={"GPA"} id={`gpa-${i.id}`} onChange={handleChangeInput} type={"number"} defaultValue={i.gpa} resest={isReset} />

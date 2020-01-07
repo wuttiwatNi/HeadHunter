@@ -1,14 +1,14 @@
 @import "../../styles/variables";
 
-.main-create-education {
+.main-create-working {
   margin-top: 15px;
 
-  .header-create-education {
+  .header-create-working {
     margin-bottom: 15px;
 
     .title-text {
-      max-width: calc(25% - 10%);
-      margin-right: 10%;
+      max-width: calc(25% - 5%);
+      margin-right: 5%;
       border-radius: 0px 8px 8px 0px;
       color: rgba(0, 0, 0, 0.5);
       background: rgba(0, 165, 146, 0.4);
@@ -21,8 +21,8 @@
 
     @media (max-width: 991px) {
       .title-text {
-        max-width: calc(50% - 15%);
-        margin-right: 15%;
+        max-width: calc(50% - 10%);
+        margin-right: 10%;
       }
     }
 
@@ -45,6 +45,11 @@
   }
 
   .box-selected {
+    &.line {
+      border-bottom: 1.5px dashed #f4f4f4;
+      margin-bottom: 10px;
+    }
+    
     i {
       cursor: pointer;
       color: rgba(0, 0, 0, 0.2);

@@ -40,6 +40,12 @@ textarea:focus {
       font-weight: 400;
     }
 
+    span.topic {
+      font-size: 16px;
+      font-weight: 500;
+      color: $primaryColor;
+    }
+
     span.warning {
       color: red;
     }
@@ -93,6 +99,28 @@ textarea:focus {
     overflow: hidden;
     text-overflow: ellipsis;
   }
+}
+
+.file-name {
+  position: absolute;
+  bottom: 12px;
+  left: 81px;
+  background-color: white;
+  max-width: calc(100% - 90px);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+input[type="file"] {
+  cursor: pointer;
+}
+
+input[type="file"]::-webkit-file-upload-button {
+  /* chromes and blink button */
+  cursor: pointer;
 }
 
 //Type date

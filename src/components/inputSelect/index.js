@@ -4,7 +4,7 @@ import Select from "react-select";
 import { Col } from "react-bootstrap";
 import "./index.scss";
 
-function InputSelect({ xs, sm, lg, label, id, optionsList, onChange, isSearchable, isDisabled, isLoading, defaultValue, resest, isSetValue, placeholder, isMargin }) {
+function InputSelect({ xs, sm, lg, label, id, optionsList, onChange, isSearchable, isDisabled, isLoading, defaultValue, resest, isSetValue, placeholder, isMargin, topic }) {
     const [value, setValue] = useState(null);
     const [checkSetDefault, setCheckSetDefault] = useState(false);
 
@@ -49,7 +49,7 @@ function InputSelect({ xs, sm, lg, label, id, optionsList, onChange, isSearchabl
     return (
         <Col xs={xs} sm={sm} lg={lg} className={`input ${isMargin ? "paddingTop" : ""}`}>
             <div className="label">
-                {label && <span>{label}</span>}
+                {label && <span className={topic ? "topic" : ""}>{label}</span>}
             </div>
             <Select
                 value={value}

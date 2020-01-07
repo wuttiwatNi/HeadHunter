@@ -258,7 +258,7 @@ function OrderCreate({ mode }) {
             formDataOrder.budget = currentOrder.budget
             formDataOrder.quantity = currentOrder.quantity
             formDataOrder.priority = currentOrder.priority
-            formDataOrder.obsoleted = format(new Date(currentOrder.obsoleted), "yyyy-MM-dd").toString()
+            formDataOrder.obsoleted = currentOrder.obsoleted
 
             setIsReset(true)
             setTimeout(() => {
@@ -473,7 +473,7 @@ function OrderCreate({ mode }) {
                                 <Row>
                                     <InputSelect xs={12} sm={6} lg={3} label={"Category"} id={"categoryId"} optionsList={categoryList} onChange={handleChangeInput} isSearchable={true} defaultValue={currentOrder.categoryId} resest={isReset} />
                                     <InputSelect xs={12} sm={6} lg={3} label={"Position"} id={"positionId"} optionsList={positionList} onChange={handleChangeInput} isSearchable={true} defaultValue={currentOrder.positionId} resest={isReset} />
-                                    <InputSelect xs={12} sm={6} lg={3} label={"Company"} id={"customerId"} optionsList={customerList} onChange={handleChangeInput} isSearchable={true} defaultValue={currentOrder.customerId} resest={isReset} />
+                                    <InputSelect xs={12} sm={6} lg={3} label={"Company"} id={"customerId"} optionsList={customerList} onChange={handleChangeInput} isSearchable={true} defaultValue={currentOrder.customerId} resest={isReset} isDisabled={mode === "edit"} />
                                     <InputSelect xs={12} sm={6} lg={3} label={"Contact"} id={"contactId"} optionsList={contactList} onChange={handleChangeInput} isSearchable={true} defaultValue={currentOrder.contactId} resest={isReset} />
                                     <Input xs={12} sm={6} lg={3} label={"Experience"} id={"experience"} onChange={handleChangeInput} defaultValue={currentOrder.experience} type={"number"} unit={"Year"} resest={isReset} />
                                     <Input xs={12} sm={6} lg={3} label={"Budget"} id={"budget"} onChange={handleChangeInput} defaultValue={currentOrder.budget} type={"number"} unit={"Baht"} resest={isReset} />

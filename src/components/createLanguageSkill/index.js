@@ -42,7 +42,7 @@ function CreateLanguageSkill({ formDataLanguageSkill, setFormDataLanguageSkill, 
     let handleChangeInput = ({ target }) => {
         let { id, value } = target
         let _id = id.split("-")
-        let datas = JSON.parse(JSON.stringify(formDataLanguageSkill))
+        let datas = formDataLanguageSkill//JSON.parse(JSON.stringify(formDataLanguageSkill))
         let index = datas.findIndex(element => element.languageSkillId.toString() === _id[_id.length - 1].toString())
         if (_id[0] === "listening") {
             datas[index].listening = value
@@ -76,7 +76,7 @@ function CreateLanguageSkill({ formDataLanguageSkill, setFormDataLanguageSkill, 
                     {formDataLanguageSkill.map((i) => (
                         <Col key={i.languageSkillId} xs={12} sm={12} lg={6} className={"box-selected no-padding"}>
                             <Row>
-                                <InputSelect xs={12} sm={6} lg={6} label={i.languageSkillName} id={`listening-${i.languageSkillId}`} placeholder={"listening"} optionsList={generalConstant.levelLanguageList} onChange={handleChangeInput} defaultValue={i.listening} resest={isReset} />
+                                <InputSelect xs={12} sm={6} lg={6} label={i.languageSkillName} id={`listening-${i.languageSkillId}`} placeholder={"listening"} optionsList={generalConstant.levelLanguageList} onChange={handleChangeInput} defaultValue={i.listening} resest={isReset} topic={true} />
                                 <InputSelect xs={12} sm={6} lg={6} id={`speaking-${i.languageSkillId}`} placeholder={"speaking"} optionsList={generalConstant.levelLanguageList} onChange={handleChangeInput} isMargin={true} defaultValue={i.speaking} resest={isReset} />
                                 <InputSelect xs={12} sm={6} lg={6} id={`reading-${i.languageSkillId}`} placeholder={"reading"} optionsList={generalConstant.levelLanguageList} onChange={handleChangeInput} defaultValue={i.reading} resest={isReset} />
                                 <InputSelect xs={12} sm={6} lg={6} id={`writing-${i.languageSkillId}`} placeholder={"writing"} optionsList={generalConstant.levelLanguageList} onChange={handleChangeInput} defaultValue={i.writing} resest={isReset} />

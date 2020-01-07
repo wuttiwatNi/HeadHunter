@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useState, useEffect, useCallback } from "react"
 import { useDispatch } from "react-redux"
 import * as PropTypes from "prop-types"
 import { Row, Col } from "react-bootstrap"
@@ -10,14 +10,15 @@ import { modalErrorAction } from "../../actions"
 // components
 import { InputSelect, Input } from "../../components"
 import "./index.scss"
-let id = 0
+let id = -1
 
-function CreateWorking({ formDataWorking, setFormDataWorking, categoryList, isReset }) {
+function CreateWorking({ formDataWorking, setFormDataWorking, categoryList, isReset, defaultPositionList }) {
     const dispatch = useDispatch()
     const { getPositionListByCategoryId } = positionApi
     const [positionList, setPositionList] = useState({})
+    const [set, setSet] = useState(false)
 
-    let _getPositionListByCategoryId = (categoryId, id) => {
+    let _getPositionListByCategoryId = useCallback((categoryId, id) => {
         getPositionListByCategoryId(categoryId).then(({ data }) => {
             let { success, result } = data
             if (success) {
@@ -28,7 +29,45 @@ function CreateWorking({ formDataWorking, setFormDataWorking, categoryList, isRe
                 dispatch(modalErrorAction.show())
             }
         }).catch(error => { console.log(error) })
-    }
+    }, [getPositionListByCategoryId, positionList, dispatch])
+
+    useEffect(() => {
+        if (id === -1) {
+            if (formDataWorking.length >= 1) {
+                id = formDataWorking[0].id
+                for (var i = 0; i < formDataWorking.length; i++) {
+                    if (id < formDataWorking[i].id) {
+                        id = formDataWorking[i].id
+                    }
+                }
+                id += 1
+            } else {
+                id = 0
+            }
+        }
+
+        if (isReset) {
+            setPositionList(defaultPositionList)
+        }
+
+        if (!set) {
+            let _data = {}
+            formDataWorking.forEach((element) => {
+                getPositionListByCategoryId(element.categoryId).then(({ data }) => {
+                    let { success, result } = data
+                    if (success) {
+                        _data[element.id] = objectUtil.sortArray(objectUtil.formForInputSelect(result, "id", "name"), "label")
+                        if (Object.keys(_data).length === formDataWorking.length) {
+                            setPositionList(_data)
+                        }
+                    } else {
+                        dispatch(modalErrorAction.show())
+                    }
+                }).catch(error => { console.log(error) })
+            })
+            setSet(true)
+        }
+    }, [getPositionListByCategoryId, defaultPositionList, dispatch, formDataWorking, set, isReset]);
 
     let handleAddSelect = () => {
         let data = {
@@ -60,9 +99,10 @@ function CreateWorking({ formDataWorking, setFormDataWorking, categoryList, isRe
     let handleChangeInput = ({ target }) => {
         let { id, value } = target
         let _id = id.split("-")
-        let datas = JSON.parse(JSON.stringify(formDataWorking))
-        let index = datas.findIndex((element) => element.id === _id[_id.length - 1].toString())
+        let datas = formDataWorking//JSON.parse(JSON.stringify(formDataWorking))
+        let index = datas.findIndex((element) => element.id.toString() === _id[_id.length - 1].toString())
         datas[index][_id[0]] = value
+
         setFormDataWorking(datas)
 
         switch (_id[0]) {
@@ -88,9 +128,9 @@ function CreateWorking({ formDataWorking, setFormDataWorking, categoryList, isRe
 
     return (
         <>
-            <Col xs={12} sm={12} lg={12} className={"no-padding main-create-education"}>
+            <Col xs={12} sm={12} lg={12} className={"no-padding main-create-working"}>
                 <Row >
-                    <Col xs={12} sm={12} lg={12} className={"no-padding header-create-education"}>
+                    <Col xs={12} sm={12} lg={12} className={"no-padding header-create-working"}>
                         <Row>
                             <Col xs={6} sm={6} lg={3} className={"title-text"}>
                                 Work History
@@ -105,9 +145,9 @@ function CreateWorking({ formDataWorking, setFormDataWorking, categoryList, isRe
                     {formDataWorking.map((i, index) => (
                         <Col key={i.id} xs={12} sm={12} lg={6} className={"box-selected no-padding"}>
                             <Row>
-                                <Input xs={12} sm={12} lg={12} label={`Company (${index + 1})`} id={`companyName-${i.id}`} onChange={handleChangeInput} defaultValue={i.companyName} resest={isReset} />
-                                <InputSelect xs={12} sm={6} lg={6} label={"Category"} id={`categoryId-${i.id}`} optionsList={categoryList} onChange={handleChangeInput} defaultValue={i.categoryId} resest={isReset} />
-                                <InputSelect xs={12} sm={6} lg={6} label={"Position"} id={`positionId-${i.id}`} optionsList={positionList[i.id]} onChange={handleChangeInput} defaultValue={i.positionId} resest={isReset} />
+                                <Input xs={12} sm={12} lg={12} label={`Company (${index + 1})`} id={`companyName-${i.id}`} onChange={handleChangeInput} defaultValue={i.companyName} resest={isReset} topic={true} />
+                                <InputSelect xs={12} sm={6} lg={6} label={"Category"} id={`categoryId-${i.id}`} optionsList={categoryList} onChange={handleChangeInput} defaultValue={i.categoryId} resest={isReset} isSearchable={true} />
+                                <InputSelect xs={12} sm={6} lg={6} label={"Position"} id={`positionId-${i.id}`} optionsList={positionList[i.id]} onChange={handleChangeInput} defaultValue={i.positionId} resest={isReset} isSearchable={true} />
                                 <Input xs={12} sm={6} lg={6} label={"Salary"} id={`salary-${i.id}`} onChange={handleChangeInput} type={"number"} unit={"Baht"} defaultValue={i.salary} resest={isReset} />
                                 <Input xs={12} sm={6} lg={6} label={"Bonus"} id={`bonus-${i.id}`} onChange={handleChangeInput} type={"number"} unit={"Month"} defaultValue={i.bonus} resest={isReset} />
                                 <Input xs={12} sm={6} lg={6} label={"Resign Reason"} id={`reason-${i.id}`} onChange={handleChangeInput} type={"textarea"} defaultValue={i.reason} resest={isReset} />

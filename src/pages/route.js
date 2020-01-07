@@ -90,6 +90,12 @@ function Index() {
                                 )}
                             />
                             <Route
+                                exact path="/candidate/edit/:id"
+                                render={() => (
+                                    <CandidateCreate mode={"edit"} />
+                                )}
+                            />
+                            <Route
                                 exact path={["/candidate/:id"]}
                                 component={CandidateDetail}
                             />

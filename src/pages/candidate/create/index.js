@@ -6,7 +6,7 @@ import { format } from "date-fns"
 // constants
 import { generalConstant } from "../../../constants/index"
 // api
-import { positionApi, skillApi, languageSkillApi, candidateApi, masterApi } from "../../../api"
+import { positionApi, skillApi, languageSkillApi, candidateApi, nationalityApi, masterApi } from "../../../api"
 // action
 import { modalErrorAction } from "../../../actions"
 import { modalLoadingAction } from "../../../actions"
@@ -19,7 +19,7 @@ function CandidateCreate({ mode }) {
     const dispatch = useDispatch()
     const { id } = useParams()
 
-    const [isReset, setIsReset] = useState(false);
+    const [isReset, setIsReset] = useState(false)
     const [isLoadData, setIsLoadData] = useState(true)
 
     const [showModalNormal, setShowModalNormal] = useState(false)
@@ -32,7 +32,8 @@ function CandidateCreate({ mode }) {
     const { getSkillList } = skillApi
     const { getLanguageSkillList } = languageSkillApi
     const { getCandidate, createCandidate, editCandidate } = candidateApi
-    const { getProvinceList, getAmphureListByProvinceId, getDistrictListByAmphureId } = masterApi;
+    const { getProvinceList, getAmphureListByProvinceId, getDistrictListByAmphureId } = masterApi
+    const { getNationalityList } = nationalityApi
 
     const [currentCandidate, setCurrentCandidate] = useState({})
     const [formDataCandidate] = useState({
@@ -42,7 +43,7 @@ function CandidateCreate({ mode }) {
         positionAppliedSecond: "",
         firstName: "",
         lastName: "",
-        nationality: "",
+        nationalityId: "",
         nidType: "",
         nidNumber: "",
         nickname: "",
@@ -80,18 +81,8 @@ function CandidateCreate({ mode }) {
     const [districtList, setDistrictList] = useState([])
     const [skillList, setSkillList] = useState([])
     const [languageSkillList, setLanguageSkillList] = useState([])
-
-    const [nationalityList] = useState([
-        {
-            value: "Thai", label: "Thai"
-        },
-        {
-            value: "Vietnam", label: "Vietnam"
-        },
-        {
-            value: "Japan", label: "Japan"
-        }
-    ])
+    const [nationalityList, setNationalityList] = useState([])
+    const [defaultPositionList, setDefaultPositionList] = useState([])
 
     let _getPositionListByCategoryId = useCallback((categoryId, number) => {
         return new Promise(function (resolve, reject) {
@@ -122,7 +113,7 @@ function CandidateCreate({ mode }) {
                     dispatch(modalErrorAction.show())
                 }
             }).catch(error => { console.log(error) })
-        });
+        })
     }, [getAmphureListByProvinceId, dispatch])
 
     let _getDistrictListByAmphureId = useCallback((amphureId) => {
@@ -136,7 +127,7 @@ function CandidateCreate({ mode }) {
                     dispatch(modalErrorAction.show())
                 }
             }).catch(error => { console.log(error) })
-        });
+        })
     }, [getDistrictListByAmphureId, dispatch])
 
     useEffect(() => {
@@ -188,59 +179,147 @@ function CandidateCreate({ mode }) {
             }).catch(error => { console.log(error) })
         })
 
+        var promise5 = new Promise(function (resolve, reject) {
+            getNationalityList().then(({ data }) => {
+                let { success, result } = data
+                if (success) {
+                    setNationalityList(objectUtil.sortArray(objectUtil.formForInputSelect(result, "id", "name"), "label"))
+                    resolve()
+                } else {
+                    dispatch(modalErrorAction.show())
+                }
+            }).catch(error => { console.log(error) })
+        })
+
         if (mode === "create") {
-            Promise.all([promise1, promise2, promise3, promise4]).then(() => {
+            Promise.all([promise1, promise2, promise3, promise4, promise5]).then(() => {
                 setIsLoadData(false)
             })
         } else {
             getCandidate(id).then(({ data }) => {
                 let { success, result } = data
                 if (success && result.length !== 0) {
-                    let { id, categoryId, positionId, customerId, contact, experience, budget, quantity, priority, obsoleted, skill, languageSkill } = result[0]
-                    let contactId = contact[0].id
+                    let {
+                        id,
+                        positionFristCategoryId,
+                        positionSecondCategoryId,
+                        positionAppliedFrist,
+                        positionAppliedSecond,
+                        firstName,
+                        lastName,
+                        nickname,
+                        nationalityId,
+                        nidType,
+                        nidNumber,
+                        dateOfBirth,
+                        gendar,
+                        maritalStatus,
+                        height,
+                        email,
+                        phoneNumber,
+                        salaryExpect,
+                        drivingLicense,
+                        ownCar,
+                        address,
+                        provinceId,
+                        amphureId,
+                        districtId,
+                        comment,
+                        picturePath,
+                        resumePath,
+                        education,
+                        working,
+                        skill,
+                        languageSkill
+                    } = result[0]
+
                     formDataCandidate.id = id
-                    formDataCandidate.categoryId = categoryId
-                    formDataCandidate.positionId = positionId
-                    formDataCandidate.customerId = customerId
-                    formDataCandidate.contactId = contactId
-                    formDataCandidate.experience = experience
-                    formDataCandidate.budget = budget
-                    formDataCandidate.quantity = quantity
-                    formDataCandidate.priority = priority
-                    formDataCandidate.obsoleted = format(new Date(obsoleted), "yyyy-MM-dd").toString()
+                    formDataCandidate.categoryIdFrist = positionFristCategoryId
+                    formDataCandidate.categoryIdSecond = positionSecondCategoryId
+                    formDataCandidate.positionAppliedFrist = positionAppliedFrist
+                    formDataCandidate.positionAppliedSecond = positionAppliedSecond
+                    formDataCandidate.firstName = firstName
+                    formDataCandidate.lastName = lastName
+                    formDataCandidate.nickname = nickname
+                    formDataCandidate.nationalityId = nationalityId
+                    formDataCandidate.nidType = nidType
+                    formDataCandidate.nidNumber = nidNumber
+                    formDataCandidate.dateOfBirth = format(new Date(dateOfBirth), "yyyy-MM-dd").toString()
+                    formDataCandidate.gendar = gendar
+                    formDataCandidate.maritalStatus = maritalStatus
+                    formDataCandidate.height = height
+                    formDataCandidate.email = email
+                    formDataCandidate.phoneNumber = phoneNumber
+                    formDataCandidate.salaryExpect = salaryExpect
+                    formDataCandidate.drivingLicense = drivingLicense ? true : false
+                    formDataCandidate.ownCar = ownCar ? true : false
+                    formDataCandidate.address = address
+                    formDataCandidate.provinceId = provinceId
+                    formDataCandidate.amphureId = amphureId
+                    formDataCandidate.districtId = districtId
+                    formDataCandidate.comment = comment
+
+                    // Get name and surname picture
+                    let __picturePath = picturePath.split("/")
+                    let namePicture = __picturePath[__picturePath.length - 1]
+                    formDataCandidate.namePicture = namePicture
+
+                    // Get name and surname resume
+                    let __resumePath = resumePath.split("/")
+                    let nameResume = __resumePath[__resumePath.length - 1]
+                    formDataCandidate.nameResume = nameResume
+
+                    education = education.map((element) => ({
+                        ...element,
+                        graduate: format(new Date(element.graduate), "yyyy-MM-dd").toString()
+                    }))
+
+                    working = working.map((element) => ({
+                        ...element,
+                        startDate: format(new Date(element.startDate), "yyyy-MM-dd").toString(),
+                        endDate: format(new Date(element.endDate), "yyyy-MM-dd").toString()
+                    }))
+
+                    setFormDataEdcution(JSON.parse(JSON.stringify(education)))
                     setFormDataSkill(JSON.parse(JSON.stringify(skill)))
                     setFormDataLanguageSkill(JSON.parse(JSON.stringify(languageSkill)))
+                    setFormDataWorking(JSON.parse(JSON.stringify(working)))
 
-                    var promiseSet1 = _getPositionListByCategoryId(categoryId, 1)
+                    var promiseSet1 = _getPositionListByCategoryId(positionFristCategoryId, 1)
+                    var promiseSet2 = _getPositionListByCategoryId(positionSecondCategoryId, 2)
+                    var promiseSet3 = _getAmphureListByProvinceId(provinceId)
+                    var promiseSet4 = _getDistrictListByAmphureId(amphureId)
 
-                    Promise.all([promiseSet1, promise1, promise2, promise3]).then((result) => {
+                    Promise.all([promise1, promise2, promise3, promise4, promiseSet1, promiseSet2, promiseSet3, promiseSet4]).then((result) => {
                         // Filter skill list
-                        let _skillList = result[4].filter(element => {
-                            let result = true;
+                        let _skillList = result[2].filter(element => {
+                            let result = true
                             skill.forEach(_element => {
                                 if (element.value === _element.skillId) {
                                     result = false
                                 }
-                            });
+                            })
                             return result
-                        });
+                        })
                         // Filter language skill list
-                        let _languageSkillList = result[5].filter(element => {
-                            let result = true;
+                        let _languageSkillList = result[3].filter(element => {
+                            let result = true
                             languageSkill.forEach(_element => {
                                 if (element.value === _element.languageSkillId) {
                                     result = false
                                 }
-                            });
+                            })
                             return result
-                        });
+                        })
                         setSkillList(_skillList)
                         setLanguageSkillList(_languageSkillList)
                         setIsLoadData(false)
                         setCurrentCandidate({
                             ...formDataCandidate,
+                            education: JSON.parse(JSON.stringify(education)),
                             skill: JSON.parse(JSON.stringify(skill)),
                             languageSkill: JSON.parse(JSON.stringify(languageSkill)),
+                            working: JSON.parse(JSON.stringify(working)),
                             skillList: JSON.parse(JSON.stringify(_skillList)),
                             languageSkillList: JSON.parse(JSON.stringify(_languageSkillList))
                         })
@@ -250,7 +329,7 @@ function CandidateCreate({ mode }) {
                 }
             }).catch(error => { console.log(error) })
         }
-    }, [getCategoryList, getSkillList, getLanguageSkillList, dispatch, _getPositionListByCategoryId, formDataCandidate, getCandidate, getProvinceList, id, mode])
+    }, [getCategoryList, getSkillList, getLanguageSkillList, dispatch, _getPositionListByCategoryId, _getAmphureListByProvinceId, _getDistrictListByAmphureId, formDataCandidate, getCandidate, getProvinceList, getNationalityList, id, mode])
 
     let handleChangeInput = ({ target }) => {
         let { id, value } = target
@@ -327,29 +406,72 @@ function CandidateCreate({ mode }) {
     }
 
     let handleReset = () => {
-        var promise1 = _getPositionListByCategoryId(currentCandidate.categoryId, 1)
+        var promise1 = _getPositionListByCategoryId(currentCandidate.categoryIdFrist, 1)
+        var promise2 = _getPositionListByCategoryId(currentCandidate.categoryIdSecond, 2)
 
-        Promise.all([promise1]).then(() => {
+        let _data = {}
+        var promise3 = new Promise(function (resolve, reject) {
+            currentCandidate.working.forEach((element) => {
+                getPositionListByCategoryId(element.categoryId).then(({ data }) => {
+                    let { success, result } = data
+                    if (success) {
+                        _data[element.id] = objectUtil.sortArray(objectUtil.formForInputSelect(result, "id", "name"), "label")
+                        if (Object.keys(_data).length === formDataWorking.length) {
+                            setDefaultPositionList(_data)
+                            resolve()
+                        }
+                    } else {
+                        dispatch(modalErrorAction.show())
+                    }
+                }).catch(error => { console.log(error) })
+            })
+        })
+
+        dispatch(modalLoadingAction.show())
+
+        Promise.all([promise1, promise2, promise3]).then(() => {
+            dispatch(modalLoadingAction.close())
+
             setSkillList(JSON.parse(JSON.stringify(currentCandidate.skillList)))
             setLanguageSkillList(JSON.parse(JSON.stringify(currentCandidate.languageSkillList)))
             setFormDataSkill(JSON.parse(JSON.stringify(currentCandidate.skill)))
             setFormDataLanguageSkill(JSON.parse(JSON.stringify(currentCandidate.languageSkill)))
+            setFormDataEdcution(JSON.parse(JSON.stringify(currentCandidate.education)))
+            setFormDataWorking(JSON.parse(JSON.stringify(currentCandidate.working)))
 
-            formDataCandidate.categoryId = currentCandidate.categoryId
-            formDataCandidate.positionId = currentCandidate.positionId
-            formDataCandidate.customerId = currentCandidate.customerId
-            formDataCandidate.contactId = currentCandidate.contactId
-            formDataCandidate.experience = currentCandidate.experience
-            formDataCandidate.budget = currentCandidate.budget
-            formDataCandidate.quantity = currentCandidate.quantity
-            formDataCandidate.priority = currentCandidate.priority
-            formDataCandidate.obsoleted = format(new Date(currentCandidate.obsoleted), "yyyy-MM-dd").toString()
+            formDataCandidate.categoryIdFrist = currentCandidate.categoryIdFrist
+            formDataCandidate.positionAppliedFrist = currentCandidate.positionAppliedFrist
+            formDataCandidate.categoryIdSecond = currentCandidate.categoryIdSecond
+            formDataCandidate.positionAppliedSecond = currentCandidate.positionAppliedSecond
+            formDataCandidate.firstName = currentCandidate.firstName
+            formDataCandidate.lastName = currentCandidate.lastName
+            formDataCandidate.nationalityId = currentCandidate.nationalityId
+            formDataCandidate.nidType = currentCandidate.nidType
+            formDataCandidate.nidNumber = currentCandidate.nidNumber
+
+            formDataCandidate.nickname = currentCandidate.nickname
+            formDataCandidate.salaryExpect = currentCandidate.salaryExpect
+            formDataCandidate.address = currentCandidate.address
+            formDataCandidate.provinceId = currentCandidate.provinceId
+            formDataCandidate.phoneNumber = currentCandidate.phoneNumber
+            formDataCandidate.email = currentCandidate.email
+            formDataCandidate.gendar = currentCandidate.gendar
+            formDataCandidate.maritalStatus = currentCandidate.maritalStatus
+            formDataCandidate.dateOfBirth = currentCandidate.dateOfBirth
+            formDataCandidate.height = currentCandidate.height
+            formDataCandidate.drivingLicense = currentCandidate.drivingLicense
+            formDataCandidate.ownCar = currentCandidate.ownCar
+            formDataCandidate.comment = currentCandidate.comment
+            formDataCandidate.resume = {}
+            formDataCandidate.picture = {}
+            // document.getElementById("resume").value = {}
+            // document.getElementById("picture").value = {}
 
             setIsReset(true)
             setTimeout(() => {
                 setIsReset(false)
             }, 1)
-        });
+        })
     }
 
     let handleDiscard = () => {
@@ -371,7 +493,7 @@ function CandidateCreate({ mode }) {
                 formDataCandidate.languageSkill = formDataLanguageSkill
                 formDataCandidate.working = formDataWorking
 
-                var formData = new FormData();
+                var formData = new FormData()
 
                 for (var key in formDataCandidate) {
                     if (key === "education") {
@@ -388,7 +510,6 @@ function CandidateCreate({ mode }) {
                         formData.append(key, formDataCandidate[key])
                     }
                 }
-                formData.append("salaryOption", "[]")
 
                 createCandidate(formData).then(({ data }) => {
                     let { success, result } = data
@@ -402,23 +523,53 @@ function CandidateCreate({ mode }) {
                 })
                 break
             case "edit":
+                let educationWithFlag = []
+                Array.prototype.push.apply(educationWithFlag, getDeleteEducation())
+                Array.prototype.push.apply(educationWithFlag, getCreateEducation())
+                Array.prototype.push.apply(educationWithFlag, getUpdateEducation())
+
                 let skillWithFlag = []
-                Array.prototype.push.apply(skillWithFlag, getUpdateSkill());
-                Array.prototype.push.apply(skillWithFlag, getDeleteSkill());
-                Array.prototype.push.apply(skillWithFlag, getCreateSkill());
+                Array.prototype.push.apply(skillWithFlag, getUpdateSkill())
+                Array.prototype.push.apply(skillWithFlag, getDeleteSkill())
+                Array.prototype.push.apply(skillWithFlag, getCreateSkill())
 
                 let languageSkillWithFlag = []
-                Array.prototype.push.apply(languageSkillWithFlag, getDeleteLanguageSkill());
-                Array.prototype.push.apply(languageSkillWithFlag, getCreateLanguageSkill());
-                Array.prototype.push.apply(languageSkillWithFlag, getUpdateLanguageSkill());
+                Array.prototype.push.apply(languageSkillWithFlag, getDeleteLanguageSkill())
+                Array.prototype.push.apply(languageSkillWithFlag, getCreateLanguageSkill())
+                Array.prototype.push.apply(languageSkillWithFlag, getUpdateLanguageSkill())
 
+                let workingWithFlag = []
+                Array.prototype.push.apply(workingWithFlag, getDeleteWorking())
+                Array.prototype.push.apply(workingWithFlag, getCreateWorking())
+                Array.prototype.push.apply(workingWithFlag, getUpdateWorking())
+
+                formDataCandidate.education = educationWithFlag
                 formDataCandidate.skill = skillWithFlag
                 formDataCandidate.languageSkill = languageSkillWithFlag
+                formDataCandidate.working = workingWithFlag
+
+                var formDataEdit = new FormData()
+
+                for (var keyEdit in formDataCandidate) {
+                    if (keyEdit === "education") {
+                        formDataEdit.append(keyEdit, JSON.stringify(formDataCandidate[keyEdit]))
+                    } else if (keyEdit === "skill") {
+                        formDataEdit.append(keyEdit, JSON.stringify(formDataCandidate[keyEdit]))
+                    } else if (keyEdit === "languageSkill") {
+                        formDataEdit.append(keyEdit, JSON.stringify(formDataCandidate[keyEdit]))
+                    } else if (keyEdit === "working") {
+                        formDataEdit.append(keyEdit, JSON.stringify(formDataCandidate[keyEdit]))
+                    } else if (keyEdit === "drivingLicense" || keyEdit === "ownCar") {
+                        formDataEdit.append(keyEdit, formDataCandidate[keyEdit] ? 1 : 0)
+                    } else {
+                        formDataEdit.append(keyEdit, formDataCandidate[keyEdit])
+                    }
+                }
 
                 setShowModalNormal(false)
                 dispatch(modalLoadingAction.show())
 
-                editCandidate(formDataCandidate).then(({ data }) => {
+                editCandidate(formDataEdit).then(({ data }) => {
                     let { success, result } = data
                     if (success) {
                         history.replace(`/candidate/${result[0].id.toString()}`)
@@ -446,7 +597,7 @@ function CandidateCreate({ mode }) {
                 }
             })
             return x
-        });
+        })
     }
 
     let getUpdateSkillAfter = () => {
@@ -470,8 +621,12 @@ function CandidateCreate({ mode }) {
                     experience = _element.experience
                 }
             })
-            return { ...element, experience: experience, flag: "Update" }
-        });
+            return {
+                ...element,
+                experience: experience,
+                flag: "Update"
+            }
+        })
     }
 
     let getUpdateLanguageSkillBefore = () => {
@@ -483,7 +638,7 @@ function CandidateCreate({ mode }) {
                 }
             })
             return x
-        });
+        })
     }
 
     let getUpdateLanguageSkillAfter = () => {
@@ -513,8 +668,136 @@ function CandidateCreate({ mode }) {
                     writing = _element.writing
                 }
             })
-            return { ...element, listening: listening, speaking: speaking, reading: reading, writing: writing, flag: "Update" }
-        });
+            return {
+                ...element,
+                listening: listening,
+                speaking: speaking,
+                reading: reading,
+                writing: writing,
+                flag: "Update"
+            }
+        })
+    }
+
+    let getUpdateEducationBefore = () => {
+        return currentCandidate.education.filter(element => {
+            let x = false
+            formDataEdcution.forEach(_element => {
+                if (element.id === _element.id) {
+                    x = true
+                }
+            })
+            return x
+        })
+    }
+
+    let getUpdateEducationAfter = () => {
+        return formDataEdcution.filter(element => {
+            let x = false
+            currentCandidate.education.forEach(_element => {
+                if (element.id === _element.id) {
+                    x = true
+                }
+            })
+            return x
+        })
+    }
+
+    let getUpdateEducation = () => {
+        let updateEducationAfter = getUpdateEducationAfter()
+        return getUpdateEducationBefore().map(element => {
+            let levelType = -1
+            let instituteName = -1
+            let major = -1
+            let gpa = -1
+            let graduate = -1
+            updateEducationAfter.forEach(_element => {
+                if (element.id === _element.id) {
+                    levelType = _element.levelType
+                    instituteName = _element.instituteName
+                    major = _element.major
+                    gpa = _element.gpa
+                    graduate = _element.graduate
+                }
+            })
+            return {
+                ...element,
+                levelType: levelType,
+                instituteName: instituteName,
+                major: major,
+                gpa: gpa,
+                graduate: graduate,
+                flag: "Update"
+            }
+        })
+    }
+
+    let getUpdateWorkingBefore = () => {
+        return currentCandidate.working.filter(element => {
+            let x = false
+            formDataWorking.forEach(_element => {
+                if (element.id === _element.id) {
+                    x = true
+                }
+            })
+            return x
+        })
+    }
+
+    let getUpdateWorkingAfter = () => {
+        return formDataWorking.filter(element => {
+            let x = false
+            currentCandidate.working.forEach(_element => {
+                if (element.id === _element.id) {
+                    x = true
+                }
+            })
+            return x
+        })
+    }
+
+    let getUpdateWorking = () => {
+        let updateWorkingAfter = getUpdateWorkingAfter()
+        return getUpdateWorkingBefore().map(element => {
+            let companyName = -1
+            let categoryId = -1
+            let categoryName = -1
+            let positionId = -1
+            let positionName = -1
+            let salary = -1
+            let bonus = -1
+            let startDate = -1
+            let endDate = -1
+            let reason = -1
+            updateWorkingAfter.forEach(_element => {
+                if (element.id === _element.id) {
+                    companyName = _element.companyName
+                    categoryId = _element.categoryId
+                    categoryName = _element.categoryName
+                    positionId = _element.positionId
+                    positionName = _element.positionName
+                    salary = _element.salary
+                    bonus = _element.bonus
+                    startDate = _element.startDate
+                    endDate = _element.endDate
+                    reason = _element.reason
+                }
+            })
+            return {
+                ...element,
+                companyName: companyName,
+                categoryId: categoryId,
+                categoryName: categoryName,
+                positionId: positionId,
+                positionName: positionName,
+                salary: salary,
+                bonus: bonus,
+                startDate: startDate,
+                endDate: endDate,
+                reason: reason,
+                flag: "Update"
+            }
+        })
     }
 
     let getDeleteSkill = () => {
@@ -534,6 +817,30 @@ function CandidateCreate({ mode }) {
             let x = true
             formDataLanguageSkill.forEach(_element => {
                 if (element.languageSkillId === _element.languageSkillId) {
+                    x = false
+                }
+            })
+            return x
+        }).map(element => ({ ...element, flag: "Delete" }))
+    }
+
+    let getDeleteEducation = () => {
+        return currentCandidate.education.filter(element => {
+            let x = true
+            formDataEdcution.forEach(_element => {
+                if (element.id === _element.id) {
+                    x = false
+                }
+            })
+            return x
+        }).map(element => ({ ...element, flag: "Delete" }))
+    }
+
+    let getDeleteWorking = () => {
+        return currentCandidate.working.filter(element => {
+            let x = true
+            formDataWorking.forEach(_element => {
+                if (element.id === _element.id) {
                     x = false
                 }
             })
@@ -565,6 +872,30 @@ function CandidateCreate({ mode }) {
         }).map(element => ({ ...element, candidateId: id, flag: "Insert" }))
     }
 
+    let getCreateEducation = () => {
+        return formDataEdcution.filter(element => {
+            let x = true
+            currentCandidate.education.forEach(_element => {
+                if (element.id === _element.id) {
+                    x = false
+                }
+            })
+            return x
+        }).map(element => ({ ...element, candidateId: id, flag: "Insert" }))
+    }
+
+    let getCreateWorking = () => {
+        return formDataWorking.filter(element => {
+            let x = true
+            currentCandidate.working.forEach(_element => {
+                if (element.id === _element.id) {
+                    x = false
+                }
+            })
+            return x
+        }).map(element => ({ ...element, candidateId: id, flag: "Insert" }))
+    }
+
     return (
         <>
             {isLoadData ? (
@@ -577,19 +908,19 @@ function CandidateCreate({ mode }) {
                         <Box
                             body={() => (
                                 <Row>
-                                    <InputSelect xs={12} sm={6} lg={6} label={"Category (1st)"} id={"categoryIdFrist"} placeholder={"Category"} optionsList={categoryList} onChange={handleChangeInput} isSearchable={true} defaultValue={currentCandidate.categoryId} resest={isReset} />
+                                    <InputSelect xs={12} sm={6} lg={6} label={"Category (1st)"} id={"categoryIdFrist"} placeholder={"Category"} optionsList={categoryList} onChange={handleChangeInput} isSearchable={true} defaultValue={currentCandidate.categoryIdFrist} resest={isReset} />
                                     <InputSelect xs={12} sm={6} lg={6} label={"Position Applied (1st)"} id={"positionAppliedFrist"} placeholder={"Position Applied"} optionsList={positionList1} onChange={handleChangeInput} isSearchable={true} defaultValue={currentCandidate.positionAppliedFrist} resest={isReset} />
-                                    <InputSelect xs={12} sm={6} lg={6} label={"Category (2nd)"} id={"categoryIdSecond"} placeholder={"Category"} optionsList={categoryList} onChange={handleChangeInput} isSearchable={true} defaultValue={currentCandidate.categoryId} resest={isReset} />
+                                    <InputSelect xs={12} sm={6} lg={6} label={"Category (2nd)"} id={"categoryIdSecond"} placeholder={"Category"} optionsList={categoryList} onChange={handleChangeInput} isSearchable={true} defaultValue={currentCandidate.categoryIdSecond} resest={isReset} />
                                     <InputSelect xs={12} sm={6} lg={6} label={"Position Applied (2nd)"} id={"positionAppliedSecond"} placeholder={"Position Applied"} optionsList={positionList2} onChange={handleChangeInput} isSearchable={true} defaultValue={currentCandidate.positionAppliedSecond} resest={isReset} />
 
-                                    <Input xs={12} sm={6} lg={4} label={"Profile"} warning={"jpg, jpeg, png"} id={"picture"} onChange={handleChangeInput} type={"file"} typeFile=".jpg,.jpeg,.png" defaultValue={currentCandidate.picture} resest={isReset} />
-                                    <Input xs={12} sm={6} lg={4} label={"Resume"} warning={"pdf"} id={"resume"} onChange={handleChangeInput} type={"file"} typeFile=".pdf" defaultValue={currentCandidate.resume} resest={isReset} />
+                                    <Input xs={12} sm={6} lg={4} label={"Profile"} warning={"jpg, jpeg, png"} id={"picture"} onChange={handleChangeInput} defaultNameFile={currentCandidate.namePicture} type={"file"} typeFile=".jpg,.jpeg,.png" resest={isReset} />
+                                    <Input xs={12} sm={6} lg={4} label={"Resume"} warning={"pdf"} id={"resume"} onChange={handleChangeInput} defaultNameFile={currentCandidate.nameResume} type={"file"} typeFile=".pdf" resest={isReset} />
                                     <Col xs={0} sm={0} lg={3}></Col>
 
                                     <Input xs={12} sm={6} lg={4} label={"First Name"} id={"firstName"} onChange={handleChangeInput} defaultValue={currentCandidate.firstName} resest={isReset} />
                                     <Input xs={12} sm={6} lg={4} label={"Last Name"} id={"lastName"} onChange={handleChangeInput} defaultValue={currentCandidate.firstName} resest={isReset} />
                                     <Input xs={12} sm={6} lg={4} label={"Nickname"} id={"nickname"} onChange={handleChangeInput} defaultValue={currentCandidate.nickname} resest={isReset} />
-                                    <InputSelect xs={12} sm={6} lg={4} label={"Nationality"} id={"nationality"} optionsList={nationalityList} onChange={handleChangeInput} defaultValue={currentCandidate.nationality} resest={isReset} />
+                                    <InputSelect xs={12} sm={6} lg={4} label={"Nationality"} id={"nationalityId"} optionsList={nationalityList} onChange={handleChangeInput} defaultValue={currentCandidate.nationalityId} isSearchable={true} resest={isReset} />
                                     <InputSelect xs={12} sm={6} lg={4} label={"NID Type"} id={"nidType"} optionsList={generalConstant.nidTypeList} onChange={handleChangeInput} defaultValue={currentCandidate.nidType} resest={isReset} />
                                     <Input xs={12} sm={6} lg={4} label={"NID Number"} id={"nidNumber"} onChange={handleChangeInput} defaultValue={currentCandidate.nidNumber} resest={isReset} />
                                     <Input xs={12} sm={6} lg={4} label={"Date Of Birth"} id={"dateOfBirth"} onChange={handleChangeInput} defaultValue={currentCandidate.dateOfBirth} type={"date"} resest={isReset} />
@@ -616,7 +947,7 @@ function CandidateCreate({ mode }) {
                                     <CreateEducation formDataEdcution={formDataEdcution} setFormDataEdcution={setFormDataEdcution} isReset={isReset} />
                                     <CreateSkill formDataSkill={formDataSkill} setFormDataSkill={setFormDataSkill} skillList={skillList} setSkillList={setSkillList} isReset={isReset} />
                                     <CreateLanguageSkill formDataLanguageSkill={formDataLanguageSkill} setFormDataLanguageSkill={setFormDataLanguageSkill} languageSkillList={languageSkillList} setLanguageSkillList={setLanguageSkillList} isReset={isReset} />
-                                    <CreateWorking formDataWorking={formDataWorking} setFormDataWorking={setFormDataWorking} categoryList={categoryList} isReset={isReset} />
+                                    <CreateWorking formDataWorking={formDataWorking} setFormDataWorking={setFormDataWorking} categoryList={categoryList} isReset={isReset} defaultPositionList={defaultPositionList} />
                                 </Row>
                             )}
                             footer={() => (

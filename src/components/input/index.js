@@ -1,40 +1,54 @@
-import React, { useState, useEffect } from "react";
-import * as PropTypes from "prop-types";
-import { Col } from "react-bootstrap";
-import "./index.scss";
+import React, { useState, useEffect } from "react"
+import * as PropTypes from "prop-types"
+import { Col } from "react-bootstrap"
+// import _ from "lodash"
+import "./index.scss"
 
-function Input({ xs, sm, lg, label, id, onChange, type, isHidden, defaultValue, resest, unit, isMargin, typeFile, warning }) {
-    const [value, setValue] = useState("");
-    const [checkSetDefault, setCheckSetDefault] = useState(false);
+function Input({ xs, sm, lg, label, id, onChange, type, isHidden, defaultValue, defaultNameFile, resest, unit, isMargin, typeFile, warning, topic }) {
+    const [value, setValue] = useState("")
+    const [checkSetDefault, setCheckSetDefault] = useState(false)
 
     useEffect(() => {
         if (defaultValue !== undefined && !checkSetDefault) {
             setCheckSetDefault(true)
-            setValue(defaultValue)
+            if (type !== "file") {
+                setValue(defaultValue)
+            }
         } else if (resest) {
-            setValue(defaultValue)
+            if (type !== "file") {
+                setValue(defaultValue)
+            }
         }
-    }, [checkSetDefault, setCheckSetDefault, setValue, defaultValue, resest]);
+    }, [checkSetDefault, setCheckSetDefault, setValue, defaultValue, resest, type]);
 
     let onChanges = (data) => {
         document.getElementById(data.target.id).classList.remove("invalid")
-        setValue(data.target.value)
+        if (type === "checkbox") {
+            setValue(!Boolean(value))
+        } else {
+            setValue(data.target.value)
+        }
         onChange(data)
+    }
+
+    let handleChildClick = (e) => {
+        document.getElementById(id).click()
     }
 
     return (
         <Col xs={xs} sm={sm} lg={lg} className={`input ${isHidden ? "hidden" : ""}`} style={{ paddingTop: isMargin ? 26 : 0 }}>
             <div className="label">
-                {type !== "checkbox" && <><span>{label}</span> {warning && <span className={"warning"}>({warning})</span>}</>}
+                {type !== "checkbox" && <><span className={topic ? "topic" : ""}>{label}</span> {warning && <span className={"warning"}>({warning})</span>}</>}
             </div>
-            <div className="main-input">
+            <div className="main-input" style={{ position: `${type === "file" ? "relative" : ""}` }}>
                 {type === "textarea" ?
                     <textarea id={id} onChange={onChanges} value={value} style={{ height: 120 }} /> :
                     type === "file" ?
                         <input id={id} onChange={onChanges} type={type} value={value} required accept={typeFile} /> :
-                        <input id={id} onChange={onChanges} type={type} value={value} required className={unit ? "not-full" : ""} />
+                        <input id={id} onChange={onChanges} type={type} value={value} required checked={Boolean(value)} className={unit ? "not-full" : ""} />
                 } {type === "checkbox" && <span className={"span-checkbox"}>{label}</span>}
                 {unit && <div className="unit" title={unit}>{unit}</div>}
+                {(type === "file" && value === "") && <span className={"file-name"} onClick={handleChildClick}>{defaultNameFile}</span>}
             </div>
         </Col>
     );
