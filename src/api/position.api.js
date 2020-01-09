@@ -8,7 +8,8 @@ export const positionApi = {
   getPosition,
   createPosition,
   editPosition,
-  deletePosition
+  deletePosition,
+  getAllList
 };
 
 function getCategoryList() {
@@ -29,6 +30,13 @@ function getPosition(id) {
   return client({
     method: "GET",
     url: `${config.API_RESOURCE_URL}${apiConstant.position.POSITION}/${id}`
+  });
+}
+
+function getAllList() {
+  return client({
+    method: "GET",
+    url: `${config.API_RESOURCE_URL}${apiConstant.position.POSITION}/all`
   });
 }
 

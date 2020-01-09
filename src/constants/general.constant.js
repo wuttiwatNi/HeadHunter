@@ -21,10 +21,10 @@ const nidTypeList = [
 
 const gendarList = [
   {
-    value: "M", label: "Male"
+    value: "Male", label: "Male"
   },
   {
-    value: "F", label: "Fenale"
+    value: "Female", label: "Female"
   }
 ]
 

@@ -1,34 +1,34 @@
-import React, { useState, useEffect, useCallback } from "react";
-import { useHistory, useParams } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import { objectUtil } from "../../../utils/object.util";
+import React, { useState, useEffect, useCallback } from "react"
+import { useHistory, useParams } from "react-router-dom"
+import { useDispatch } from "react-redux"
+import { objectUtil } from "../../../utils/object.util"
 // api
-import { masterApi, customerApi } from "../../../api";
+import { masterApi, customerApi } from "../../../api"
 // action
-import { modalErrorAction } from "../../../actions";
-import { modalLoadingAction } from "../../../actions";
+import { modalErrorAction } from "../../../actions"
+import { modalLoadingAction } from "../../../actions"
 // components
-import { Topic, Box, Input, InputSelect, ModalNormal } from "../../../components";
-import { Row, Col, Spinner } from "react-bootstrap";
+import { Topic, Box, Input, InputSelect, ModalNormal } from "../../../components"
+import { Row, Col, Spinner } from "react-bootstrap"
 
 function CustomerCreate({ mode }) {
-    const history = useHistory();
-    const dispatch = useDispatch();
-    const { id } = useParams();
+    const history = useHistory()
+    const dispatch = useDispatch()
+    const { id } = useParams()
 
-    const [isReset, setIsReset] = useState(false);
+    const [isReset, setIsReset] = useState(false)
     const [isLoadData, setIsLoadData] = useState(true)
 
-    const [showModalNormal, setShowModalNormal] = useState(false);
-    const [titleModalNormal, setTitleModalNormal] = useState("");
-    const [desModalNormal, setDesModalNormal] = useState("");
-    const [swapColorModalNormal, setSwapColorModalNormal] = useState(false);
-    const [modeModalNormal, setModeModalNormal] = useState("");
+    const [showModalNormal, setShowModalNormal] = useState(false)
+    const [titleModalNormal, setTitleModalNormal] = useState("")
+    const [desModalNormal, setDesModalNormal] = useState("")
+    const [swapColorModalNormal, setSwapColorModalNormal] = useState(false)
+    const [modeModalNormal, setModeModalNormal] = useState("")
 
-    const { getProvinceList, getAmphureListByProvinceId, getDistrictListByAmphureId } = masterApi;
-    const { getCustomer, createCustomer, editCustomer } = customerApi;
+    const { getProvinceList, getAmphureListByProvinceId, getDistrictListByAmphureId } = masterApi
+    const { getCustomer, createCustomer, editCustomer } = customerApi
 
-    const [currentCustomer, setCurrentCustomer] = useState({});
+    const [currentCustomer, setCurrentCustomer] = useState({})
     const [formDataCustomer] = useState({
         id: "",
         companyName: "",
@@ -39,11 +39,11 @@ function CustomerCreate({ mode }) {
         taxNumber: "",
         phoneNumber: "",
         contact: []
-    });
+    })
 
-    const [proviceList, setProviceList] = useState([]);
-    const [amphurList, setAmphureList] = useState([]);
-    const [districtList, setDistrictList] = useState([]);
+    const [proviceList, setProviceList] = useState([])
+    const [amphurList, setAmphureList] = useState([])
+    const [districtList, setDistrictList] = useState([])
 
     let _getAmphureListByProvinceId = useCallback((provinceId) => {
         return new Promise(function (resolve, reject) {
@@ -56,7 +56,7 @@ function CustomerCreate({ mode }) {
                     dispatch(modalErrorAction.show())
                 }
             }).catch(error => { console.log(error) })
-        });
+        })
     }, [getAmphureListByProvinceId, dispatch])
 
     let _getDistrictListByAmphureId = useCallback((amphureId) => {
@@ -70,7 +70,7 @@ function CustomerCreate({ mode }) {
                     dispatch(modalErrorAction.show())
                 }
             }).catch(error => { console.log(error) })
-        });
+        })
     }, [getDistrictListByAmphureId, dispatch])
 
     useEffect(() => {
@@ -89,13 +89,10 @@ function CustomerCreate({ mode }) {
                     formDataCustomer.taxNumber = taxNumber
                     formDataCustomer.phoneNumber = phoneNumber
 
-                    var promise1 = _getAmphureListByProvinceId(provinceId)
-                    var promise2 = _getDistrictListByAmphureId(amphureId)
-
-                    Promise.all([promise1, promise2]).then(() => {
+                    Promise.all([_getAmphureListByProvinceId(provinceId), _getDistrictListByAmphureId(amphureId)]).then(() => {
                         setCurrentCustomer(result[0])
                         setIsLoadData(false)
-                    });
+                    })
                 } else {
                     dispatch(modalErrorAction.show())
                 }
@@ -113,7 +110,7 @@ function CustomerCreate({ mode }) {
                 dispatch(modalErrorAction.show())
             }
         }).catch(error => { console.log(error) })
-    }, [getProvinceList, _getAmphureListByProvinceId, _getDistrictListByAmphureId, setCurrentCustomer, formDataCustomer, dispatch, getCustomer, id, mode]);
+    }, [getProvinceList, _getAmphureListByProvinceId, _getDistrictListByAmphureId, setCurrentCustomer, formDataCustomer, dispatch, getCustomer, id, mode])
 
     let handleChangeInput = ({ target }) => {
         let { id, value } = target
@@ -135,7 +132,7 @@ function CustomerCreate({ mode }) {
             default:
                 break
         }
-    };
+    }
 
     let clearSelect = (arrayId) => {
         arrayId.forEach(id => {
@@ -148,7 +145,7 @@ function CustomerCreate({ mode }) {
         if (mode === "create") {
             formDataCustomer.id = "-"
         }
-        let validate = objectUtil.formValidate(formDataCustomer);
+        let validate = objectUtil.formValidate(formDataCustomer)
         if (validate) {
             setTitleModalNormal(`${mode === "create" ? "Create" : "Edit"}!`)
             setDesModalNormal(`Are you sure to ${mode === "create" ? "Create" : "Edit"}?`)
@@ -156,7 +153,7 @@ function CustomerCreate({ mode }) {
             setModeModalNormal(mode)
             setShowModalNormal(true)
         }
-    };
+    }
 
     let handleReset = () => {
         var promise1 = _getAmphureListByProvinceId(currentCustomer.provinceId)
@@ -175,7 +172,7 @@ function CustomerCreate({ mode }) {
             setTimeout(() => {
                 setIsReset(false)
             }, 1)
-        });
+        })
     }
 
     let handleDiscard = () => {
@@ -269,7 +266,7 @@ function CustomerCreate({ mode }) {
                         handleClose={() => setShowModalNormal(false)} handleOk={handleOkModals} />
                 </>)}
         </>
-    );
+    )
 }
 
-export default CustomerCreate;
+export default CustomerCreate

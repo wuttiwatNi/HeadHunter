@@ -64,7 +64,7 @@ function CandidateDetail() {
                     let working = result[0].working.map(element => {
                         let year = differenceInYears(new Date(element.endDate), new Date(element.startDate))
                         let month = differenceInMonths(new Date(element.endDate), new Date(element.startDate))
-                        while(month >= 12){
+                        while (month >= 12) {
                             month = month - 12
                         }
                         return {
@@ -190,7 +190,9 @@ function CandidateDetail() {
                                     body={() => (
                                         <Information data={candidate}
                                             keyValue={[
-                                                { label: "Category (1st) ", key: "positionFristCategoryName" },
+                                                { label: "", key: "picturePath", full: true, img: true },
+                                                { label: "Resume", key: "resumePath", pdf: true },
+                                                { label: "Category (1st)", key: "positionFristCategoryName" },
                                                 { label: "Position (1st)", key: "positionAppliedFristName" },
                                                 { label: "Category (2nd) ", key: "positionSecondCategoryName" },
                                                 { label: "Position (2nd)", key: "positionAppliedSecondName" },

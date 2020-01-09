@@ -20,6 +20,7 @@ import CreateSkill from "./createSkill"
 import CreateLanguageSkill from "./createLanguageSkill"
 import CreateEducation from "./createEducation"
 import CreateWorking from "./createWorking"
+import ListOption from "./listOption"
 
 export {
     SideBar,
@@ -43,5 +44,6 @@ export {
     CreateSkill,
     CreateLanguageSkill,
     CreateEducation,
-    CreateWorking
-};
+    CreateWorking,
+    ListOption
+}

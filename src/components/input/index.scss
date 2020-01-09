@@ -60,6 +60,8 @@ textarea:focus {
   display: flex;
 
   input[type="checkbox"] {
+    min-width: 21px;
+    max-width: 21px;
     width: 21px;
     height: 21px;
     margin-top: 26px;
@@ -72,6 +74,16 @@ textarea:focus {
     margin-top: 26px;
     font-weight: 400;
     cursor: default;
+  }
+
+  @media (max-width: 575px) {
+    input[type="checkbox"] {
+      margin-top: 0px;
+    }
+
+    .span-checkbox {
+      margin-top: 0px;
+    }
   }
 
   input[type="number"].not-full {
@@ -119,7 +131,6 @@ input[type="file"] {
 }
 
 input[type="file"]::-webkit-file-upload-button {
-  /* chromes and blink button */
   cursor: pointer;
 }
 

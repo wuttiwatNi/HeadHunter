@@ -14,6 +14,7 @@ import OrderDetail from "./order/detail"
 import CandidateAll from "./candidate/all"
 import CandidateCreate from "./candidate/create"
 import CandidateDetail from "./candidate/detail"
+import Option from "./option"
 
 function Index() {
     let isLogin = true;
@@ -36,7 +37,7 @@ function Index() {
                     <HeaderBar />
                     <div className={"content"}>
                         <Switch>
-                            {/* Customer*/}
+                            {/* Customer */}
                             <Route
                                 exact path={["/", "/customer"]}
                                 component={CustomerAll}
@@ -57,7 +58,7 @@ function Index() {
                                 exact path={["/customer/:id"]}
                                 component={CustomerDetail}
                             />
-                            {/* Order*/}
+                            {/* Order */}
                             <Route
                                 exact path={"/order"}
                                 component={OrderAll}
@@ -78,7 +79,7 @@ function Index() {
                                 exact path={["/order/:id"]}
                                 component={OrderDetail}
                             />
-                            {/* Candidate*/}
+                            {/* Candidate */}
                             <Route
                                 exact path={"/candidate"}
                                 component={CandidateAll}
@@ -98,6 +99,11 @@ function Index() {
                             <Route
                                 exact path={["/candidate/:id"]}
                                 component={CandidateDetail}
+                            />
+                            {/* Option */}
+                            <Route
+                                exact path={"/option"}
+                                component={Option}
                             />
                         </Switch>
                     </div>

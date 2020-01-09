@@ -1,20 +1,20 @@
-import React, { useState, useEffect } from "react";
-import { useHistory } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import { objectUtil } from "../../../utils/object.util";
+import React, { useState, useEffect } from "react"
+import { useHistory } from "react-router-dom"
+import { useDispatch } from "react-redux"
+import { objectUtil } from "../../../utils/object.util"
 // api
-import { customerApi } from "../../../api";
+import { customerApi } from "../../../api"
 // action
-import { modalErrorAction } from "../../../actions";
+import { modalErrorAction } from "../../../actions"
 // components
-import { Topic, Box, Tables } from "../../../components";
-import { Row, Spinner } from "react-bootstrap";
+import { Topic, Box, Tables } from "../../../components"
+import { Row, Spinner } from "react-bootstrap"
 
 function CustomerAll() {
-    let history = useHistory();
-    const dispatch = useDispatch();
-    const { getCustomerList } = customerApi;
-    const [customerList, setCustomerList] = useState();
+    let history = useHistory()
+    const dispatch = useDispatch()
+    const { getCustomerList } = customerApi
+    const [customerList, setCustomerList] = useState()
 
     useEffect(() => {
         getCustomerList().then(({ data }) => {
@@ -25,7 +25,7 @@ function CustomerAll() {
                 dispatch(modalErrorAction.show())
             }
         }).catch(error => { console.log(error) })
-    }, [getCustomerList, dispatch]);
+    }, [getCustomerList, dispatch])
 
     let handleClickRow = (data) => {
         history.push(`/customer/${data.id}`)
@@ -53,7 +53,7 @@ function CustomerAll() {
                     </Row>
                 </>)}
         </>
-    );
+    )
 }
 
-export default CustomerAll;
+export default CustomerAll

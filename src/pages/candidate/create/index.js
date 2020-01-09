@@ -930,11 +930,11 @@ function CandidateCreate({ mode }) {
                                     <Input xs={12} sm={6} lg={4} label={"Email"} id={"email"} onChange={handleChangeInput} defaultValue={currentCandidate.email} resest={isReset} />
                                     <Input xs={12} sm={6} lg={4} label={"Phone"} id={"phoneNumber"} onChange={handleChangeInput} defaultValue={currentCandidate.phoneNumber} resest={isReset} />
                                     <Input xs={12} sm={6} lg={4} label={"Salary Expect"} id={"salaryExpect"} onChange={handleChangeInput} defaultValue={currentCandidate.salaryExpect} type={"number"} unit={"Baht"} resest={isReset} />
-                                    <Input xs={6} sm={4} lg={2} label={"Driving License"} id={"drivingLicense"} onChange={handleChangeInput} type={"checkbox"} defaultValue={currentCandidate.drivingLicense} resest={isReset} />
-                                    <Input xs={6} sm={4} lg={2} label={"Own Car"} id={"ownCar"} onChange={handleChangeInput} type={"checkbox"} defaultValue={currentCandidate.ownCar} resest={isReset} />
+                                    <Input xs={6} sm={3} lg={2} label={"Driving License"} id={"drivingLicense"} onChange={handleChangeInput} type={"checkbox"} defaultValue={currentCandidate.drivingLicense} resest={isReset} />
+                                    <Input xs={6} sm={3} lg={2} label={"Own Car"} id={"ownCar"} onChange={handleChangeInput} type={"checkbox"} defaultValue={currentCandidate.ownCar} resest={isReset} />
 
                                     <Col xs={0} sm={0} lg={9}></Col>
-                                    <Input xs={12} sm={6} lg={4} label={"Address"} id={"address"} onChange={handleChangeInput} type={"textarea"} defaultValue={currentCandidate.address} resest={isReset} />
+                                    <Input xs={12} sm={12} lg={4} label={"Address"} id={"address"} onChange={handleChangeInput} type={"textarea"} defaultValue={currentCandidate.address} resest={isReset} />
                                     <Col xs={12} sm={12} lg={8} className={"no-padding"}>
                                         <Row>
                                             <InputSelect xs={12} sm={6} lg={6} label={"Provice"} id={"provinceId"} optionsList={proviceList} onChange={handleChangeInput} isSearchable={true} defaultValue={currentCandidate.provinceId} resest={isReset} />
@@ -942,7 +942,7 @@ function CandidateCreate({ mode }) {
                                             <InputSelect xs={12} sm={6} lg={6} label={"District"} id={"districtId"} optionsList={districtList} onChange={handleChangeInput} isSearchable={true} defaultValue={currentCandidate.districtId} resest={isReset} />
                                         </Row>
                                     </Col>
-                                    <Input xs={12} sm={6} lg={4} label={"Comment"} id={"comment"} onChange={handleChangeInput} type={"textarea"} defaultValue={currentCandidate.comment} resest={isReset} />
+                                    <Input xs={12} sm={12} lg={4} label={"Comment"} id={"comment"} onChange={handleChangeInput} type={"textarea"} defaultValue={currentCandidate.comment} resest={isReset} />
 
                                     <CreateEducation formDataEdcution={formDataEdcution} setFormDataEdcution={setFormDataEdcution} isReset={isReset} />
                                     <CreateSkill formDataSkill={formDataSkill} setFormDataSkill={setFormDataSkill} skillList={skillList} setSkillList={setSkillList} isReset={isReset} />

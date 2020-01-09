@@ -59,7 +59,7 @@ function Tables({ columnLabel, column, row, pathCreate, onClickRow, onClickCreat
                 <tbody>
                     {/* Row */}
                     {dataList.map(data => (
-                        <tr key={data.id} onClick={() => onClickRow(data)} /*title={"click"}*/>
+                        <tr key={data.id} onClick={() => onClickRow(data)}>
                             {column.map((key, index) => {
                                 return (<td key={index}><span onClick={handleChildClick}>{data[key]}</span></td>);
                             })}
@@ -79,7 +79,6 @@ function Tables({ columnLabel, column, row, pathCreate, onClickRow, onClickCreat
 Tables.propTypes = {
     columnLabel: PropTypes.array.isRequired,
     column: PropTypes.array.isRequired,
-    // row: PropTypes.array.isRequired,
     pathCreate: PropTypes.string.isRequired,
     onClickCreate: PropTypes.func,
     onClickRow: PropTypes.func
