@@ -239,7 +239,6 @@ function CustomerCreate({ mode }) {
                                     <Input xs={12} sm={6} lg={4} label={"Tax."} id={"taxNumber"} onChange={handleChangeInput} defaultValue={currentCustomer.taxNumber} resest={isReset} />
                                     <Input xs={12} sm={6} lg={4} label={"Phone"} id={"phoneNumber"} onChange={handleChangeInput} defaultValue={currentCustomer.phoneNumber} resest={isReset} />
                                     <Input xs={12} sm={6} lg={4} label={"Address"} id={"address"} onChange={handleChangeInput} type={"textarea"} defaultValue={currentCustomer.address} resest={isReset} />
-                                    <Input id={"id"} isHidden={true} defaultValue={currentCustomer.id} resest={isReset} />
                                     <Col xs={12} sm={12} lg={8} className={"no-padding"}>
                                         <Row>
                                             <InputSelect xs={12} sm={6} lg={6} label={"Provice"} id={"provinceId"} optionsList={proviceList} onChange={handleChangeInput} isSearchable={true} defaultValue={currentCustomer.provinceId} resest={isReset} />
@@ -247,6 +246,7 @@ function CustomerCreate({ mode }) {
                                             <InputSelect xs={12} sm={6} lg={6} label={"District"} id={"districtId"} optionsList={districtList} onChange={handleChangeInput} isSearchable={true} defaultValue={currentCustomer.districtId} resest={isReset} />
                                         </Row>
                                     </Col>
+                                    <Input id={"id"} isHidden={true} defaultValue={currentCustomer.id} resest={isReset} />
                                 </Row>
                             )}
                             footer={() => (

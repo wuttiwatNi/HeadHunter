@@ -43,8 +43,8 @@ function OrderAll() {
                         <Box body={() => (
                             <>
                                 <Tables
-                                    columnLabel={["Order", "Budget", "Priority"]}
-                                    column={["positionName", "budget", "priorityName"]}
+                                    columnLabel={["Order", "Company", "Budget", "Priority"]}
+                                    column={["positionName", "companyName", "budget", "priorityName"]}
                                     row={orderList}
                                     onClickRow={handleClickRow}
                                     pathCreate={"/order/create"} />

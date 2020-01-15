@@ -21,6 +21,7 @@ import CreateLanguageSkill from "./createLanguageSkill"
 import CreateEducation from "./createEducation"
 import CreateWorking from "./createWorking"
 import ListOption from "./listOption"
+import RowActivity from "./rowActivity"
 
 export {
     SideBar,
@@ -45,5 +46,6 @@ export {
     CreateLanguageSkill,
     CreateEducation,
     CreateWorking,
-    ListOption
+    ListOption,
+    RowActivity
 }

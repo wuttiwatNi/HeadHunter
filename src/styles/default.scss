@@ -41,3 +41,37 @@ textarea {
     min-height: calc(100% - 100px);
   }
 }
+
+.nav-tabs {
+  border-bottom: 0px;
+  padding-left: 15px;
+  margin-top: -15px;
+
+  a {
+    color: #212529;
+    display: inline-block;
+    font-size: 18px;
+    font-weight: 300;
+    padding-top: 15px;
+    border-top-left-radius: 0px !important;
+    border-top-right-radius: 0px !important;
+    border-bottom-left-radius: 12px !important;
+    border-bottom-right-radius: 12px !important;
+    border: 0px !important;
+    background-color: #e7e7e7;
+    margin-right: 5px;
+
+    &:hover {
+      background-color: rgba(0, 165, 146, 0.2);
+    }
+
+    &.active {
+      color: white !important;
+      background-color: $primaryColor !important;
+    }
+  }
+}
+
+.tab-content {
+  padding-top: 15px;
+}

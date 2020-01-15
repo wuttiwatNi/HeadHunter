@@ -63,7 +63,7 @@ function ListOption({ title, data, onClickCreate, onClickDelete, onClickEdit, xs
                                 if (element.parent === undefined) {
                                     return (
                                         <div key={element.id} className="box-parent">
-                                            {element.name}
+                                            <span>{element.name}</span>
                                             <i className={"fa fa-trash"} onClick={() => onClickDelete(title, element)} />
                                             <i className={"fa fa-pencil"} onClick={() => onClickEdit(title, element)} />
                                         </div>
@@ -76,7 +76,7 @@ function ListOption({ title, data, onClickCreate, onClickDelete, onClickEdit, xs
                                             <Card>
                                                 <Card.Header>
                                                     <Accordion.Toggle id={`${element.name}-title`} className="title parent" eventKey="0" onClick={() => { handleOpen(element.name) }} style={{ marginTop: index === 0 ? 2 : 0 }}>
-                                                        {element.name}
+                                                        <span>{element.name}</span>
                                                         <i className={"fa fa-trash"} onClick={(e) => handleDelete(e, element)} />
                                                         <i className={"fa fa-plus"} onClick={(e) => handleCreate(e, element.name, element.id)} />
                                                         <i className={"fa fa-pencil"} onClick={(e) => handleEdit(e, element)} />
@@ -87,7 +87,7 @@ function ListOption({ title, data, onClickCreate, onClickDelete, onClickEdit, xs
                                                     <Card.Body>
                                                         {_data.map((_element) => (
                                                             <div key={_element.id} className="box-parent">
-                                                                {_element.name}
+                                                                <span>{_element.name}</span>
                                                                 <i className={"fa fa-trash"} onClick={() => onClickDelete(title, _element)} />
                                                                 <i className={"fa fa-pencil"} onClick={() => onClickEdit(title, _element)} />
                                                             </div>

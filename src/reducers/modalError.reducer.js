@@ -1,7 +1,8 @@
 import { actionConstant } from "../constants/index";
 
 const initialState = {
-  isShow: false
+  isShow: false,
+  des: ""
 };
 
 const modalErrorReducer = (state = initialState, action) => {
@@ -9,6 +10,11 @@ const modalErrorReducer = (state = initialState, action) => {
     return {
       ...state,
       isShow: action.isShow
+    };
+  } else if (action.type === actionConstant.modalError.SET_DES) {
+    return {
+      ...state,
+      des: action.des
     };
   } else {
     return state;

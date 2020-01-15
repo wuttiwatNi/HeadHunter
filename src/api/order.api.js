@@ -5,6 +5,7 @@ import { apiConstant } from "../constants";
 export const orderApi = {
   getOrderList,
   getOrder,
+  getOrderByCustomerId,
   createOrder,
   editOrder,
   editOrderContact,
@@ -22,6 +23,13 @@ function getOrder(id) {
   return client({
     method: "GET",
     url: `${config.API_RESOURCE_URL}${apiConstant.order.ORDERS}/${id}`
+  });
+}
+
+function getOrderByCustomerId(customerId) {
+  return client({
+    method: "GET",
+    url: `${config.API_RESOURCE_URL}${apiConstant.order.ORDERS}/customerId/${customerId}`
   });
 }
 

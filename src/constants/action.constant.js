@@ -3,7 +3,8 @@ const sideBar = {
 };
 
 const modalError = {
-  SHOW_CLOSE_MODAL_ERROR: "SHOW_CLOSE_MODAL_ERROR"
+  SHOW_CLOSE_MODAL_ERROR: "SHOW_CLOSE_MODAL_ERROR",
+  SET_DES: "SET_DES"
 };
 
 const modalLoading = {

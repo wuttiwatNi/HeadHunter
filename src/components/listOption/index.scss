@@ -63,6 +63,14 @@
     background-color: #747f8b7c;
     margin-bottom: 2px;
 
+    span{
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      max-width: calc(100% - 94px);
+      text-align: left;
+    }
+
     .fa-plus {
       margin-bottom: -3px;
       margin-left: 10px;
@@ -99,6 +107,14 @@
       background-color: rgba(0, 0, 0, 0.03);
       margin-bottom: 2px;
       display: flex;
+
+      span{
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        max-width: calc(100% - 58px);
+        text-align: left;
+      }
 
       .fa-trash {
         margin-left: auto;

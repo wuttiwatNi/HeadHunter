@@ -43,6 +43,19 @@ function Option() {
         name: ""
     })
 
+    let showModalError = useCallback(() => {
+        dispatch(modalLoadingAction.close())
+        dispatch(modalErrorAction.show())
+    }, [dispatch])
+
+    let showModalErrorDelete = useCallback((data) => {
+        if (data["message"] !== undefined) {
+            dispatch(modalErrorAction.setDes(data["message"]))
+        }
+        dispatch(modalLoadingAction.close())
+        dispatch(modalErrorAction.show())
+    }, [dispatch])
+
     let _getSkillList = useCallback(() => {
         return new Promise(function (resolve, reject) {
             getSkillList().then(({ data }) => {
@@ -52,11 +65,11 @@ function Option() {
                     dispatch(modalLoadingAction.close())
                     resolve()
                 } else {
-                    dispatch(modalErrorAction.show())
+                    showModalError()
                 }
             }).catch(error => { console.log(error) })
         })
-    }, [getSkillList, dispatch])
+    }, [getSkillList, dispatch, showModalError])
 
     let _getLanguageSkillList = useCallback(() => {
         return new Promise(function (resolve, reject) {
@@ -67,11 +80,11 @@ function Option() {
                     dispatch(modalLoadingAction.close())
                     resolve()
                 } else {
-                    dispatch(modalErrorAction.show())
+                    showModalError()
                 }
             }).catch(error => { console.log(error) })
         })
-    }, [getLanguageSkillList, dispatch])
+    }, [getLanguageSkillList, dispatch, showModalError])
 
     let _getNationalityList = useCallback(() => {
         return new Promise(function (resolve, reject) {
@@ -82,11 +95,11 @@ function Option() {
                     dispatch(modalLoadingAction.close())
                     resolve()
                 } else {
-                    dispatch(modalErrorAction.show())
+                    showModalError()
                 }
             }).catch(error => { console.log(error) })
         })
-    }, [getNationalityList, dispatch])
+    }, [getNationalityList, dispatch, showModalError])
 
     let _getAllList = useCallback(() => {
         return new Promise(function (resolve, reject) {
@@ -104,11 +117,11 @@ function Option() {
                     dispatch(modalLoadingAction.close())
                     resolve()
                 } else {
-                    dispatch(modalErrorAction.show())
+                    showModalError()
                 }
             }).catch(error => { console.log(error) })
         })
-    }, [getAllList, dispatch])
+    }, [getAllList, dispatch, showModalError])
 
     useEffect(() => {
         Promise.all([_getSkillList(), _getLanguageSkillList(), _getNationalityList(), _getAllList()]).then(() => {
@@ -120,7 +133,7 @@ function Option() {
         formData[target.id] = target.value
     }
 
-    let onClickCreate = (title, parent, id) => {
+    let handleClickCreate = (title, parent, id) => {
         setFormData(objectUtil.clearData(formData))
         setModeModalForm("create")
         setTitleModalForm(title)
@@ -154,7 +167,7 @@ function Option() {
         }
     }
 
-    let onClickEdit = (title, data) => {
+    let handleClickEdit = (title, data) => {
         setFormData({ ...data })
         setModeModalForm("edit")
         setTitleModalForm(title)
@@ -185,7 +198,7 @@ function Option() {
         }
     }
 
-    let onClickDelete = (title, data) => {
+    let handleClickDelete = (title, data) => {
         setId(data.id)
         setDesModalNormal(`Are you sure to (${data.name})?`)
         setSwapColorModalNormal(false)
@@ -226,7 +239,7 @@ function Option() {
                     if (success) {
                         _getSkillList()
                     } else {
-                        dispatch(modalErrorAction.show())
+                        showModalErrorDelete(data)
                     }
                 }).catch(error => { console.log(error) })
                 break
@@ -239,7 +252,7 @@ function Option() {
                     if (success) {
                         _getLanguageSkillList()
                     } else {
-                        dispatch(modalErrorAction.show())
+                        showModalErrorDelete(data)
                     }
                 }).catch(error => { console.log(error) })
                 break
@@ -252,7 +265,7 @@ function Option() {
                     if (success) {
                         _getNationalityList()
                     } else {
-                        dispatch(modalErrorAction.show())
+                        showModalErrorDelete(data)
                     }
                 }).catch(error => { console.log(error) })
                 break
@@ -265,7 +278,7 @@ function Option() {
                     if (success) {
                         _getAllList()
                     } else {
-                        dispatch(modalErrorAction.show())
+                        showModalErrorDelete(data)
                     }
                 }).catch(error => { console.log(error) })
                 break
@@ -289,7 +302,7 @@ function Option() {
                             if (success) {
                                 _getSkillList()
                             } else {
-                                dispatch(modalErrorAction.show())
+                                showModalError()
                             }
                         }).catch(error => { console.log(error) })
                         break
@@ -302,7 +315,7 @@ function Option() {
                             if (success) {
                                 _getLanguageSkillList()
                             } else {
-                                dispatch(modalErrorAction.show())
+                                showModalError()
                             }
                         }).catch(error => { console.log(error) })
                         break
@@ -315,7 +328,7 @@ function Option() {
                             if (success) {
                                 _getNationalityList()
                             } else {
-                                dispatch(modalErrorAction.show())
+                                showModalError()
                             }
                         }).catch(error => { console.log(error) })
                         break
@@ -328,7 +341,7 @@ function Option() {
                             if (success) {
                                 _getAllList()
                             } else {
-                                dispatch(modalErrorAction.show())
+                                showModalError()
                             }
                         }).catch(error => { console.log(error) }).finally(() => { delete formData.parent })
                         break
@@ -343,7 +356,7 @@ function Option() {
                             if (success) {
                                 _getAllList()
                             } else {
-                                dispatch(modalErrorAction.show())
+                                showModalError()
                             }
                         }).catch(error => { console.log(error) }).finally(() => { delete formData.parent })
                         break
@@ -364,7 +377,7 @@ function Option() {
                             if (success) {
                                 _getSkillList()
                             } else {
-                                dispatch(modalErrorAction.show())
+                                showModalError()
                             }
                         }).catch(error => { console.log(error) })
                         break
@@ -377,7 +390,7 @@ function Option() {
                             if (success) {
                                 _getLanguageSkillList()
                             } else {
-                                dispatch(modalErrorAction.show())
+                                showModalError()
                             }
                         }).catch(error => { console.log(error) })
                         break
@@ -390,7 +403,7 @@ function Option() {
                             if (success) {
                                 _getNationalityList()
                             } else {
-                                dispatch(modalErrorAction.show())
+                                showModalError()
                             }
                         }).catch(error => { console.log(error) })
                         break
@@ -405,7 +418,7 @@ function Option() {
                             if (success) {
                                 _getAllList()
                             } else {
-                                dispatch(modalErrorAction.show())
+                                showModalError()
                             }
                         }).catch(error => { console.log(error) }).finally(() => { delete formData.parent })
                         break
@@ -418,7 +431,7 @@ function Option() {
                             if (success) {
                                 _getAllList()
                             } else {
-                                dispatch(modalErrorAction.show())
+                                showModalError()
                             }
                         }).catch(error => { console.log(error) }).finally(() => { delete formData.parent })
                         break
@@ -440,10 +453,10 @@ function Option() {
                     <Row>
                         <Box body={() => (
                             <Row>
-                                <ListOption title="Category" data={positionList} onClickDelete={onClickDelete} onClickEdit={onClickEdit} onClickCreate={onClickCreate} />
-                                <ListOption title="Skill" data={skilList} onClickDelete={onClickDelete} onClickEdit={onClickEdit} onClickCreate={onClickCreate} />
-                                <ListOption title="Language" data={languageSkillList} onClickDelete={onClickDelete} onClickEdit={onClickEdit} onClickCreate={onClickCreate} />
-                                <ListOption title="Nationality" data={nationalityList} onClickDelete={onClickDelete} onClickEdit={onClickEdit} onClickCreate={onClickCreate} />
+                                <ListOption title="Category" data={positionList} onClickDelete={handleClickDelete} onClickEdit={handleClickEdit} onClickCreate={handleClickCreate} />
+                                <ListOption title="Skill" data={skilList} onClickDelete={handleClickDelete} onClickEdit={handleClickEdit} onClickCreate={handleClickCreate} />
+                                <ListOption title="Language" data={languageSkillList} onClickDelete={handleClickDelete} onClickEdit={handleClickEdit} onClickCreate={handleClickCreate} />
+                                <ListOption title="Nationality" data={nationalityList} onClickDelete={handleClickDelete} onClickEdit={handleClickEdit} onClickCreate={handleClickCreate} />
                             </Row>
                         )} />
                     </Row>

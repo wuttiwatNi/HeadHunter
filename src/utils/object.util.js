@@ -8,6 +8,7 @@ export const objectUtil = {
     formForInputSelect,
     formForInputSelect2,
     sortArray,
+    sortArrayNumberReverse,
     mapDataOrder,
     mapDataCandidate,
     mapDataLanguage,
@@ -15,7 +16,11 @@ export const objectUtil = {
     mapNidTypeList,
     mapGendarList,
     mapMaritalList,
-    mapLevelEducationList
+    mapLevelEducationList,
+    mapActivityTypeId,
+    mapActivityTypeIcon,
+    mapActivityTypeColor,
+    mapDayColor
 };
 
 function mapNidTypeList(data) {
@@ -40,6 +45,46 @@ function mapLevelEducationList(data) {
     return result
 }
 
+function mapActivityTypeId(data) {
+    let result = ""
+    generalConstant.activityTypeList.forEach((element) => {
+        if (element.value === data) {
+            result = element.label
+        }
+    })
+    return result
+}
+
+function mapActivityTypeIcon(data) {
+    let result = ""
+    generalConstant.activityTypeListIcon.forEach((element) => {
+        if (element.value === data) {
+            result = element.label
+        }
+    })
+    return result
+}
+
+function mapActivityTypeColor(data) {
+    let result = ""
+    generalConstant.activityTypeListColor.forEach((element) => {
+        if (element.value === data) {
+            result = element.label
+        }
+    })
+    return result
+}
+
+function mapDayColor(data) {
+    let result = ""
+    generalConstant.dayListColor.forEach((element) => {
+        if (element.value === data) {
+            result = element.label
+        }
+    })
+    return result
+}
+
 function formValidate(formData) {
     let isValid = true;
     let i = 0;
@@ -50,6 +95,7 @@ function formValidate(formData) {
                     document.getElementById(property).scrollIntoView({ behavior: "smooth", block: "center" });
                 }
                 i = 1;
+                // console.log(property)
                 document.getElementById(property).classList.add("invalid")
                 isValid = false;
             }
@@ -92,6 +138,14 @@ function sortArray(_array, key) {
     let data = JSON.parse(JSON.stringify(_array))
     data.sort((a, b) => {
         return a[key].toString().toLowerCase() < b[key].toString().toLowerCase() ? -1 : 1
+    })
+    return data
+}
+
+function sortArrayNumberReverse(_array, key) {
+    let data = JSON.parse(JSON.stringify(_array))
+    data.sort((a, b) => {
+        return a[key] > b[key] ? -1 : 1
     })
     return data
 }

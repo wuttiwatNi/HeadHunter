@@ -1,40 +1,40 @@
-import React, { useState, useEffect, useCallback } from "react";
-import { useHistory, useParams } from "react-router-dom";
-import { objectUtil } from "../../../utils/object.util";
-import { useDispatch } from "react-redux";
+import React, { useState, useEffect, useCallback } from "react"
+import { useHistory, useParams } from "react-router-dom"
+import { objectUtil } from "../../../utils/object.util"
+import { useDispatch } from "react-redux"
 // api
-import { customerApi, contactApi } from "../../../api";
+import { customerApi, contactApi } from "../../../api"
 // action
-import { modalErrorAction } from "../../../actions";
-import { modalLoadingAction } from "../../../actions";
+import { modalErrorAction } from "../../../actions"
+import { modalLoadingAction } from "../../../actions"
 // components
-import { Topic, Box, Tables, ModalForm, ModalNormal, Input, Information, RowContact } from "../../../components";
-import { Row, Col, Spinner } from "react-bootstrap";
+import { Topic, Box, Tables, ModalForm, ModalNormal, Input, Information, RowContact } from "../../../components"
+import { Row, Col, Spinner } from "react-bootstrap"
 
 function CustomerDetail() {
-    const history = useHistory();
-    const { id } = useParams();
+    const history = useHistory()
+    const { id } = useParams()
     
-    const dispatch = useDispatch();
+    const dispatch = useDispatch()
 
-    const { getCustomer, deleteCustomer } = customerApi;
-    const { createContact, editContact, deleteContact } = contactApi;
+    const { getCustomer, deleteCustomer } = customerApi
+    const { createContact, editContact, deleteContact } = contactApi
 
-    const [showModalForm, setShowModalForm] = useState(false);
-    const [titleModalForm, setTitleModalForm] = useState("");
-    const [subTitleModalForm, setSubTitleModalForm] = useState("");
-    const [modeModalForm, setModeModalForm] = useState("");
+    const [showModalForm, setShowModalForm] = useState(false)
+    const [titleModalForm, setTitleModalForm] = useState("")
+    const [subTitleModalForm, setSubTitleModalForm] = useState("")
+    const [modeModalForm, setModeModalForm] = useState("")
 
-    const [showModalNormal, setShowModalNormal] = useState(false);
-    const [titleModalNormal, setTitleModalNormal] = useState("");
-    const [desModalNormal, setDesModalNormal] = useState("");
-    const [swapColorModalNormal, setSwapColorModalNormal] = useState(false);
-    const [modeModalNormal, setModeModalNormal] = useState("");
+    const [showModalNormal, setShowModalNormal] = useState(false)
+    const [titleModalNormal, setTitleModalNormal] = useState("")
+    const [desModalNormal, setDesModalNormal] = useState("")
+    const [swapColorModalNormal, setSwapColorModalNormal] = useState(false)
+    const [modeModalNormal, setModeModalNormal] = useState("")
 
-    const [customer, setCustomer] = useState();
-    const [contact, setContact] = useState([]);
-    const [orderList, setOrderList] = useState([]);
-    const [dataFromRowContact, setDataFromRowContact] = useState({});
+    const [customer, setCustomer] = useState()
+    const [contact, setContact] = useState([])
+    const [orderList, setOrderList] = useState([])
+    const [dataFromRowContact, setDataFromRowContact] = useState({})
 
     const [formDataContact, setFormDataContact] = useState({
         id: "",
@@ -43,7 +43,7 @@ function CustomerDetail() {
         lastName: "",
         phoneNumber: "",
         email: ""
-    });
+    })
 
     let _getCustomer = useCallback((isRefresh) => {
         getCustomer(id).then(({ data }) => {
@@ -64,7 +64,7 @@ function CustomerDetail() {
 
     useEffect(() => {
         _getCustomer(false)
-    }, [_getCustomer]);
+    }, [_getCustomer])
 
     let handleClickRow = (data) => {
         history.push(`/order/${data.id}`)
@@ -150,7 +150,7 @@ function CustomerDetail() {
             case "createContact":
                 formDataContact.id = "-"
                 formDataContact.customerId = id
-                let validate = objectUtil.formValidate(formDataContact);
+                let validate = objectUtil.formValidate(formDataContact)
                 if (validate) {
                     setShowModalForm(false)
                     dispatch(modalLoadingAction.show())
@@ -167,7 +167,7 @@ function CustomerDetail() {
                 }
                 break
             case "editContact":
-                let validateEditContact = objectUtil.formValidate(formDataContact);
+                let validateEditContact = objectUtil.formValidate(formDataContact)
                 if (validateEditContact) {
                     setShowModalForm(false)
                     dispatch(modalLoadingAction.show())
@@ -192,7 +192,7 @@ function CustomerDetail() {
 
     let handleChangeInput = ({ target }) => {
         formDataContact[target.id] = target.value
-    };
+    }
 
     return (
         <>
@@ -244,8 +244,8 @@ function CustomerDetail() {
                     <Row>
                         <Col xs={12} sm={12} lg={12} className={"no-padding"}>
                             <Row>
-                                <Input xs={6} sm={6} lg={6} label={"First name"} id={"firstName"} onChange={handleChangeInput} defaultValue={formDataContact.firstName} />
-                                <Input xs={6} sm={6} lg={6} label={"Last name"} id={"lastName"} onChange={handleChangeInput} defaultValue={formDataContact.lastName} />
+                                <Input xs={12} sm={6} lg={6} label={"First name"} id={"firstName"} onChange={handleChangeInput} defaultValue={formDataContact.firstName} />
+                                <Input xs={12} sm={6} lg={6} label={"Last name"} id={"lastName"} onChange={handleChangeInput} defaultValue={formDataContact.lastName} />
                             </Row>
                         </Col>
                         <Input xs={12} sm={12} lg={12} label={"Email"} id={"email"} onChange={handleChangeInput} defaultValue={formDataContact.email} />
@@ -255,7 +255,7 @@ function CustomerDetail() {
                     </Row>
                 )} />
         </>
-    );
+    )
 }
 
-export default CustomerDetail;
+export default CustomerDetail
