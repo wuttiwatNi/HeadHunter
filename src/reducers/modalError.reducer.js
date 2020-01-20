@@ -2,7 +2,8 @@ import { actionConstant } from "../constants/index";
 
 const initialState = {
   isShow: false,
-  des: ""
+  des: "",
+  isBack: false
 };
 
 const modalErrorReducer = (state = initialState, action) => {
@@ -15,6 +16,11 @@ const modalErrorReducer = (state = initialState, action) => {
     return {
       ...state,
       des: action.des
+    };
+  } else if (action.type === actionConstant.modalError.SET_IS_BACK) {
+    return {
+      ...state,
+      isBack: action.isBack
     };
   } else {
     return state;

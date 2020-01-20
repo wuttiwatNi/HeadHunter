@@ -4,7 +4,7 @@ import { Col } from "react-bootstrap"
 // import _ from "lodash"
 import "./index.scss"
 
-function Input({ xs, sm, lg, label, id, onChange, type, isHidden, defaultValue, defaultNameFile, resest, unit, isMargin, typeFile, warning, topic }) {
+function Input({ xs, sm, lg, label, id, onChange, type, isHidden, defaultValue, defaultNameFile, resest, unit, isMargin, typeFile, warning, topic, isDisabled }) {
     const [value, setValue] = useState("")
     const [checkSetDefault, setCheckSetDefault] = useState(false)
 
@@ -45,7 +45,7 @@ function Input({ xs, sm, lg, label, id, onChange, type, isHidden, defaultValue, 
                     <textarea id={id} onChange={onChanges} value={value} style={{ height: 120 }} /> :
                     type === "file" ?
                         <input id={id} onChange={onChanges} type={type} value={value} required accept={typeFile} /> :
-                        <input id={id} onChange={onChanges} type={type} value={value} required checked={Boolean(value)} className={unit ? "not-full" : ""} />
+                        <input id={id} onChange={onChanges} type={type} value={value} required checked={Boolean(value)} className={unit ? "not-full" : ""} disabled={isDisabled} />
                 } {type === "checkbox" && <span className={"span-checkbox"}>{label}</span>}
                 {unit && <div className="unit" title={unit}>{unit}</div>}
                 {(type === "file" && value === "") && <span className={"file-name"} onClick={handleChildClick}>{defaultNameFile}</span>}
@@ -63,7 +63,8 @@ Input.propTypes = {
     onChange: PropTypes.func,
     type: PropTypes.string,
     isMargin: PropTypes.bool,
-    typeFile: PropTypes.string
+    typeFile: PropTypes.string,
+    isDisabled: PropTypes.bool
 };
 
 Input.defaultProps = {
@@ -76,7 +77,8 @@ Input.defaultProps = {
     },
     type: "text",
     isMargin: false,
-    typeFile: ""
+    typeFile: "",
+    isDisabled: false
 };
 
 export default Input;

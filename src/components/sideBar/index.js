@@ -1,26 +1,27 @@
-import React from "react";
-import {NavLink} from "react-router-dom";
-import {useDispatch, useSelector} from "react-redux";
-import {sideBarAction} from "../../actions";
-import "./index.scss";
+import React from "react"
+import { NavLink } from "react-router-dom"
+import { useDispatch, useSelector } from "react-redux"
+import { sideBarAction } from "../../actions"
+import "./index.scss"
 
 function SideBar() {
-    const sideBar = useSelector(state => state.sideBar);
-    const dispatch = useDispatch();
+    const sideBar = useSelector(state => state.sideBar)
+    const account = useSelector(state => state.account)
+    const dispatch = useDispatch()
 
-    let sideBarHide = ({target}) => {
+    let sideBarHide = ({ target }) => {
         dispatch(sideBarAction.toggleButton())
-    };
+    }
 
     return (
         <>
-            <div className={`${sideBar.isShow ? "space-side-bar" : ""}`} onClick={sideBarHide}/>
+            <div className={`${sideBar.isShow ? "space-side-bar" : ""}`} onClick={sideBarHide} />
             <div className={`main-side-bar hide ${sideBar.isShow ? "show" : ""}`}>
                 <div className={"user-panel"}>
-                    <img src={`${window.location.origin}/user-avatar.png`} alt={"notfound"}/>
+                    <img src={account.picturePath} alt={"notfound"} />
                     <div>
-                        <span>NickName</span>
-                        <span>FirstName LastName</span>
+                        <span className={"role"}>{account.role}</span>
+                        <span>{account.firstName} {account.lastName}</span>
                     </div>
                 </div>
 
@@ -29,32 +30,32 @@ function SideBar() {
                 </div>
 
                 <NavLink to={"/customer"} onClick={sideBarHide} replace>
-                    <i className={"fa fa-handshake-o"}/>
+                    <i className={"fa fa-handshake-o"} />
                     <span>{"Customer"}</span>
                 </NavLink>
 
                 <NavLink to={"/order"} onClick={sideBarHide} replace>
-                    <i className={"fa fa-briefcase"}/>
+                    <i className={"fa fa-briefcase"} />
                     <span>{"Order"}</span>
                 </NavLink>
 
                 <NavLink to={"/candidate"} onClick={sideBarHide} replace>
-                    <i className={"fa fa-id-card-o"}/>
+                    <i className={"fa fa-id-card-o"} />
                     <span>{"Candidate"}</span>
                 </NavLink>
 
                 <NavLink to={"/member"} onClick={sideBarHide} replace>
-                    <i className={"fa fa-user-plus"}/>
+                    <i className={"fa fa-user-plus"} />
                     <span>{"Member"}</span>
                 </NavLink>
 
                 <NavLink to={"/option"} onClick={sideBarHide} replace>
-                    <i className={"fa fa-cogs"}/>
+                    <i className={"fa fa-cogs"} />
                     <span>{"Option"}</span>
                 </NavLink>
             </div>
         </>
-    );
+    )
 }
 
-export default SideBar;
+export default SideBar

@@ -3,13 +3,16 @@ import { useHistory, useParams } from "react-router-dom"
 import { objectUtil } from "../../../utils/object.util"
 import { useDispatch } from "react-redux"
 import { format, formatDistanceToNow } from "date-fns"
+import { store } from "react-notifications-component"
+// constants
+import { generalConstant, toatConstant } from "../../../constants/index"
 // api
-import { orderApi, candidateApi, contactApi } from "../../../api"
+import { orderApi, candidateApi, contactApi, activityApi } from "../../../api"
 // action
 import { modalErrorAction } from "../../../actions"
 import { modalLoadingAction } from "../../../actions"
 // components
-import { Topic, Box, Tables, ModalForm, ModalNormal, Input, Information, RowContact, RowSkill, RowLanguageSkill, TableSelect, RowActivity } from "../../../components"
+import { Topic, Box, Tables, ModalForm, ModalNormal, Input, InputSelect, Information, RowContact, RowSkill, RowLanguageSkill, TableSelect, RowActivity } from "../../../components"
 import { Row, Col, Spinner, Tab, Tabs } from "react-bootstrap"
 
 function OrderDetail() {
@@ -22,6 +25,7 @@ function OrderDetail() {
     const { getOrder, deleteOrder, editOrderContact } = orderApi
     const { getCandidateList } = candidateApi
     const { getContactListByCustomerId, editContact } = contactApi
+    const { createActivity, editActivity, deleteActivity } = activityApi
 
     const [showModalForm, setShowModalForm] = useState(false)
     const [titleModalForm, setTitleModalForm] = useState("")
@@ -33,12 +37,25 @@ function OrderDetail() {
     const [desModalNormal, setDesModalNormal] = useState("")
     const [swapColorModalNormal, setSwapColorModalNormal] = useState(false)
     const [modeModalNormal, setModeModalNormal] = useState("")
+    const [idDelete, setIdDelete] = useState("")
+
+    const [formDataActivity, setFormDataActivity] = useState({
+        id: "",
+        candidateId: "",
+        customerId: "",
+        orderId: "",
+        activityTypeId: "",
+        activityNote: ""
+    })
+    const [isActivityAboutSaraly, setIsActivityAboutSaraly] = useState(false)
+    const [isTabActivity, setIsTabActivity] = useState(true)
 
     const [order, setOrder] = useState()
     const [contact, setContact] = useState([])
     const [skill, setSkill] = useState([])
     const [languageSkill, setLanguageSkill] = useState([])
     const [candidateList, setCandidateList] = useState([])
+    const [candidateListForSelect, setCandidateListForSelect] = useState([])
     const [contactList, setContactList] = useState([])
     const [activity, setActivity] = useState([])
     const [dataFromTableSelect, setDataFromTableSelect] = useState({})
@@ -93,7 +110,7 @@ function OrderDetail() {
                     setActivity(activity)
                     setSkill(result[0].skill)
                     setLanguageSkill(objectUtil.mapDataLanguage(result[0].languageSkill))
-                    resolve()
+                    resolve(result[0])
                 } else {
                     reject()
                 }
@@ -106,8 +123,10 @@ function OrderDetail() {
             getCandidateList().then(({ data }) => {
                 let { success, result } = data
                 if (success) {
-                    setCandidateList(objectUtil.sortArray(objectUtil.mapDataCandidate(result), "fullName"))
-                    resolve()
+                    result = objectUtil.mapDataCandidate(result)
+                    setCandidateListForSelect(objectUtil.sortArray(objectUtil.formForInputSelect(result, "id", "fullName"), "label"))
+                    let candidateList = objectUtil.sortArray(result, "fullName")
+                    resolve(candidateList)
                 } else {
                     reject()
                 }
@@ -115,24 +134,38 @@ function OrderDetail() {
         })
     }, [getCandidateList])
 
-    let getDetail = useCallback((isRefresh) => {
+    let getDetail = useCallback((isRefresh, isDelete) => {
         Promise.all([_getOrder(), _getCandidateList()]).then((result) => {
+            let candidateList = result[1].map((element) => {
+                return {
+                    ...element,
+                    matching: 100
+                }
+            })
+            setCandidateList(candidateList)
+
             setIsLoadData(false)
         }).catch(() => {
+            dispatch(modalErrorAction.goBack())
+            dispatch(modalErrorAction.setDes("Not found order. Please try again later."))
             dispatch(modalErrorAction.show())
         }).finally(() => {
             if (isRefresh) {
+                if (isDelete)
+                    store.addNotification(toatConstant.deleteDataSuccess())
+                else
+                    store.addNotification(toatConstant.saveDataSuccess())
                 dispatch(modalLoadingAction.close())
             }
         })
     }, [_getOrder, _getCandidateList, dispatch])
 
     useEffect(() => {
-        getDetail(false)
+        getDetail(false, false)
     }, [getDetail])
 
     let handleClickRow = (data) => {
-        history.push(`/candidate/${data.id}`)
+        window.open(`/candidate/${data.id}`, '_blank')
     }
 
     let handleClickRowSelectContact = (data) => {
@@ -181,6 +214,69 @@ function OrderDetail() {
         setShowModalForm(true)
     }
 
+    let handleClickDeleteActivity = (data) => {
+        setTitleModalNormal("Delete Activity!")
+        setDesModalNormal(`Are you sure to delete (${objectUtil.mapActivityTypeId(data.activityTypeId)} : ${data.candidateFirstName} ${data.candidateLastName})?`)
+        setSwapColorModalNormal(true)
+        setModeModalNormal("deleteActivity")
+        setIdDelete(data.id)
+        setShowModalNormal(true)
+    }
+
+    let handleClickCreateActivity = () => {
+        dispatch(modalLoadingAction.show())
+        setIsActivityAboutSaraly(false)
+
+        delete formDataActivity.salary
+
+        getCandidateList().then(({ data }) => {
+            let { success, result } = data
+            if (success) {
+                result = objectUtil.mapDataCandidate(result)
+
+                setCandidateListForSelect(objectUtil.sortArray(objectUtil.formForInputSelect(result, "id", "fullName"), "label"))
+                setFormDataActivity(objectUtil.clearData(formDataActivity))
+                setTitleModalForm("Activity")
+                setSubTitleModalForm("create")
+                setModeModalForm("createActivity")
+                setShowModalForm(true)
+            } else {
+                dispatch(modalErrorAction.show())
+            }
+        }).catch(error => { console.log(error) }).finally(() => {
+            dispatch(modalLoadingAction.close())
+        })
+    }
+
+    let handleClickEditActivity = (data) => {
+        formDataActivity.id = data.id
+        formDataActivity.candidateId = data.candidateId
+        formDataActivity.customerId = data.customerId
+        formDataActivity.orderId = data.orderId
+        formDataActivity.activityTypeId = data.activityTypeId
+        formDataActivity.activityNote = data.activityNote
+
+        setIsActivityAboutSaraly(false)
+
+        delete formDataActivity.salary
+
+        if (data.activityTypeId === 6 || data.activityTypeId === 8) {
+            setIsActivityAboutSaraly(true)
+            formDataActivity.salary = data.salary
+        }
+
+        dispatch(modalLoadingAction.show())
+
+        Promise.all([_getCandidateList()]).then((result) => {
+            setTitleModalForm("Activity")
+            setSubTitleModalForm("edit")
+            setModeModalForm("editActivity")
+            setShowModalForm(true)
+        }).catch(() => { dispatch(modalErrorAction.show()) }).finally(() => {
+            dispatch(modalLoadingAction.close())
+        })
+    }
+
     let handleOkModals = () => {
         switch (modeModalNormal) {
             case "deleteOrder":
@@ -190,6 +286,7 @@ function OrderDetail() {
                 deleteOrder(id).then(({ data }) => {
                     let { success } = data
                     if (success) {
+                        store.addNotification(toatConstant.deleteDataSuccess())
                         history.replace("/order")
                     } else {
                         dispatch(modalErrorAction.show())
@@ -197,6 +294,20 @@ function OrderDetail() {
                 }).catch(error => { console.log(error) }).finally(() => {
                     dispatch(modalLoadingAction.close())
                 })
+                break
+            case "deleteActivity":
+                setShowModalNormal(false)
+                dispatch(modalLoadingAction.show())
+
+                deleteActivity(idDelete).then(({ data }) => {
+                    let { success } = data
+                    if (success) {
+                        getDetail(true, true)
+                    } else {
+                        dispatch(modalLoadingAction.close())
+                        dispatch(modalErrorAction.show())
+                    }
+                }).catch(error => { console.log(error) })
                 break
             default:
                 break
@@ -213,7 +324,7 @@ function OrderDetail() {
                     editOrderContact(id, dataFromTableSelect["id"]).then(({ data }) => {
                         let { success } = data
                         if (success) {
-                            getDetail(true)
+                            getDetail(true, false)
                         } else {
                             dispatch(modalLoadingAction.close())
                             dispatch(modalErrorAction.show())
@@ -232,7 +343,44 @@ function OrderDetail() {
                     editContact(formDataContact).then(({ data }) => {
                         let { success } = data
                         if (success) {
-                            getDetail(true)
+                            getDetail(true, false)
+                        } else {
+                            dispatch(modalLoadingAction.close())
+                            dispatch(modalErrorAction.show())
+                        }
+                    }).catch(error => { console.log(error) })
+                }
+                break
+            case "createActivity":
+                formDataActivity.id = "-"
+                formDataActivity.customerId = order.customerId
+                formDataActivity.orderId = order.id
+                let validateCreateActivity = objectUtil.formValidate(formDataActivity)
+                if (validateCreateActivity) {
+                    setShowModalForm(false)
+                    dispatch(modalLoadingAction.show())
+
+                    createActivity(formDataActivity).then(({ data }) => {
+                        let { success } = data
+                        if (success) {
+                            getDetail(true, false)
+                        } else {
+                            dispatch(modalLoadingAction.close())
+                            dispatch(modalErrorAction.show())
+                        }
+                    }).catch(error => { console.log(error) })
+                }
+                break
+            case "editActivity":
+                let validateEditActivity = objectUtil.formValidate(formDataActivity)
+                if (validateEditActivity) {
+                    setShowModalForm(false)
+                    dispatch(modalLoadingAction.show())
+
+                    editActivity(formDataActivity).then(({ data }) => {
+                        let { success } = data
+                        if (success) {
+                            getDetail(true, false)
                         } else {
                             dispatch(modalLoadingAction.close())
                             dispatch(modalErrorAction.show())
@@ -246,13 +394,39 @@ function OrderDetail() {
     }
 
     let handleChangeInput = ({ target }) => {
+        let { id, value } = target
+        formDataActivity[id] = value
+
         switch (modeModalForm) {
             case "editContact":
-                formDataContact[target.id] = target.value
+                formDataContact[id] = value
+                break
+            case "editActivity":
+                formDataActivity[id] = value
                 break
             default:
                 break
         }
+        switch (id) {
+            case "activityTypeId":
+                if (value === 6 || value === 8) {
+                    setIsActivityAboutSaraly(true)
+                    formDataActivity.salary = ""
+                } else {
+                    setIsActivityAboutSaraly(false)
+                    delete formDataActivity.salary
+                }
+                break
+            default:
+                break
+        }
+    }
+
+    let handleSelectTabs = (key) => {
+        if (key === "activity")
+            setIsTabActivity(true)
+        else
+            setIsTabActivity(false)
     }
 
     return (
@@ -293,20 +467,24 @@ function OrderDetail() {
                             </Row>
                         </Col>
                         <Box xs={12} sm={12} lg={8} body={() => (
-                            <Tabs defaultActiveKey="activity">
-                                <Tab eventKey="activity" title="Activity">
-                                    <RowActivity data={activity} isOrder={true} />
-                                    {/* onClickEdit={handleClickEditActivity} onClickDelete={handleClickDeleteActivity} /> */}
-                                </Tab>
-                                <Tab eventKey="candidate" title="Candidate">
-                                    <Tables
-                                        columnLabel={["Full Name", "Email", "Phone"]}
-                                        column={["fullName", "email", "phoneNumber"]}
-                                        row={candidateList}
-                                        onClickRow={handleClickRow}
-                                        pathCreate={"/candidate/create"} />
-                                </Tab>
-                            </Tabs>
+                            <>
+                                <Tabs defaultActiveKey="activity" onSelect={(key) => handleSelectTabs(key)}>
+                                    <Tab eventKey="activity" title="Activity">
+                                        <RowActivity data={activity} isOrder={true} onClickEdit={handleClickEditActivity} onClickDelete={handleClickDeleteActivity} />
+                                    </Tab>
+                                    <Tab eventKey="candidate" title="Candidate">
+                                        <Tables
+                                            columnLabel={["Full Name", "Email", "Phone"]}
+                                            column={["fullName", "email", "phoneNumber"]}
+                                            row={candidateList}
+                                            onClickRow={handleClickRow}
+                                            pathCreate={"/candidate/create"} />
+                                    </Tab>
+                                </Tabs>
+                                <button className={"outline-primary"} onClick={handleClickCreateActivity} style={{ width: 40, height: 40, position: "absolute", top: 64, right: 15, display: `${isTabActivity ? "block" : "none"}` }}>
+                                    <i className="fa fa-plus" />
+                                </button>
+                            </>
                         )} />
                     </Row>
                 </>)}
@@ -335,6 +513,19 @@ function OrderDetail() {
                                 <Input xs={12} sm={12} lg={12} label={"Email"} id={"email"} onChange={handleChangeInput} defaultValue={formDataContact.email} />
                                 <Input xs={12} sm={12} lg={12} label={"Phone"} id={"phoneNumber"} onChange={handleChangeInput} defaultValue={formDataContact.phoneNumber} />
                                 <Input id={"id"} isHidden={true} defaultValue={formDataContact.id} />
+                            </Row>
+                        }
+                        {(modeModalForm === "editActivity" || modeModalForm === "createActivity") &&
+                            <Row>
+                                <InputSelect xs={12} sm={12} lg={12} label={"Type"} id={"activityTypeId"} optionsList={generalConstant.activityTypeAboutOrderList} onChange={handleChangeInput} defaultValue={formDataActivity.activityTypeId} isSearchable={true} isDisabled={modeModalForm === "editActivity"} />
+                                <InputSelect xs={12} sm={12} lg={12} label={"Candidate"} id={"candidateId"} optionsList={candidateListForSelect} onChange={handleChangeInput} defaultValue={formDataActivity.candidateId} isSearchable={true} isDisabled={(modeModalForm === "editActivity")} />
+
+                                {isActivityAboutSaraly &&
+                                    <Input xs={12} sm={12} lg={12} label={"Salary"} id={"salary"} type={"number"} unit={"Baht"} onChange={handleChangeInput} defaultValue={formDataActivity.salary} />
+                                }
+                                <Input xs={12} sm={12} lg={12} label={"Note"} id={"activityNote"} type={"textarea"} onChange={handleChangeInput} defaultValue={formDataActivity.activityNote} />
+                                <Input id={"id"} isHidden={true} defaultValue={formDataActivity.id} />
+                                <Input id={"candidateId"} isHidden={true} defaultValue={formDataActivity.candidateId} />
                             </Row>
                         }
                     </>

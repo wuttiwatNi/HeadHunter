@@ -3,8 +3,9 @@ import { useHistory, useParams } from "react-router-dom"
 import { objectUtil } from "../../../utils/object.util"
 import { useDispatch } from "react-redux"
 import { format, differenceInYears, differenceInMonths } from "date-fns"
+import { store } from "react-notifications-component"
 // constants
-import { generalConstant } from "../../../constants/index"
+import { generalConstant, toatConstant } from "../../../constants/index"
 // api
 import { candidateApi, activityApi, customerApi, orderApi } from "../../../api"
 // action
@@ -57,7 +58,7 @@ function CandidateDetail() {
     const [customerList, setCustomerList] = useState([])
     const [orderList, setOrderList] = useState([])
 
-    let _getCandidate = useCallback(() => {
+    let _getCandidate = useCallback((isRefresh, isDelete) => {
         getCandidate(id).then(({ data }) => {
             let { success, result } = data
             if (success && result.length !== 0) {
@@ -65,8 +66,6 @@ function CandidateDetail() {
                     ...result[0],
                     fullName: `${result[0]["firstName"]} ${result[0]["lastName"]}`,
                     _nidType: objectUtil.mapNidTypeList(result[0]["nidType"]),
-                    _gendar: objectUtil.mapGendarList(result[0]["gendar"]),
-                    _maritalStatus: objectUtil.mapMaritalList(result[0]["maritalStatus"]),
                     _drivingLicense: result[0]["drivingLicense"] === 1 ? "Yes" : "No",
                     _ownCar: result[0]["ownCar"] === 1 ? "Yes" : "No",
                     _dateOfBirth: `${format(new Date(result[0].dateOfBirth), "dd-MM-yyyy")}`,
@@ -125,16 +124,25 @@ function CandidateDetail() {
                 setWorking(working)
                 setActivity(activity)
 
-                dispatch(modalLoadingAction.close())
                 setIsLoadData(false)
             } else {
+                dispatch(modalErrorAction.goBack())
+                dispatch(modalErrorAction.setDes("Not found candidate. Please try again later."))
                 dispatch(modalErrorAction.show())
             }
-        }).catch(error => { console.log(error) })
+        }).catch(error => { console.log(error) }).finally(() => {
+            if (isRefresh) {
+                if (isDelete)
+                    store.addNotification(toatConstant.deleteDataSuccess())
+                else
+                    store.addNotification(toatConstant.saveDataSuccess())
+                dispatch(modalLoadingAction.close())
+            }
+        })
     }, [getCandidate, id, dispatch])
 
     useEffect(() => {
-        _getCandidate()
+        _getCandidate(false, false)
     }, [_getCandidate])
 
     let handleClickEditCandidate = () => {
@@ -142,7 +150,7 @@ function CandidateDetail() {
     }
 
     let handleClickCreateActivity = () => {
-        dispatch(modalLoadingAction.show)
+        dispatch(modalLoadingAction.show())
         setIsActivityAboutOrder(false)
         setIsActivityAboutSaraly(false)
 
@@ -153,7 +161,6 @@ function CandidateDetail() {
         getCustomerList().then(({ data }) => {
             let { success, result } = data
             if (success) {
-                dispatch(modalLoadingAction.close)
                 setCustomerList(objectUtil.sortArray(objectUtil.formForInputSelect(result, "id", "companyName"), "label"))
                 setFormDataActivity(objectUtil.clearData(formDataActivity))
                 setTitleModalForm("Activity")
@@ -189,14 +196,14 @@ function CandidateDetail() {
         }
         else if (data.activityTypeId >= 5 && data.activityTypeId <= 9) {
             setIsActivityAboutOrder(true)
-            formDataActivity.customerId = 21//data.customerId
+            formDataActivity.customerId = data.customerId
             formDataActivity.orderId = data.orderId
             if (data.activityTypeId === 6 || data.activityTypeId === 8) {
                 setIsActivityAboutSaraly(true)
                 formDataActivity.salary = data.salary
             }
 
-            dispatch(modalLoadingAction.show)
+            dispatch(modalLoadingAction.show())
 
             let _getCustomerList = new Promise((resolve, reject) => {
                 getCustomerList().then(({ data }) => {
@@ -219,7 +226,6 @@ function CandidateDetail() {
                 dispatch(modalLoadingAction.close())
             })
         }
-
     }
 
     let handleClickDeleteActivity = (data) => {
@@ -248,6 +254,7 @@ function CandidateDetail() {
                 deleteCandidate(id).then(({ data }) => {
                     let { success } = data
                     if (success) {
+                        store.addNotification(toatConstant.deleteDataSuccess())
                         history.replace("/candidate")
                     } else {
                         dispatch(modalErrorAction.show())
@@ -263,7 +270,7 @@ function CandidateDetail() {
                 deleteActivity(idDelete).then(({ data }) => {
                     let { success } = data
                     if (success) {
-                        _getCandidate()
+                        _getCandidate(true, true)
                     } else {
                         dispatch(modalErrorAction.show())
                     }
@@ -290,7 +297,7 @@ function CandidateDetail() {
                     createActivity(formDataActivity).then(({ data }) => {
                         let { success } = data
                         if (success) {
-                            _getCandidate()
+                            _getCandidate(true, false)
                         } else {
                             dispatch(modalErrorAction.show())
                         }
@@ -308,7 +315,7 @@ function CandidateDetail() {
                     editActivity(formDataActivity).then(({ data }) => {
                         let { success } = data
                         if (success) {
-                            _getCandidate()
+                            _getCandidate(true, false)
                         } else {
                             dispatch(modalErrorAction.show())
                         }
@@ -395,8 +402,8 @@ function CandidateDetail() {
                                                 { label: "", key: "picturePath", full: true, img: true },
                                                 { label: "Resume", key: "resumePath", pdf: true },
                                                 { label: "Nickname", key: "nickname" },
-                                                { label: "Category (1st)", key: "positionFristCategoryName" },
-                                                { label: "Position (1st)", key: "positionAppliedFristName" },
+                                                { label: "Category (1st)", key: "positionFirstCategoryName" },
+                                                { label: "Position (1st)", key: "positionAppliedFirstName" },
                                                 { label: "Category (2nd) ", key: "positionSecondCategoryName" },
                                                 { label: "Position (2nd)", key: "positionAppliedSecondName" },
                                                 { label: "Nationality", key: "nationalityName" },
@@ -410,10 +417,10 @@ function CandidateDetail() {
                                                 { label: "ZipCode", key: "zipCode" },
                                                 { label: "Phone", key: "phoneNumber" },
                                                 { label: "Email", key: "email" },
-                                                { label: "Gendar", key: "_gendar" },
+                                                { label: "Gendar", key: "gendar" },
                                                 { label: "Date Of Birth", key: "_dateOfBirth" },
                                                 { label: "Age", key: "age" },
-                                                { label: "Marital Status", key: "_maritalStatus" },
+                                                { label: "Marital Status", key: "maritalStatus" },
                                                 { label: "Height", key: "_height" },
                                                 { label: "Driving License", key: "_drivingLicense" },
                                                 { label: "OwnCar", key: "_ownCar" },

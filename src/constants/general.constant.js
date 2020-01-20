@@ -30,10 +30,10 @@ const gendarList = [
 
 const maritalList = [
   {
-    value: 1, label: "Single"
+    value: "Single", label: "Single"
   },
   {
-    value: 2, label: "Married"
+    value: "Married", label: "Married"
   }
 ]
 
@@ -66,6 +66,14 @@ const activityTypeList = [
   { value: 2, label: "Miss call" },
   { value: 3, label: "Interview internal" },
   { value: 4, label: "Other" },
+  { value: 5, label: "Interview send" },
+  { value: 6, label: "Reject" },
+  { value: 7, label: "Canceled" },
+  { value: 8, label: "Complete" },
+  { value: 9, label: "Other about order" }
+]
+
+const activityTypeAboutOrderList = [
   { value: 5, label: "Interview send" },
   { value: 6, label: "Reject" },
   { value: 7, label: "Canceled" },
@@ -115,6 +123,7 @@ export const generalConstant = {
   levelLanguageList,
   levelEducationList,
   activityTypeList,
+  activityTypeAboutOrderList,
   activityTypeListIcon,
   activityTypeListColor,
   dayListColor

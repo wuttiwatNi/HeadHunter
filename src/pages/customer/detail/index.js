@@ -2,6 +2,9 @@ import React, { useState, useEffect, useCallback } from "react"
 import { useHistory, useParams } from "react-router-dom"
 import { objectUtil } from "../../../utils/object.util"
 import { useDispatch } from "react-redux"
+import { store } from "react-notifications-component"
+// constants
+import { toatConstant } from "./../../../constants/index"
 // api
 import { customerApi, contactApi } from "../../../api"
 // action
@@ -14,7 +17,7 @@ import { Row, Col, Spinner } from "react-bootstrap"
 function CustomerDetail() {
     const history = useHistory()
     const { id } = useParams()
-    
+
     const dispatch = useDispatch()
 
     const { getCustomer, deleteCustomer } = customerApi
@@ -45,7 +48,7 @@ function CustomerDetail() {
         email: ""
     })
 
-    let _getCustomer = useCallback((isRefresh) => {
+    let _getCustomer = useCallback((isRefresh, isDelete) => {
         getCustomer(id).then(({ data }) => {
             let { success, result } = data
             if (success && result.length !== 0) {
@@ -53,17 +56,23 @@ function CustomerDetail() {
                 setContact(result[0].contact)
                 setOrderList(result[0].order)
             } else {
+                dispatch(modalErrorAction.goBack())
+                dispatch(modalErrorAction.setDes("Not found customer. Please try again later."))
                 dispatch(modalErrorAction.show())
             }
         }).catch(error => { console.log(error) }).finally(() => {
             if (isRefresh) {
+                if (isDelete)
+                    store.addNotification(toatConstant.deleteDataSuccess())
+                else
+                    store.addNotification(toatConstant.saveDataSuccess())
                 dispatch(modalLoadingAction.close())
             }
         })
     }, [getCustomer, dispatch, id])
 
     useEffect(() => {
-        _getCustomer(false)
+        _getCustomer(false, false)
     }, [_getCustomer])
 
     let handleClickRow = (data) => {
@@ -117,6 +126,7 @@ function CustomerDetail() {
                 deleteCustomer(id).then(({ data }) => {
                     let { success } = data
                     if (success) {
+                        store.addNotification(toatConstant.deleteDataSuccess())
                         history.replace("/customer")
                     } else {
                         dispatch(modalErrorAction.show())
@@ -132,7 +142,7 @@ function CustomerDetail() {
                 deleteContact(dataFromRowContact["id"]).then(({ data }) => {
                     let { success } = data
                     if (success) {
-                        _getCustomer(true)
+                        _getCustomer(true, true)
                     } else {
                         dispatch(modalErrorAction.show())
                     }
@@ -158,7 +168,7 @@ function CustomerDetail() {
                     createContact(formDataContact).then(({ data }) => {
                         let { success } = data
                         if (success) {
-                            _getCustomer(true)
+                            _getCustomer(true, false)
                         } else {
                             dispatch(modalLoadingAction.close())
                             dispatch(modalErrorAction.show())
@@ -175,7 +185,7 @@ function CustomerDetail() {
                     editContact(formDataContact).then(({ data }) => {
                         let { success } = data
                         if (success) {
-                            _getCustomer(true)
+                            _getCustomer(true, false)
                         } else {
                             dispatch(modalLoadingAction.close())
                             dispatch(modalErrorAction.show())

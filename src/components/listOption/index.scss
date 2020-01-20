@@ -1,7 +1,7 @@
 @import "../../styles/variables";
 
 .list-option {
-  margin-bottom: 30px;
+  margin-bottom: 15px;
 
   .accordion > .card:last-of-type {
     border: 0px;
@@ -63,7 +63,7 @@
     background-color: #747f8b7c;
     margin-bottom: 2px;
 
-    span{
+    span {
       white-space: nowrap;
       text-overflow: ellipsis;
       overflow: hidden;
@@ -108,7 +108,7 @@
       margin-bottom: 2px;
       display: flex;
 
-      span{
+      span {
         white-space: nowrap;
         text-overflow: ellipsis;
         overflow: hidden;

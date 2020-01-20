@@ -22,7 +22,8 @@
   }
 
   .block {
-    background-image: $primaryBgColor;
+    // background-image: $primaryBgColor;
+    background-color: rgba(0, 0, 0, 0.6);
     max-width: 380px;
     width: auto;
     height: auto;
@@ -38,11 +39,11 @@
     border-color: white;
     height: 80px;
     border-radius: 50%;
-    transition: transform 1s ease-in-out
+    transition: transform 1s ease-in-out;
   }
 
   .logo:hover {
-    transform: rotate(450deg)
+    transform: rotate(450deg);
   }
 
   .title {
@@ -52,21 +53,35 @@
     display: block;
   }
 
+  .label {
+    color: white;
+    margin-bottom: 5px;
+    float: left;
+  }
+
+  .error {
+    font-size: 13px;
+    color: rgb(255, 94, 94);
+    margin-left: 5px;
+    margin-top: 3px;
+    float: left;
+  }
+
   input {
     width: 100%;
-    margin-top: 20px;
     font-size: 16px;
     color: $primaryText;
     border-radius: 8px;
     border-width: 0;
     padding: 8px;
+    margin-bottom: 15px;
   }
 
   input:focus {
     outline: none;
   }
 
-  .forgot{
+  .forgot {
     text-align: right;
     margin-top: 5px;
     margin-bottom: 20px;
@@ -75,9 +90,9 @@
     cursor: pointer;
   }
 
-  button.primary-fill{
+  button.primary-fill {
     width: 100%;
     padding: 10px;
+    margin-top: 15px;
   }
-
 }

@@ -2,6 +2,9 @@ import React, { useState, useEffect, useCallback } from "react"
 import { useHistory, useParams } from "react-router-dom"
 import { useDispatch } from "react-redux"
 import { objectUtil } from "../../../utils/object.util"
+import { store } from "react-notifications-component"
+// constants
+import { toatConstant } from "./../../../constants/index"
 // api
 import { masterApi, customerApi } from "../../../api"
 // action
@@ -94,6 +97,8 @@ function CustomerCreate({ mode }) {
                         setIsLoadData(false)
                     })
                 } else {
+                    dispatch(modalErrorAction.goBack())
+                    dispatch(modalErrorAction.setDes("Not found customer. Please try again later."))
                     dispatch(modalErrorAction.show())
                 }
             }).catch(error => { console.log(error) })
@@ -159,7 +164,11 @@ function CustomerCreate({ mode }) {
         var promise1 = _getAmphureListByProvinceId(currentCustomer.provinceId)
         var promise2 = _getDistrictListByAmphureId(currentCustomer.amphureId)
 
+        dispatch(modalLoadingAction.show())
+
         Promise.all([promise1, promise2]).then(() => {
+            dispatch(modalLoadingAction.close())
+            
             formDataCustomer.companyName = currentCustomer.companyName
             formDataCustomer.address = currentCustomer.address
             formDataCustomer.provinceId = currentCustomer.provinceId
@@ -192,6 +201,7 @@ function CustomerCreate({ mode }) {
                 createCustomer(formDataCustomer).then(({ data }) => {
                     let { success, result } = data
                     if (success) {
+                        store.addNotification(toatConstant.saveDataSuccess())
                         history.replace(result[0].id.toString())
                     } else {
                         dispatch(modalErrorAction.show())
@@ -207,6 +217,7 @@ function CustomerCreate({ mode }) {
                 editCustomer(formDataCustomer).then(({ data }) => {
                     let { success, result } = data
                     if (success) {
+                        store.addNotification(toatConstant.saveDataSuccess())
                         history.replace(`/customer/${result[0].id.toString()}`)
                     } else {
                         dispatch(modalErrorAction.show())

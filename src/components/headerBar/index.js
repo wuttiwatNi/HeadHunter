@@ -1,14 +1,17 @@
-import React, { useState } from "react";
-import { useDispatch } from "react-redux";
-import { sideBarAction } from "../../actions";
-import "./index.scss";
+import React, { useState } from "react"
+import { useHistory } from "react-router-dom"
+import { useDispatch, useSelector } from "react-redux"
+import { sideBarAction, accountAction } from "../../actions"
+import "./index.scss"
 
 function HeaderBar() {
-    const dispatch = useDispatch();
+    const dispatch = useDispatch()
+    let history = useHistory()
+    const account = useSelector(state => state.account)
     const [isPopupProfile, setIsPopupProfile] = useState(false)
 
     let handleLogout = () => {
-        console.log("logout")
+        dispatch(accountAction.logout())
     }
 
     return (
@@ -22,20 +25,21 @@ function HeaderBar() {
                 </div>
                 <div className={`toggle-profile ${isPopupProfile ? "click" : ""}`} onMouseOver={() => setIsPopupProfile(true)} onMouseOut={() => setIsPopupProfile(false)}>
                     <div className={`frame ${isPopupProfile ? "click" : ""}`}>
-                        <img src={`${window.location.origin}/user-avatar.png`} className="head-bar" alt="..." />
-                        Nickname
+                        <img src={account.picturePath} className="head-bar" alt="..." />
+                        {account.firstName}
                     </div>
                 </div>
 
                 <div className="popup-profile-triangle" style={{ display: isPopupProfile ? "block" : "none" }} onMouseOver={() => setIsPopupProfile(true)} onMouseOut={() => setIsPopupProfile(false)}></div>
                 <div className="popup-profile" style={{ display: isPopupProfile ? "block" : "none" }} onMouseOver={() => setIsPopupProfile(true)} onMouseOut={() => setIsPopupProfile(false)}>
-                    <img src={`${window.location.origin}/user-avatar.png`} alt="..." />
-                    <span>FirstName LastName</span>
+                    <i onClick={() => { history.replace("/profile") }} className={"fa fa-cog"} />
+                    <img src={account.picturePath} alt="..." />
+                    <span>{account.firstName} {account.lastName}</span>
                     <button onClick={handleLogout}>Logout</button>
                 </div>
             </div>
         </div>
-    );
+    )
 }
 
-export default HeaderBar;
+export default HeaderBar

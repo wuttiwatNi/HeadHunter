@@ -3,7 +3,8 @@ import { actionConstant } from "../constants/index";
 export const modalErrorAction = {
   show,
   close,
-  setDes
+  setDes,
+  goBack
 };
 
 function show() {
@@ -24,5 +25,12 @@ function setDes(des) {
   return {
       type: actionConstant.modalError.SET_DES,
       des: des,
+  };
+}
+
+function goBack() {
+  return {
+      type: actionConstant.modalError.SET_IS_BACK,
+      isBack: true,
   };
 }

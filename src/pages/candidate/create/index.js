@@ -2,9 +2,10 @@ import React, { useState, useEffect, useCallback } from "react"
 import { useHistory, useParams } from "react-router-dom"
 import { useDispatch } from "react-redux"
 import { objectUtil } from "../../../utils/object.util"
+import { store } from "react-notifications-component"
 import { format } from "date-fns"
 // constants
-import { generalConstant } from "../../../constants/index"
+import { generalConstant, toatConstant } from "../../../constants/index"
 // api
 import { positionApi, skillApi, languageSkillApi, candidateApi, nationalityApi, masterApi } from "../../../api"
 // action
@@ -38,7 +39,7 @@ function CandidateCreate({ mode }) {
     const [currentCandidate, setCurrentCandidate] = useState({})
     const [formDataCandidate] = useState({
         categoryIdFrist: "",
-        positionAppliedFrist: "",
+        positionAppliedFirst: "",
         categoryIdSecond: "",
         positionAppliedSecond: "",
         firstName: "",
@@ -201,9 +202,9 @@ function CandidateCreate({ mode }) {
                 if (success && result.length !== 0) {
                     let {
                         id,
-                        positionFristCategoryId,
+                        positionFirstCategoryId,
                         positionSecondCategoryId,
-                        positionAppliedFrist,
+                        positionAppliedFirst,
                         positionAppliedSecond,
                         firstName,
                         lastName,
@@ -234,9 +235,9 @@ function CandidateCreate({ mode }) {
                     } = result[0]
 
                     formDataCandidate.id = id
-                    formDataCandidate.categoryIdFrist = positionFristCategoryId
+                    formDataCandidate.categoryIdFrist = positionFirstCategoryId
                     formDataCandidate.categoryIdSecond = positionSecondCategoryId
-                    formDataCandidate.positionAppliedFrist = positionAppliedFrist
+                    formDataCandidate.positionAppliedFirst = positionAppliedFirst
                     formDataCandidate.positionAppliedSecond = positionAppliedSecond
                     formDataCandidate.firstName = firstName
                     formDataCandidate.lastName = lastName
@@ -265,6 +266,8 @@ function CandidateCreate({ mode }) {
                     formDataCandidate.namePicture = namePicture
 
                     // Get name and surname resume
+                    if (resumePath === null)
+                        resumePath = ""
                     let __resumePath = resumePath.split("/")
                     let nameResume = __resumePath[__resumePath.length - 1]
                     formDataCandidate.nameResume = nameResume
@@ -285,7 +288,7 @@ function CandidateCreate({ mode }) {
                     setFormDataLanguageSkill(JSON.parse(JSON.stringify(languageSkill)))
                     setFormDataWorking(JSON.parse(JSON.stringify(working)))
 
-                    var promiseSet1 = _getPositionListByCategoryId(positionFristCategoryId, 1)
+                    var promiseSet1 = _getPositionListByCategoryId(positionFirstCategoryId, 1)
                     var promiseSet2 = _getPositionListByCategoryId(positionSecondCategoryId, 2)
                     var promiseSet3 = _getAmphureListByProvinceId(provinceId)
                     var promiseSet4 = _getDistrictListByAmphureId(amphureId)
@@ -325,6 +328,8 @@ function CandidateCreate({ mode }) {
                         })
                     })
                 } else {
+                    dispatch(modalErrorAction.goBack())
+                    dispatch(modalErrorAction.setDes("Not found candidate. Please try again later."))
                     dispatch(modalErrorAction.show())
                 }
             }).catch(error => { console.log(error) })
@@ -355,7 +360,7 @@ function CandidateCreate({ mode }) {
         switch (id) {
             case "categoryIdFrist":
                 if (value) {
-                    clearSelect(["positionAppliedFrist"])
+                    clearSelect(["positionAppliedFirst"])
                     _getPositionListByCategoryId(value, 1)
                 }
                 break
@@ -440,7 +445,7 @@ function CandidateCreate({ mode }) {
             setFormDataWorking(JSON.parse(JSON.stringify(currentCandidate.working)))
 
             formDataCandidate.categoryIdFrist = currentCandidate.categoryIdFrist
-            formDataCandidate.positionAppliedFrist = currentCandidate.positionAppliedFrist
+            formDataCandidate.positionAppliedFirst = currentCandidate.positionAppliedFirst
             formDataCandidate.categoryIdSecond = currentCandidate.categoryIdSecond
             formDataCandidate.positionAppliedSecond = currentCandidate.positionAppliedSecond
             formDataCandidate.firstName = currentCandidate.firstName
@@ -514,6 +519,7 @@ function CandidateCreate({ mode }) {
                 createCandidate(formData).then(({ data }) => {
                     let { success, result } = data
                     if (success) {
+                        store.addNotification(toatConstant.saveDataSuccess())
                         history.replace(result[0].id.toString())
                     } else {
                         dispatch(modalErrorAction.show())
@@ -572,6 +578,7 @@ function CandidateCreate({ mode }) {
                 editCandidate(formDataEdit).then(({ data }) => {
                     let { success, result } = data
                     if (success) {
+                        store.addNotification(toatConstant.saveDataSuccess())
                         history.replace(`/candidate/${result[0].id.toString()}`)
                     } else {
                         dispatch(modalErrorAction.show())
@@ -909,7 +916,7 @@ function CandidateCreate({ mode }) {
                             body={() => (
                                 <Row>
                                     <InputSelect xs={12} sm={6} lg={6} label={"Category (1st)"} id={"categoryIdFrist"} placeholder={"Category"} optionsList={categoryList} onChange={handleChangeInput} isSearchable={true} defaultValue={currentCandidate.categoryIdFrist} resest={isReset} />
-                                    <InputSelect xs={12} sm={6} lg={6} label={"Position Applied (1st)"} id={"positionAppliedFrist"} placeholder={"Position Applied"} optionsList={positionList1} onChange={handleChangeInput} isSearchable={true} defaultValue={currentCandidate.positionAppliedFrist} resest={isReset} />
+                                    <InputSelect xs={12} sm={6} lg={6} label={"Position Applied (1st)"} id={"positionAppliedFirst"} placeholder={"Position Applied"} optionsList={positionList1} onChange={handleChangeInput} isSearchable={true} defaultValue={currentCandidate.positionAppliedFirst} resest={isReset} />
                                     <InputSelect xs={12} sm={6} lg={6} label={"Category (2nd)"} id={"categoryIdSecond"} placeholder={"Category"} optionsList={categoryList} onChange={handleChangeInput} isSearchable={true} defaultValue={currentCandidate.categoryIdSecond} resest={isReset} />
                                     <InputSelect xs={12} sm={6} lg={6} label={"Position Applied (2nd)"} id={"positionAppliedSecond"} placeholder={"Position Applied"} optionsList={positionList2} onChange={handleChangeInput} isSearchable={true} defaultValue={currentCandidate.positionAppliedSecond} resest={isReset} />
 

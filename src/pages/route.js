@@ -1,6 +1,7 @@
-import React from "react";
-import { Route, Switch } from "react-router-dom";
-import { clientUtil } from "../utils/client.util";
+import React from "react"
+import { Route, Switch, Redirect } from "react-router-dom"
+import { useSelector } from "react-redux"
+import ReactNotification from 'react-notifications-component'
 // components
 import { SideBar, HeaderBar, ModalError, ModalLoading } from "../components"
 // pages
@@ -15,31 +16,34 @@ import CandidateAll from "./candidate/all"
 import CandidateCreate from "./candidate/create"
 import CandidateDetail from "./candidate/detail"
 import Option from "./option"
+import MemberAll from "./member/all"
+import MemberCreate from "./member/create"
+import 'react-notifications-component/dist/theme.css'
 
 function Index() {
-    let isLogin = true;
-
-    clientUtil.setErrorHandler();
-    clientUtil.setDefaultInterceptors();
+    const account = useSelector(state => state.account)
+    let { token } = account
 
     return (
         <>
             {
-                !isLogin &&
+                !token &&
                 <Switch>
                     <Route exact path="/" component={Login} />
+                    <Route path="/*" render={() => <Redirect to="/" />} />
                 </Switch>
             }
             {
-                isLogin &&
+                token &&
                 <>
                     <SideBar />
                     <HeaderBar />
                     <div className={"content"}>
                         <Switch>
                             {/* Customer */}
+                            <Route exact path="/" render={() => <Redirect to="/customer" />} />
                             <Route
-                                exact path={["/", "/customer"]}
+                                exact path={"/customer"}
                                 component={CustomerAll}
                             />
                             <Route
@@ -100,19 +104,47 @@ function Index() {
                                 exact path={["/candidate/:id"]}
                                 component={CandidateDetail}
                             />
+                            {/* Member */}
+                            <Route
+                                exact path={"/member"}
+                                component={MemberAll}
+                            />
+                            {account.role === "ADMIN" &&
+                                <Route
+                                    exact path="/member/create"
+                                    render={() => (
+                                        <MemberCreate mode={"create"} />
+                                    )}
+                                />
+                            }
+
+                            <Route
+                                exact path="/member/:id"
+                                render={() => (
+                                    <MemberCreate mode={"detail"} />
+                                )}
+                            />
+                            <Route
+                                exact path="/profile"
+                                render={() => (
+                                    <MemberCreate mode={"edit"} />
+                                )}
+                            />
                             {/* Option */}
                             <Route
                                 exact path={"/option"}
                                 component={Option}
                             />
+                            <Route path="/*" render={() => <Redirect to="/customer" />} />
                         </Switch>
                     </div>
                 </>
             }
+            <ReactNotification />
             <ModalLoading />
             <ModalError />
         </>
-    );
+    )
 }
 
-export default Index;
+export default Index

@@ -49,6 +49,11 @@ const activity = {
   ACTIVITYS: "/activitys"
 }
 
+const user = {
+  USER: "/users",
+  SIGN_IN: "/signIn"
+}
+
 export const apiConstant = {
   master,
   customer,
@@ -61,5 +66,6 @@ export const apiConstant = {
   orderSkill,
   orderLanguageSkill,
   nationality,
-  activity
+  activity,
+  user
 };

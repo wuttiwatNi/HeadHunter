@@ -1,36 +1,42 @@
-import React, { useState, useEffect } from "react";
-import * as PropTypes from "prop-types";
-import { Col, Row, Table } from "react-bootstrap";
-import { Link } from "react-router-dom";
-import "./index.scss";
+import React, { useState, useEffect } from "react"
+import * as PropTypes from "prop-types"
+import { Col, Row, Table } from "react-bootstrap"
+import { Link } from "react-router-dom"
+import "./index.scss"
 
-function Tables({ columnLabel, column, row, pathCreate, onClickRow, onClickCreate }) {
-    const [dataList, setDataList] = useState([]);
-    const [check, setCheck] = useState(0);
+function Tables({ columnLabel, column, row, pathCreate, onClickRow, onClickCreate, onClickResetPassword, onClickDelete }) {
+    const [dataList, setDataList] = useState([])
+    const [check, setCheck] = useState(0)
 
     useEffect(() => {
         if (row !== undefined && check === 0) {
             setDataList(row)
         }
-    }, [setDataList, row, check]);
+    }, [setDataList, row, check])
 
     let handleChangeSearch = ({ target }) => {
         setCheck(target.value.length)
         if (target.value.length !== 0) {
             setDataList(row.filter(data => {
-                let result = false;
+                let result = false
                 Object.keys(data).forEach(key => {
                     if ((data[key] + "").toString().toLowerCase().indexOf(target.value.toLowerCase()) > -1) {
                         result = true
                     }
-                });
+                })
                 return result
-            }));
+            }))
         }
-    };
+    }
 
-    let handleChildClick = (e) => {
-        // e.stopPropagation();
+    let handleChildClickResetPassword = (e, data) => {
+        e.stopPropagation()
+        onClickResetPassword(data)
+    }
+
+    let handleChildClickDelete = (e, data) => {
+        e.stopPropagation()
+        onClickDelete(data)
     }
 
     return (
@@ -40,11 +46,13 @@ function Tables({ columnLabel, column, row, pathCreate, onClickRow, onClickCreat
                     <input placeholder={"Search"} onChange={handleChangeSearch} />
                 </Col>
                 <Col className={"text-right"}>
-                    <Link to={pathCreate} onClick={onClickCreate}>
-                        <button className={"outline-primary"}>
-                            <i className={"fa fa-plus"} />
-                        </button>
-                    </Link>
+                    {pathCreate &&
+                        <Link to={pathCreate} onClick={onClickCreate}>
+                            <button className={"outline-primary"}>
+                                <i className={"fa fa-plus"} />
+                            </button>
+                        </Link>
+                    }
                 </Col>
             </Row>
             <Table striped responsive hover>
@@ -61,7 +69,13 @@ function Tables({ columnLabel, column, row, pathCreate, onClickRow, onClickCreat
                     {dataList.map(data => (
                         <tr key={data.id} onClick={() => onClickRow(data)}>
                             {column.map((key, index) => {
-                                return (<td key={index}><span onClick={handleChildClick}>{data[key]}</span></td>);
+                                if (key === "menu")
+                                    return (<td key={index} style={{ textAlign: "center", minWidth: 230 }}>
+                                        <button className="outline-primary-blue" onClick={(e) => handleChildClickResetPassword(e, data)} style={{ marginRight: 10 }}>Reset Password</button>
+                                        <button className="outline-primary-red" onClick={(e) => handleChildClickDelete(e, data)}>Delete</button>
+                                    </td>)
+                                else
+                                    return (<td key={index}><span>{data[key]}</span></td>)
                             })}
                         </tr>
                     ))}
@@ -73,7 +87,7 @@ function Tables({ columnLabel, column, row, pathCreate, onClickRow, onClickCreat
                 </Col>
             }
         </>
-    );
+    )
 }
 
 Tables.propTypes = {
@@ -82,13 +96,13 @@ Tables.propTypes = {
     pathCreate: PropTypes.string.isRequired,
     onClickCreate: PropTypes.func,
     onClickRow: PropTypes.func
-};
+}
 
 Tables.defaultProps = {
     onClickCreate: () => {
     },
     onClickRow: () => {
     }
-};
+}
 
-export default Tables;
+export default Tables

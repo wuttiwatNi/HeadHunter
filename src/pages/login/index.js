@@ -1,28 +1,74 @@
-import React, { useState } from "react";
-import { ModalNormal } from "../../components";
-import { objectUtil } from "../../utils/object.util";
-import { Col, Row } from "react-bootstrap";
+import React, { useState, useEffect } from "react"
+import { useDispatch } from "react-redux"
+import { Col, Row } from "react-bootstrap"
+// api
+import { userApi } from "../../api"
+// action
+import { modalErrorAction, modalLoadingAction, accountAction } from "../../actions"
 import "./index.scss";
 
 function Login() {
-    const [showMessage, setShowMessage] = useState(false);
+    const dispatch = useDispatch()
+
+    const [errorEmail, setErrorEmail] = useState("")
+    const [errorPassword, setErrorPassword] = useState("")
+
+    const { signInUser } = userApi
+
     const [formDataLogin] = useState({
-        username: "",
+        email: "",
         password: ""
-    });
+    })
+
+    useEffect(() => {
+        var input = document.getElementById("password");
+
+        input.addEventListener("keyup", function (event) {
+            if (event.keyCode === 13) {
+                event.preventDefault();
+                document.getElementById("btn-login").click();
+            }
+        });
+    })
 
     let handleChangeInput = ({ target }) => {
         formDataLogin[target.id] = target.value
-    };
+        if (target.id === "email")
+            setErrorEmail("")
+        else
+            setErrorPassword("")
+    }
 
     let handleLogin = () => {
-        let validate = objectUtil.formValidate(formDataLogin);
-        if (!validate) {
-            console.log("field is required")
-        } else {
-            console.log(formDataLogin)
+        let validate = true
+        if (formDataLogin.email.length === 0) {
+            setErrorEmail("(Is a required.)")
+            validate = false
         }
-    };
+        if (formDataLogin.password.length === 0) {
+            setErrorPassword("(Is a required.)")
+            validate = false
+        } else if (formDataLogin.password.length < 6) {
+            setErrorPassword("(Must be at least 6 characters.)")
+            validate = false
+        }
+
+        if (validate) {
+            dispatch(modalLoadingAction.show())
+
+            signInUser(formDataLogin).then(({ data }) => {
+                let { success, result } = data
+                if (success) {
+                    dispatch(accountAction.login(result[0]))
+                } else {
+                    dispatch(modalErrorAction.setDes(data.message) + ".")
+                    dispatch(modalErrorAction.show())
+                }
+            }).catch(error => { console.log(error) }).finally(() => {
+                dispatch(modalLoadingAction.close())
+            })
+        }
+    }
 
     return (
         <>
@@ -37,19 +83,20 @@ function Login() {
                                     alt="notFound"
                                 />
                                 <span className={"title"}>Welcome</span>
-                                <input id={"username"} onChange={handleChangeInput} placeholder={"Username"} />
-                                <input id={"password"} onChange={handleChangeInput} placeholder={"Password"} />
-                                <div className={"forgot"}>Forgot password?</div>
-                                <button className={"primary-fill"} onClick={() => handleLogin()}>Login</button>
+                                <div className={"label"}>Email</div>
+                                <div className={"error"}>{errorEmail}</div>
+                                <input id={"email"} onChange={handleChangeInput} />
+                                <div className={"label"}>Password</div>
+                                <div className={"error"}>{errorPassword}</div>
+                                <input id={"password"} onChange={handleChangeInput} type={"password"} />
+                                <button id={"btn-login"} className={"primary-fill"} onClick={() => handleLogin()}>Login</button>
                             </div>
                         </Col>
                     </Row>
                 </div>
             </div>
-            <ModalNormal title={"Oop!"} description={"Something went wrong."} show={showMessage}
-                handleOk={() => setShowMessage(false)} />
         </>
-    );
+    )
 }
 
-export default Login;
+export default Login

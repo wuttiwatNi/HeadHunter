@@ -14,8 +14,6 @@ export const objectUtil = {
     mapDataLanguage,
     mapPriority,
     mapNidTypeList,
-    mapGendarList,
-    mapMaritalList,
     mapLevelEducationList,
     mapActivityTypeId,
     mapActivityTypeIcon,
@@ -25,14 +23,6 @@ export const objectUtil = {
 
 function mapNidTypeList(data) {
     return data === 1 ? "ID Card" : "Passport"
-}
-
-function mapGendarList(data) {
-    return data === "M" ? "Male" : "Fenale"
-}
-
-function mapMaritalList(data) {
-    return data === 1 ? "Single" : "Married"
 }
 
 function mapLevelEducationList(data) {
@@ -90,12 +80,11 @@ function formValidate(formData) {
     let i = 0;
     for (let property in formData) {
         if (formData.hasOwnProperty(property)) {
-            if (!formData[property] && typeof formData[property] !== "boolean") {
+            if (!formData[property] && typeof formData[property] !== "boolean" && property !== "namePicture" && property !== "nameResume") {
                 if (i === 0) {
-                    document.getElementById(property).scrollIntoView({ behavior: "smooth", block: "center" });
+                    document.getElementById(property).scrollIntoView({ behavior: "smooth", block: "center" })
                 }
                 i = 1;
-                // console.log(property)
                 document.getElementById(property).classList.add("invalid")
                 isValid = false;
             }

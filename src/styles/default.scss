@@ -44,6 +44,7 @@ textarea {
 
 .nav-tabs {
   border-bottom: 0px;
+  margin-bottom: 15px;
   padding-left: 15px;
   margin-top: -15px;
 
@@ -72,6 +73,41 @@ textarea {
   }
 }
 
-.tab-content {
-  padding-top: 15px;
+.notification-custom-icon {
+  flex-basis: 20%;
+  position: relative;
+  padding: 8px 8px 8px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .fa {
+    color: #fff;
+    font-size: 35px;
+  }
+}
+
+.notification-title {
+  font-weight: 400 !important;
+  font-size: 16px !important;
+  margin: 5px 0px 5px 0px !important;
+}
+
+.notification-custom-content {
+  flex-basis: 80%;
+  padding: 12px 8px 12px 8px;
+  display: inline-block;
+}
+
+.notification-custom-success {
+  width: 100%;
+  display: flex;
+  background-color: #28a745;
+  border-radius: 4px;
+
+  .notification-custom-icon {
+    border-left: 8px solid darken(#28a745, 15%);
+    border-top-left-radius: 4px;
+    border-bottom-left-radius: 4px;
+  }
 }

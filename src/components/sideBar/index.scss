@@ -6,7 +6,7 @@
   width: calc(100% - 0px);
   margin-top: 100px;
   position: fixed;
-  background-color: rgba(0, 0, 0, 0.50);
+  background-color: rgba(0, 0, 0, 0.5);
   display: none;
 }
 
@@ -47,6 +47,12 @@
       overflow: hidden;
       text-overflow: ellipsis;
       display: block;
+      cursor: default;
+    }
+
+    .role {
+      font-weight: 400;
+      color: $primaryColor;
     }
 
     img {

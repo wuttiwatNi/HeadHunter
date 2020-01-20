@@ -1,18 +1,20 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-// import { useHistory } from "react-router-dom"
+import { useHistory } from "react-router-dom"
 import { Modal } from "react-bootstrap";
 // action
 import { modalErrorAction } from "../../actions";
 
 function ModalError() {
-    // const history = useHistory()
+    const history = useHistory()
     const dispatch = useDispatch();
     const modalError = useSelector(state => state.modalError);
 
     let onClickOk = () => {
+        if (modalError.isBack) {
+            history.goBack()
+        }
         dispatch(modalErrorAction.close())
-        // history.goBack()
     }
 
     return (

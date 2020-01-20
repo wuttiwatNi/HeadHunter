@@ -1,22 +1,23 @@
-import axios from "axios";
-import {config} from "../config";
+import axios from "axios"
+import { config } from "../config"
+import { store } from "../store"
 
 export const clientUtil = {
     setErrorHandler,
     setDefaultInterceptors
-};
+}
 
 function setDefaultInterceptors(instance = axios) {
     instance.interceptors.request.use(
         requestConfig => {
-            const customRequestConfig = {...requestConfig};
+            const customRequestConfig = { ...requestConfig }
 
             // set default headerBar
             customRequestConfig.headers = {
                 "Content-Type": "application/json",
-                // "Authorization": "Bearer " + store.getState().auth.accessToken,
+                "Authorization": "Bearer " + store.getState().account.token,
                 ...customRequestConfig.headers
-            };
+            }
 
             if (config.REQUEST_LOG_ENABLED) {
                 console.log(
@@ -34,47 +35,47 @@ function setDefaultInterceptors(instance = axios) {
                     "\n",
                     "Headers: ",
                     customRequestConfig.headers
-                );
+                )
             }
 
-            return customRequestConfig;
+            return customRequestConfig
         },
         requestError => {
-            const {requestConfig} = requestError;
+            const { requestConfig } = requestError
 
             if (config.REQUEST_LOG_ENABLED) {
-                console.log("Request to [Failed]:", requestConfig.url);
+                console.log("Request to [Failed]:", requestConfig.url)
             }
 
-            return Promise.reject(requestError);
+            return Promise.reject(requestError)
         }
-    );
+    )
 
     instance.interceptors.response.use(
         response => {
             if (config.RESPONSE_LOG_ENABLED) {
-                console.log(`Response from [${response.config.url}]:`, response.data);
+                console.log(`Response from [${response.config.url}]:`, response.data)
             }
-            return response;
+            return response
         },
         error => {
             if (config.RESPONSE_LOG_ENABLED) {
-                console.log(`Response error from ...:`, error);
+                console.log(`Response error from ...:`, error)
             }
-            return Promise.reject(error);
+            return Promise.reject(error)
         }
-    );
-    console.log("Set default interceptors for Axios");
+    )
+    console.log("Set default interceptors for Axios")
 }
 
 function setErrorHandler(instance = axios) {
     instance.interceptors.response.use(
         response => response,
         error => errorHandler(error)
-    );
-    console.log("Set default error handler for Axios");
+    )
+    console.log("Set default error handler for Axios")
 }
 
 function errorHandler(error) {
-    return Promise.reject(error);
+    return Promise.reject(error)
 }

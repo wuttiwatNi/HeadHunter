@@ -3,6 +3,9 @@ import { useHistory, useParams } from "react-router-dom"
 import { useDispatch } from "react-redux"
 import { objectUtil } from "../../../utils/object.util"
 import { format } from "date-fns"
+import { store } from "react-notifications-component"
+// constants
+import { toatConstant } from "./../../../constants/index"
 // constants
 import { generalConstant } from "../../../constants/index"
 // api
@@ -192,6 +195,8 @@ function OrderCreate({ mode }) {
                         })
                     })
                 } else {
+                    dispatch(modalErrorAction.goBack())
+                    dispatch(modalErrorAction.setDes("Not found order. Please try again later."))
                     dispatch(modalErrorAction.show())
                 }
             }).catch(error => { console.log(error) })
@@ -244,7 +249,11 @@ function OrderCreate({ mode }) {
         var promise1 = _getPositionListByCategoryId(currentOrder.categoryId)
         var promise2 = _getContactListByCustomerId(currentOrder.customerId)
 
+        dispatch(modalLoadingAction.show())
+
         Promise.all([promise1, promise2]).then(() => {
+            dispatch(modalLoadingAction.close())
+
             setSkillList(JSON.parse(JSON.stringify(currentOrder.skillList)))
             setLanguageSkillList(JSON.parse(JSON.stringify(currentOrder.languageSkillList)))
             setFormDataSkill(JSON.parse(JSON.stringify(currentOrder.skill)))
@@ -287,6 +296,7 @@ function OrderCreate({ mode }) {
                 createOrder(formDataOrder).then(({ data }) => {
                     let { success, result } = data
                     if (success) {
+                        store.addNotification(toatConstant.saveDataSuccess())
                         history.replace(result[0].id.toString())
                     } else {
                         dispatch(modalErrorAction.show())
@@ -315,6 +325,7 @@ function OrderCreate({ mode }) {
                 editOrder(formDataOrder).then(({ data }) => {
                     let { success, result } = data
                     if (success) {
+                        store.addNotification(toatConstant.saveDataSuccess())
                         history.replace(`/order/${result[0].id.toString()}`)
                     } else {
                         dispatch(modalErrorAction.show())

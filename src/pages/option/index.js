@@ -1,7 +1,9 @@
 import React, { useState, useEffect, useCallback } from "react"
-// import { useHistory } from "react-router-dom"
 import { useDispatch } from "react-redux"
 import { objectUtil } from "../../utils/object.util"
+import { store } from "react-notifications-component"
+// constants
+import { toatConstant } from "../../constants/index"
 // api
 import { skillApi, languageSkillApi, positionApi, nationalityApi } from "../../api"
 // action
@@ -11,7 +13,6 @@ import { Topic, Box, ListOption, ModalForm, ModalNormal, Input } from "../../com
 import { Row, Spinner } from "react-bootstrap"
 
 function Option() {
-    // let history = useHistory()
     const dispatch = useDispatch()
 
     const [showModalForm, setShowModalForm] = useState(false)
@@ -56,52 +57,73 @@ function Option() {
         dispatch(modalErrorAction.show())
     }, [dispatch])
 
-    let _getSkillList = useCallback(() => {
+    let _getSkillList = useCallback((isRefresh, isDelete) => {
         return new Promise(function (resolve, reject) {
             getSkillList().then(({ data }) => {
                 let { success, result } = data
                 if (success) {
                     setSkillList(objectUtil.sortArray(result, "name"))
-                    dispatch(modalLoadingAction.close())
                     resolve()
                 } else {
                     showModalError()
                 }
-            }).catch(error => { console.log(error) })
+            }).catch(error => { console.log(error) }).finally(() => {
+                if (isRefresh) {
+                    if (isDelete)
+                        store.addNotification(toatConstant.deleteDataSuccess())
+                    else
+                        store.addNotification(toatConstant.saveDataSuccess())
+                    dispatch(modalLoadingAction.close())
+                }
+            })
         })
     }, [getSkillList, dispatch, showModalError])
 
-    let _getLanguageSkillList = useCallback(() => {
+    let _getLanguageSkillList = useCallback((isRefresh, isDelete) => {
         return new Promise(function (resolve, reject) {
             getLanguageSkillList().then(({ data }) => {
                 let { success, result } = data
                 if (success) {
                     setLanguageSkillList(objectUtil.sortArray(result, "name"))
-                    dispatch(modalLoadingAction.close())
                     resolve()
                 } else {
                     showModalError()
                 }
-            }).catch(error => { console.log(error) })
+            }).catch(error => { console.log(error) }).finally(() => {
+                if (isRefresh) {
+                    if (isDelete)
+                        store.addNotification(toatConstant.deleteDataSuccess())
+                    else
+                        store.addNotification(toatConstant.saveDataSuccess())
+                    dispatch(modalLoadingAction.close())
+                }
+            })
         })
     }, [getLanguageSkillList, dispatch, showModalError])
 
-    let _getNationalityList = useCallback(() => {
+    let _getNationalityList = useCallback((isRefresh, isDelete) => {
         return new Promise(function (resolve, reject) {
             getNationalityList().then(({ data }) => {
                 let { success, result } = data
                 if (success) {
                     setNationalityList(objectUtil.sortArray(result, "name"))
-                    dispatch(modalLoadingAction.close())
                     resolve()
                 } else {
                     showModalError()
                 }
-            }).catch(error => { console.log(error) })
+            }).catch(error => { console.log(error) }).finally(() => {
+                if (isRefresh) {
+                    if (isDelete)
+                        store.addNotification(toatConstant.deleteDataSuccess())
+                    else
+                        store.addNotification(toatConstant.saveDataSuccess())
+                    dispatch(modalLoadingAction.close())
+                }
+            })
         })
     }, [getNationalityList, dispatch, showModalError])
 
-    let _getAllList = useCallback(() => {
+    let _getAllList = useCallback((isRefresh, isDelete) => {
         return new Promise(function (resolve, reject) {
             getAllList().then(({ data }) => {
                 let { success, result } = data
@@ -114,17 +136,24 @@ function Option() {
                         return { ...element, parent: parent }
                     })
                     setPositionList(position)
-                    dispatch(modalLoadingAction.close())
                     resolve()
                 } else {
                     showModalError()
                 }
-            }).catch(error => { console.log(error) })
+            }).catch(error => { console.log(error) }).finally(() => {
+                if (isRefresh) {
+                    if (isDelete)
+                        store.addNotification(toatConstant.deleteDataSuccess())
+                    else
+                        store.addNotification(toatConstant.saveDataSuccess())
+                    dispatch(modalLoadingAction.close())
+                }
+            })
         })
     }, [getAllList, dispatch, showModalError])
 
     useEffect(() => {
-        Promise.all([_getSkillList(), _getLanguageSkillList(), _getNationalityList(), _getAllList()]).then(() => {
+        Promise.all([_getSkillList(false, false), _getLanguageSkillList(false, false), _getNationalityList(false, false), _getAllList(false, false)]).then(() => {
             setIsLoadData(false)
         })
     }, [_getSkillList, _getLanguageSkillList, _getNationalityList, _getAllList])
@@ -237,7 +266,7 @@ function Option() {
                 deleteSkill(id).then(({ data }) => {
                     let { success } = data
                     if (success) {
-                        _getSkillList()
+                        _getSkillList(true, true)
                     } else {
                         showModalErrorDelete(data)
                     }
@@ -250,7 +279,7 @@ function Option() {
                 deleteLanguageSkill(id).then(({ data }) => {
                     let { success } = data
                     if (success) {
-                        _getLanguageSkillList()
+                        _getLanguageSkillList(true, true)
                     } else {
                         showModalErrorDelete(data)
                     }
@@ -263,7 +292,7 @@ function Option() {
                 deleteNationality(id).then(({ data }) => {
                     let { success } = data
                     if (success) {
-                        _getNationalityList()
+                        _getNationalityList(true, true)
                     } else {
                         showModalErrorDelete(data)
                     }
@@ -276,7 +305,7 @@ function Option() {
                 deletePosition(id).then(({ data }) => {
                     let { success } = data
                     if (success) {
-                        _getAllList()
+                        _getAllList(true, true)
                     } else {
                         showModalErrorDelete(data)
                     }
@@ -300,9 +329,9 @@ function Option() {
                         createSkill(formData).then(({ data }) => {
                             let { success } = data
                             if (success) {
-                                _getSkillList()
+                                _getSkillList(true, false)
                             } else {
-                                showModalError()
+                                showModalErrorDelete(data)
                             }
                         }).catch(error => { console.log(error) })
                         break
@@ -313,9 +342,9 @@ function Option() {
                         createLanguageSkill(formData).then(({ data }) => {
                             let { success } = data
                             if (success) {
-                                _getLanguageSkillList()
+                                _getLanguageSkillList(true, false)
                             } else {
-                                showModalError()
+                                showModalErrorDelete(data)
                             }
                         }).catch(error => { console.log(error) })
                         break
@@ -326,9 +355,9 @@ function Option() {
                         createNationality(formData).then(({ data }) => {
                             let { success } = data
                             if (success) {
-                                _getNationalityList()
+                                _getNationalityList(true, false)
                             } else {
-                                showModalError()
+                                showModalErrorDelete(data)
                             }
                         }).catch(error => { console.log(error) })
                         break
@@ -339,9 +368,9 @@ function Option() {
                         createPosition(formData).then(({ data }) => {
                             let { success } = data
                             if (success) {
-                                _getAllList()
+                                _getAllList(true, false)
                             } else {
-                                showModalError()
+                                showModalErrorDelete(data)
                             }
                         }).catch(error => { console.log(error) }).finally(() => { delete formData.parent })
                         break
@@ -354,9 +383,9 @@ function Option() {
                         createPosition(formData).then(({ data }) => {
                             let { success } = data
                             if (success) {
-                                _getAllList()
+                                _getAllList(true, false)
                             } else {
-                                showModalError()
+                                showModalErrorDelete(data)
                             }
                         }).catch(error => { console.log(error) }).finally(() => { delete formData.parent })
                         break
@@ -375,7 +404,7 @@ function Option() {
                         editSkill(formData).then(({ data }) => {
                             let { success } = data
                             if (success) {
-                                _getSkillList()
+                                _getSkillList(true, false)
                             } else {
                                 showModalError()
                             }
@@ -388,7 +417,7 @@ function Option() {
                         editLanguageSkill(formData).then(({ data }) => {
                             let { success } = data
                             if (success) {
-                                _getLanguageSkillList()
+                                _getLanguageSkillList(true, false)
                             } else {
                                 showModalError()
                             }
@@ -401,7 +430,7 @@ function Option() {
                         editNationality(formData).then(({ data }) => {
                             let { success } = data
                             if (success) {
-                                _getNationalityList()
+                                _getNationalityList(true, false)
                             } else {
                                 showModalError()
                             }
@@ -416,7 +445,7 @@ function Option() {
                         editPosition(formData).then(({ data }) => {
                             let { success } = data
                             if (success) {
-                                _getAllList()
+                                _getAllList(true, false)
                             } else {
                                 showModalError()
                             }
@@ -429,7 +458,7 @@ function Option() {
                         editPosition(formData).then(({ data }) => {
                             let { success } = data
                             if (success) {
-                                _getAllList()
+                                _getAllList(true, false)
                             } else {
                                 showModalError()
                             }
