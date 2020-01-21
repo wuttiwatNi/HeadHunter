@@ -117,7 +117,6 @@ function Index() {
                                     )}
                                 />
                             }
-
                             <Route
                                 exact path="/member/:id"
                                 render={() => (

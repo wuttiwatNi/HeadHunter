@@ -55,13 +55,18 @@ function Tables({ columnLabel, column, row, pathCreate, onClickRow, onClickCreat
                     }
                 </Col>
             </Row>
-            <Table striped responsive hover>
+            <Table responsive >
+                {/* striped hover */}
                 <thead>
                     <tr>
                         {/* Column */}
-                        {columnLabel.map((data, index) => (
-                            <th key={index}>{data}</th>
-                        ))}
+                        {columnLabel.map((data, index) => {
+                            if (data === "Appropriate") {
+                                return <th key={index} style={{ textAlign: "center" }}>{data}</th>
+                            } else {
+                                return <th key={index}>{data}</th>
+                            }
+                        })}
                     </tr>
                 </thead>
                 <tbody>
@@ -73,6 +78,10 @@ function Tables({ columnLabel, column, row, pathCreate, onClickRow, onClickCreat
                                     return (<td key={index} style={{ textAlign: "center", minWidth: 230 }}>
                                         <button className="outline-primary-blue" onClick={(e) => handleChildClickResetPassword(e, data)} style={{ marginRight: 10 }}>Reset Password</button>
                                         <button className="outline-primary-red" onClick={(e) => handleChildClickDelete(e, data)}>Delete</button>
+                                    </td>)
+                                if (key === "matching")
+                                    return (<td key={index} style={{ textAlign: "center" }}>
+                                        <span className={`matching ${data[key] >= 70 ? "green" : data[key] >= 50 ? "yellow" : "red"}`}>{data[key]}%</span>
                                     </td>)
                                 else
                                     return (<td key={index}><span>{data[key]}</span></td>)

@@ -88,7 +88,7 @@ function CandidateDetail() {
                         ...element,
                         _salary: element.salary.toLocaleString(),
                         calBonus: (element.salary * element.bonus).toLocaleString(),
-                        calYearWorking: `${year > 0 ? `${year} Year ` : ""}${month > 0 ? `${month} Month` : ""}`,
+                        calYearWorking: `${year > 0 ? `${year} Year` : ""}${(year > 0 && month > 0) ? " " : ""}${month > 0 ? `${month} Month` : ""}`,
                         _startDate: format(new Date(element.startDate), "dd-MM-yyyy"),
                         _endDate: format(new Date(element.endDate), "dd-MM-yyyy")
                     }

@@ -12,7 +12,7 @@ function RowWorking({ data }) {
                     <Row>
                         <Col xs={6} sm={6} lg={6}>
                             <div className={"title-level"}>Category</div>
-                            <div className={"des-level"}>{i.positionCategoryName}</div>
+                            <div className={"des-level"}>{i.categoryName}</div>
                         </Col>
                         <Col xs={6} sm={6} lg={6}>
                             <div className={"title-level"}>Position</div>

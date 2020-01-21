@@ -4,6 +4,7 @@ import { objectUtil } from "../../../utils/object.util"
 import { useDispatch } from "react-redux"
 import { format, formatDistanceToNow } from "date-fns"
 import { store } from "react-notifications-component"
+import { differenceInMonths } from "date-fns"
 // constants
 import { generalConstant, toatConstant } from "../../../constants/index"
 // api
@@ -137,11 +138,91 @@ function OrderDetail() {
     let getDetail = useCallback((isRefresh, isDelete) => {
         Promise.all([_getOrder(), _getCandidateList()]).then((result) => {
             let candidateList = result[1].map((element) => {
+                let percent = 0
+
+                // Cal percent position
+                percent = percent +
+                    result[0]["positionId"] === element["positionAppliedFirst"] ? 20 :
+                    result[0]["positionId"] === element["positionAppliedSecond"] ? 10 : 0
+
+                // Cal percent experience
+                let scoreworkingMathList = []
+                element["working"].filter((i) => {
+                    let _result = false
+                    if (i["positionId"] === result[0]["positionId"]) {
+
+                        let month = differenceInMonths(new Date(i.endDate), new Date(i.startDate))
+
+                        scoreworkingMathList.push(month)
+                        _result = true
+                    }
+                    return _result
+                })
+
+                let sumMonth = scoreworkingMathList.reduce((a, b) => a + b, 0)
+                let year = 0
+                while (sumMonth >= 12) {
+                    sumMonth = sumMonth - 12
+                    year++
+                }
+                percent = percent + parseInt(year >= result[0]["experience"] ? 20 : parseInt((20 * year) / result[0]["experience"]))
+
+                // Cal percent budget
+                percent = percent +
+                    (result[0]["budget"] >= element["salaryExpect"] ? 20 :
+                        element["salaryExpect"] - result[0]["budget"] > 5000 ? 0 : 20 - (((element["salaryExpect"] - result[0]["budget"]) / 1000) * 4))
+
+                // Cal percent languageSkill
+                if (result[0]["languageSkill"].length === 0) {
+                    percent = percent + 20
+                } else {
+                    let scoreLanguageSkillMathList = []
+                    element["languageSkill"].forEach((i) => {
+                        result[0]["languageSkill"].forEach((j) => {
+                            if (i["languageSkillId"] === j["languageSkillId"]) {
+                                let need = j["listening"] + j["speaking"] + j["reading"] + j["writing"]
+                                let have = i["listening"] + i["speaking"] + i["reading"] + i["writing"]
+                                scoreLanguageSkillMathList.push(have >= need ? 20 : parseInt((20 * have) / need))
+                            }
+                        })
+                    })
+
+                    while (scoreLanguageSkillMathList.length !== result[0]["languageSkill"].length)
+                        scoreLanguageSkillMathList.push(0)
+
+                    let sum = scoreLanguageSkillMathList.reduce((a, b) => a + b, 0)
+                    if (sum > 0)
+                        percent = percent + parseInt(sum / scoreLanguageSkillMathList.length)
+                }
+
+                // Cal percent skill
+                if (result[0]["skill"].length === 0) {
+                    percent = percent + 20
+                } else {
+                    let scoreSkillMathList = []
+                    element["skill"].forEach((i) => {
+                        result[0]["skill"].forEach((j) => {
+                            if (i["skillId"] === j["skillId"]) {
+
+                                scoreSkillMathList.push(i["experience"] >= j["experience"] ? 20 : parseInt((20 * i["experience"]) / j["experience"]))
+                            }
+                        })
+                    })
+
+                    while (scoreSkillMathList.length !== result[0]["skill"].length)
+                        scoreSkillMathList.push(0)
+
+                    let sum = scoreSkillMathList.reduce((a, b) => a + b, 0)
+                    if (sum > 0)
+                        percent = percent + parseInt(sum / scoreSkillMathList.length)
+                }
+
                 return {
                     ...element,
-                    matching: 100
+                    matching: percent
                 }
             })
+
             setCandidateList(candidateList)
 
             setIsLoadData(false)
@@ -474,8 +555,8 @@ function OrderDetail() {
                                     </Tab>
                                     <Tab eventKey="candidate" title="Candidate">
                                         <Tables
-                                            columnLabel={["Full Name", "Email", "Phone"]}
-                                            column={["fullName", "email", "phoneNumber"]}
+                                            columnLabel={["Full Name", "Email", "Phone", "Appropriate"]}
+                                            column={["fullName", "email", "phoneNumber", "matching"]}
                                             row={candidateList}
                                             onClickRow={handleClickRow}
                                             pathCreate={"/candidate/create"} />
