@@ -54,7 +54,10 @@ function CustomerDetail() {
             if (success && result.length !== 0) {
                 setCustomer(result[0])
                 setContact(result[0].contact)
-                setOrderList(result[0].order)
+                setOrderList(objectUtil.sortArrayNumberReverse(objectUtil.mapDataOrder(result[0].order.map((i) => ({
+                    ...i,
+                    _budget: i["budget"].toLocaleString()
+                }))), "priority"))
             } else {
                 dispatch(modalErrorAction.goBack())
                 dispatch(modalErrorAction.setDes("Not found customer. Please try again later."))
@@ -238,7 +241,7 @@ function CustomerDetail() {
                             <>
                                 <Tables
                                     columnLabel={["Order", "Budget", "Priority"]}
-                                    column={["positionName", "budget", "priority"]}
+                                    column={["positionName", "_budget", "priorityName"]}
                                     row={orderList}
                                     onClickRow={handleClickRow}
                                     pathCreate={"/order/create"} />

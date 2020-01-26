@@ -20,7 +20,10 @@ function OrderAll() {
         getOrderList().then(({ data }) => {
             let { success, result } = data
             if (success) {
-                setOrderList(objectUtil.sortArray(objectUtil.mapDataOrder(result), "positionName"))
+                setOrderList(objectUtil.sortArrayNumberReverse(objectUtil.mapDataOrder(result.map((i) => ({
+                    ...i,
+                    _budget: i["budget"].toLocaleString()
+                }))), "priority"))
             } else {
                 dispatch(modalErrorAction.show())
             }
@@ -44,7 +47,7 @@ function OrderAll() {
                             <>
                                 <Tables
                                     columnLabel={["Order", "Company", "Budget", "Priority"]}
-                                    column={["positionName", "companyName", "budget", "priorityName"]}
+                                    column={["positionName", "companyName", "_budget", "priorityName"]}
                                     row={orderList}
                                     onClickRow={handleClickRow}
                                     pathCreate={"/order/create"} />

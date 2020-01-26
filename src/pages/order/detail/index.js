@@ -223,7 +223,7 @@ function OrderDetail() {
                 }
             })
 
-            setCandidateList(candidateList)
+            setCandidateList(objectUtil.sortArrayNumberReverse(candidateList, "matching"))
 
             setIsLoadData(false)
         }).catch(() => {
@@ -562,7 +562,7 @@ function OrderDetail() {
                                             pathCreate={"/candidate/create"} />
                                     </Tab>
                                 </Tabs>
-                                <button className={"outline-primary"} onClick={handleClickCreateActivity} style={{ width: 40, height: 40, position: "absolute", top: 64, right: 15, display: `${isTabActivity ? "block" : "none"}` }}>
+                                <button className={"outline-primary"} onClick={handleClickCreateActivity} style={{ width: 40, height: 40, position: "absolute", top: 63, right: 15, display: `${isTabActivity ? "block" : "none"}` }}>
                                     <i className="fa fa-plus" />
                                 </button>
                             </>
