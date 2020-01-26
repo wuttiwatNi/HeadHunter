@@ -22,6 +22,7 @@ import CreateEducation from "./createEducation"
 import CreateWorking from "./createWorking"
 import ListOption from "./listOption"
 import RowActivity from "./rowActivity"
+import Matching from "./matching"
 
 export {
     SideBar,
@@ -47,5 +48,6 @@ export {
     CreateEducation,
     CreateWorking,
     ListOption,
-    RowActivity
+    RowActivity,
+    Matching
 }

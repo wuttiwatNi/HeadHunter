@@ -3,7 +3,7 @@ import * as PropTypes from "prop-types";
 import { Modal } from "react-bootstrap";
 import "./index.scss";
 
-function ModalForm({ title, subTitle, show, handleClose, handleOk, form }) {
+function ModalForm({ title, subTitle, show, handleClose, handleOk, form, isButtonOk }) {
     return (
         <Modal show={show} className={"modal-form"} onHide={handleClose ? handleClose : handleOk}>
             {title &&
@@ -13,8 +13,9 @@ function ModalForm({ title, subTitle, show, handleClose, handleOk, form }) {
             }
             <Modal.Body>{form()}</Modal.Body>
             <Modal.Footer>
-                {handleClose && <button className={"primary-gray outline"} onClick={handleClose}>Cancel</button>}
-                {handleOk && <button className={"primary-green outline"} onClick={handleOk}>Submit </button>}
+                {(handleClose && !isButtonOk) && <button className={"primary-gray outline"} onClick={handleClose}>Cancel</button>}
+                {(handleOk && !isButtonOk) && <button className={"primary-green outline"} onClick={handleOk}>Submit </button>}
+                {(isButtonOk) && <button className={"primary-green outline"} onClick={handleClose}>Ok</button>}
             </Modal.Footer>
         </Modal>
     );
@@ -26,10 +27,12 @@ ModalForm.propTypes = {
     show: PropTypes.bool.isRequired,
     form: PropTypes.func.isRequired,
     handleClose: PropTypes.func.isRequired,
-    handleOk: PropTypes.func
+    handleOk: PropTypes.func,
+    isButtonOk: PropTypes.bool
 };
 
 ModalForm.defaultProps = {
+    isButtonOk: false,
     form: () => {
     }
 };

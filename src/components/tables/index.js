@@ -4,7 +4,7 @@ import { Col, Row, Table } from "react-bootstrap"
 import { Link } from "react-router-dom"
 import "./index.scss"
 
-function Tables({ columnLabel, column, row, pathCreate, onClickRow, onClickCreate, onClickResetPassword, onClickDelete }) {
+function Tables({ columnLabel, column, row, pathCreate, onClickRow, onClickCreate, onClickResetPassword, onClickDelete, onClickShowMatching }) {
     const [dataList, setDataList] = useState([])
     const [check, setCheck] = useState(0)
 
@@ -27,6 +27,11 @@ function Tables({ columnLabel, column, row, pathCreate, onClickRow, onClickCreat
                 return result
             }))
         }
+    }
+
+    let handleChildClickShowMatching = (e, data) => {
+        e.stopPropagation()
+        onClickShowMatching(data)
     }
 
     let handleChildClickResetPassword = (e, data) => {
@@ -81,7 +86,7 @@ function Tables({ columnLabel, column, row, pathCreate, onClickRow, onClickCreat
                                     </td>)
                                 else if (key === "matching")
                                     return (<td key={index} style={{ textAlign: "center" }}>
-                                        <span className={`matching ${data[key] >= 70 ? "green" : data[key] >= 50 ? "yellow" : "red"}`}>{data[key]}%</span>
+                                        <span className={`matching ${data[key] >= 70 ? "green" : data[key] >= 50 ? "yellow" : "red"}`} onClick={(e) => handleChildClickShowMatching(e, data)}>{data[key]}%</span>
                                     </td>)
                                 else if (key === "priorityName")
                                     return (<td key={index} style={{ textAlign: "center" }}>

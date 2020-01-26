@@ -13,7 +13,7 @@ import { orderApi, candidateApi, contactApi, activityApi } from "../../../api"
 import { modalErrorAction } from "../../../actions"
 import { modalLoadingAction } from "../../../actions"
 // components
-import { Topic, Box, Tables, ModalForm, ModalNormal, Input, InputSelect, Information, RowContact, RowSkill, RowLanguageSkill, TableSelect, RowActivity } from "../../../components"
+import { Topic, Box, Tables, ModalForm, ModalNormal, Input, InputSelect, Information, RowContact, RowSkill, RowLanguageSkill, TableSelect, RowActivity, Matching } from "../../../components"
 import { Row, Col, Spinner, Tab, Tabs } from "react-bootstrap"
 
 function OrderDetail() {
@@ -52,6 +52,7 @@ function OrderDetail() {
     const [isTabActivity, setIsTabActivity] = useState(true)
 
     const [order, setOrder] = useState()
+    const [matchingData, setMatchingData] = useState()
     const [contact, setContact] = useState([])
     const [skill, setSkill] = useState([])
     const [languageSkill, setLanguageSkill] = useState([])
@@ -60,6 +61,7 @@ function OrderDetail() {
     const [contactList, setContactList] = useState([])
     const [activity, setActivity] = useState([])
     const [dataFromTableSelect, setDataFromTableSelect] = useState({})
+    const [isButtonOkForm, setIsButtonOkForm] = useState(false)
 
     const [formDataContact, setFormDataContact] = useState({
         id: "",
@@ -142,9 +144,11 @@ function OrderDetail() {
                 let percent = 0
 
                 // Cal percent position
-                percent = percent +
+                let percentPosition =
                     result[0]["positionId"] === element["positionAppliedFirst"] ? 20 :
-                    result[0]["positionId"] === element["positionAppliedSecond"] ? 10 : 0
+                        result[0]["positionId"] === element["positionAppliedSecond"] ? 10 : 0
+                percent = percent + percentPosition
+                element.percentPosition = percentPosition
 
                 // Cal percent experience
                 let scoreworkingMathList = []
@@ -166,16 +170,21 @@ function OrderDetail() {
                     sumMonth = sumMonth - 12
                     year++
                 }
-                percent = percent + parseInt(year >= result[0]["experience"] ? 20 : parseInt((20 * year) / result[0]["experience"]))
+                let percentExperience = parseInt(year >= result[0]["experience"] ? 20 : parseInt((20 * year) / result[0]["experience"]))
+                percent = percent + percentExperience
+                element.percentExperience = percentExperience
+                element.sumExperience = year
 
                 // Cal percent budget
-                percent = percent +
-                    (result[0]["budget"] >= element["salaryExpect"] ? 20 :
-                        element["salaryExpect"] - result[0]["budget"] > 5000 ? 0 : 20 - (((element["salaryExpect"] - result[0]["budget"]) / 1000) * 4))
+                let percentBudget = (result[0]["budget"] >= element["salaryExpect"] ? 20 :
+                    element["salaryExpect"] - result[0]["budget"] > 5000 ? 0 : 20 - (((element["salaryExpect"] - result[0]["budget"]) / 1000) * 4))
+                percent = percent + percentBudget
+                element.percentBudget = percentBudget
 
                 // Cal percent languageSkill
+                let percentLanguageSkill = 0
                 if (result[0]["languageSkill"].length === 0) {
-                    percent = percent + 20
+                    percentLanguageSkill = 20
                 } else {
                     let scoreLanguageSkillMathList = []
                     element["languageSkill"].forEach((i) => {
@@ -193,12 +202,15 @@ function OrderDetail() {
 
                     let sum = scoreLanguageSkillMathList.reduce((a, b) => a + b, 0)
                     if (sum > 0)
-                        percent = percent + parseInt(sum / scoreLanguageSkillMathList.length)
+                        percentLanguageSkill = parseInt(sum / scoreLanguageSkillMathList.length)
                 }
+                percent = percent + percentLanguageSkill
+                element.percentLanguageSkill = percentLanguageSkill
 
                 // Cal percent skill
+                let percentSkill = 0
                 if (result[0]["skill"].length === 0) {
-                    percent = percent + 20
+                    percentSkill = 20
                 } else {
                     let scoreSkillMathList = []
                     element["skill"].forEach((i) => {
@@ -215,8 +227,10 @@ function OrderDetail() {
 
                     let sum = scoreSkillMathList.reduce((a, b) => a + b, 0)
                     if (sum > 0)
-                        percent = percent + parseInt(sum / scoreSkillMathList.length)
+                        percentSkill = parseInt(sum / scoreSkillMathList.length)
                 }
+                percent = percent + percentSkill
+                element.percentSkill = percentSkill
 
                 return {
                     ...element,
@@ -280,6 +294,7 @@ function OrderDetail() {
                 setSubTitleModalForm("list")
                 setModeModalForm("changeContact")
                 setShowModalForm(true)
+                setIsButtonOkForm(false)
             } else {
                 dispatch(modalErrorAction.show())
             }
@@ -294,6 +309,7 @@ function OrderDetail() {
         setSubTitleModalForm("edit")
         setModeModalForm("editContact")
         setShowModalForm(true)
+        setIsButtonOkForm(false)
     }
 
     let handleClickDeleteActivity = (data) => {
@@ -322,6 +338,7 @@ function OrderDetail() {
                 setSubTitleModalForm("create")
                 setModeModalForm("createActivity")
                 setShowModalForm(true)
+                setIsButtonOkForm(false)
             } else {
                 dispatch(modalErrorAction.show())
             }
@@ -354,9 +371,19 @@ function OrderDetail() {
             setSubTitleModalForm("edit")
             setModeModalForm("editActivity")
             setShowModalForm(true)
+            setIsButtonOkForm(false)
         }).catch(() => { dispatch(modalErrorAction.show()) }).finally(() => {
             dispatch(modalLoadingAction.close())
         })
+    }
+
+    let handleClickShowMatching = (data) => {
+        setMatchingData(data)
+        setTitleModalForm("Matching")
+        setSubTitleModalForm(data.fullName)
+        setModeModalForm("matching")
+        setShowModalForm(true)
+        setIsButtonOkForm(true)
     }
 
     let handleOkModals = () => {
@@ -560,6 +587,7 @@ function OrderDetail() {
                                             column={["fullName", "email", "phoneNumber", "matching"]}
                                             row={candidateList}
                                             onClickRow={handleClickRow}
+                                            onClickShowMatching={handleClickShowMatching}
                                             pathCreate={"/candidate/create"} />
                                     </Tab>
                                 </Tabs>
@@ -572,7 +600,7 @@ function OrderDetail() {
                 </>)}
             <ModalNormal title={titleModalNormal} description={desModalNormal} show={showModalNormal} swapColor={swapColorModalNormal}
                 handleClose={() => setShowModalNormal(false)} handleOk={handleOkModals} />
-            <ModalForm title={titleModalForm} subTitle={subTitleModalForm} show={showModalForm}
+            <ModalForm title={titleModalForm} subTitle={subTitleModalForm} show={showModalForm} isButtonOk={isButtonOkForm}
                 handleClose={() => setShowModalForm(false)} handleOk={handleOkModalsForm}
                 form={() =>
                     <>
@@ -609,6 +637,9 @@ function OrderDetail() {
                                 <Input id={"id"} isHidden={true} defaultValue={formDataActivity.id} />
                                 <Input id={"candidateId"} isHidden={true} defaultValue={formDataActivity.candidateId} />
                             </Row>
+                        }
+                        {modeModalForm === "matching" &&
+                            <Matching dataOrder={order} dataCandidate={matchingData} />
                         }
                     </>
                 } />
