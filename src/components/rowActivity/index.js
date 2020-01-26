@@ -15,7 +15,7 @@ function RowActivity({ data, onClickDelete, onClickEdit, isOrder }) {
                             {
                                 i.isSameDay &&
                                 <li className="time-label">
-                                    <span className={`bg-${objectUtil.mapDayColor(format(new Date(i.createdDate), "EEEEEE"))}`}>{i.createdDate}</span>
+                                    <span className={`bg-${objectUtil.mapDayColor(format(new Date(i._createdDate), "EEEEEE"))}`}>{i.createdDate}</span>
                                 </li>
                             }
                             <li>

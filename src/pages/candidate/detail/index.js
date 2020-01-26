@@ -96,6 +96,7 @@ function CandidateDetail() {
                 let activity = result[0]["activity"].map((element) => {
                     return {
                         ...element,
+                        _createdDate: element.createdDate,
                         createdDate: format(new Date(element.createdDate), "dd MMM. yyyy"),
                         createdTime: format(new Date(element.createdDate), "HH:mm")
                     }
