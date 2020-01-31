@@ -54,6 +54,12 @@ tbody {
     width: 200px;
   }
 
+  @media (max-width: 350px) {
+    input {
+      width: 180px;
+    }
+  }
+
   button {
     width: 40px;
     height: 40px;
@@ -89,6 +95,7 @@ tbody {
     display: block;
     border-radius: 10px;
     color: #bbbbbb;
+    text-align: center;
   }
 }
 
@@ -121,15 +128,15 @@ tbody {
   font-size: 12px;
   font-weight: 400;
 
-  &.green{
+  &.green {
     background-color: #28a745;
   }
 
-  &.yellow{
+  &.yellow {
     background-color: $primaryYellowColor;
   }
 
-  &.red{
+  &.red {
     background-color: $primaryRedColor;
   }
 }

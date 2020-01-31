@@ -127,6 +127,12 @@ textarea:focus {
   cursor: pointer;
 }
 
+.file-name:lang(en) {
+  left: 107px;
+  max-width: calc(100% - 116px);
+  width: calc(100% - 116px);
+}
+
 input[type="file"] {
   cursor: pointer;
 }
