@@ -57,11 +57,11 @@ function Login() {
             dispatch(modalLoadingAction.show())
 
             signInUser(formDataLogin).then(({ data }) => {
-                let { success, result } = data
+                let { success, result, message } = data
                 if (success) {
                     dispatch(accountAction.login(result[0]))
                 } else {
-                    dispatch(modalErrorAction.setDes(data.message) + ".")
+                    dispatch(modalErrorAction.setDes(message + "."))
                     dispatch(modalErrorAction.show())
                 }
             }).catch(error => { console.log(error) }).finally(() => {
