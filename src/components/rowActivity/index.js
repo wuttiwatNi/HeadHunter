@@ -1,14 +1,11 @@
 import React from "react"
 import * as PropTypes from "prop-types"
-import { useHistory } from "react-router-dom"
 import { objectUtil } from "../../utils/object.util"
 import { Row, Col } from "react-bootstrap"
 import { format } from "date-fns"
 import "./index.scss"
 
 function RowActivity({ data, onClickDelete, onClickEdit, isOrder }) {
-    let history = useHistory()
-
     let handleClickUserCreate = (id) => {
         window.open(`/member/${id}`, '_blank')
     }
