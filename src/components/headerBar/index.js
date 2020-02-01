@@ -26,7 +26,9 @@ function HeaderBar() {
                 <div className={`toggle-profile ${isPopupProfile ? "click" : ""}`} onMouseOver={() => setIsPopupProfile(true)} onMouseOut={() => setIsPopupProfile(false)}>
                     <div className={`frame ${isPopupProfile ? "click" : ""}`}>
                         <img src={account.picturePath} className="head-bar" alt="..." />
-                        {account.firstName}
+                        <span>
+                            {account.firstName}
+                        </span>
                     </div>
                 </div>
 

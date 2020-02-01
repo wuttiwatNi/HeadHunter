@@ -48,7 +48,7 @@ function Input({ xs, sm, lg, label, id, onChange, type, isHidden, defaultValue, 
                         <input id={id} onChange={onChanges} type={type} value={value} required checked={Boolean(value)} className={unit ? "not-full" : ""} disabled={isDisabled} />
                 } {type === "checkbox" && <span className={"span-checkbox"}>{label}</span>}
                 {unit && <div className="unit" title={unit}>{unit}</div>}
-                {(type === "file" && value === "") && <span className={"file-name"} onClick={handleChildClick}>{defaultNameFile}</span>}
+                {(type === "file" && value === "") && <span className={"file-name"} onClick={handleChildClick} lang={navigator.language}>{defaultNameFile}</span>}
             </div>
         </Col>
     );

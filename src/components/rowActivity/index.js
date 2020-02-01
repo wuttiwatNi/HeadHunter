@@ -6,6 +6,10 @@ import { format } from "date-fns"
 import "./index.scss"
 
 function RowActivity({ data, onClickDelete, onClickEdit, isOrder }) {
+    let handleClickUserCreate = (id) => {
+        window.open(`/member/${id}`, '_blank')
+    }
+
     return (
         <Row className={"main-row-activity"}>
             {data.length !== 0 &&
@@ -27,7 +31,7 @@ function RowActivity({ data, onClickDelete, onClickEdit, isOrder }) {
                                     </h3>
                                     <div className="timeline-body">
                                         {i.activityNote}
-                                        <span>{i.createdByFirstName} {i.createdByLastName}</span>
+                                        <span onClick={() => handleClickUserCreate(i.createdBy)}>{i.createdByFirstName} {i.createdByLastName}</span>
                                     </div>
                                     <div className="timeline-footer">
                                         <button className="outline-primary-blue" onClick={() => onClickEdit(i)} style={{ marginRight: 10 }}>Edit</button>

@@ -52,6 +52,7 @@
         text-align: center;
 
         img.head-bar {
+          display: inline-block;
           height: 36px;
           width: 36px;
           border-radius: 50%;
@@ -63,6 +64,15 @@
           transform: translateY(-2px);
           -webkit-transition: all 0.125s ease;
           transition: all 0.125s ease;
+        }
+
+        span {
+          max-width: 100px !important;
+          display: inline-block;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          vertical-align: middle;
+          white-space: nowrap;
         }
       }
 
@@ -127,11 +137,14 @@
 
       span {
         font-size: 14px;
-        margin: 8px 8px;
+        margin: 8px 15px;
         border-radius: 10px;
         padding: 2px 0;
         color: $primaryColor;
         display: block;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
       }
 
       button {
