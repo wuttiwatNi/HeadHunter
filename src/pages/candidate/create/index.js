@@ -925,7 +925,7 @@ function CandidateCreate({ mode }) {
                                     <Col xs={0} sm={0} lg={3}></Col>
 
                                     <Input xs={12} sm={6} lg={4} label={"First Name"} id={"firstName"} onChange={handleChangeInput} defaultValue={currentCandidate.firstName} resest={isReset} />
-                                    <Input xs={12} sm={6} lg={4} label={"Last Name"} id={"lastName"} onChange={handleChangeInput} defaultValue={currentCandidate.firstName} resest={isReset} />
+                                    <Input xs={12} sm={6} lg={4} label={"Last Name"} id={"lastName"} onChange={handleChangeInput} defaultValue={currentCandidate.lastName} resest={isReset} />
                                     <Input xs={12} sm={6} lg={4} label={"Nickname"} id={"nickname"} onChange={handleChangeInput} defaultValue={currentCandidate.nickname} resest={isReset} />
                                     <InputSelect xs={12} sm={6} lg={4} label={"Nationality"} id={"nationalityId"} optionsList={nationalityList} onChange={handleChangeInput} defaultValue={currentCandidate.nationalityId} isSearchable={true} resest={isReset} />
                                     <InputSelect xs={12} sm={6} lg={4} label={"NID Type"} id={"nidType"} optionsList={generalConstant.nidTypeList} onChange={handleChangeInput} defaultValue={currentCandidate.nidType} resest={isReset} />
